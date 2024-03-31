@@ -12,4 +12,3 @@ export { default as RejectProcedureModal } from './reject-procedure'
 export { default as QuillEditer } from './quill-editer'
 export { default as DetailProcurementModal } from "./detail-procurement-modal"
 export { default as ExportPdfProcurementModal } from "./export-pdf-procurement"
-export { default as AddProcurementProcedure } from "./add-procurement-procedure"

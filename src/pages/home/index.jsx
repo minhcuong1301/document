@@ -8,7 +8,7 @@ import {
   DEPARTMENTS_CODE,
 } from "utils/constants/config";
 import InfoUserModal from "./components/info-user";
-import ExportPDF from "../procedure/components/exportPDF";
+import ExportPDF from "./exportPDF";
 
 import { FilePdfOutlined } from "@ant-design/icons";
 
@@ -106,20 +106,7 @@ const HomePage = () => {
     setSpinning(false);
   };
 
-  const handleCheckRole = (r) => {
-    if (
-      (userLogin?.position_code === "GIAM_DOC" &&
-        r?.position_code !== "GIAM_DOC") ||
-      (userLogin?.position_code === "TRUONG_PHONG" &&
-        userLogin?.department_id === r?.department_id &&
-        r?.position_code !== "TRUONG_PHONG" &&
-        r?.position_code !== "GIAM_DOC")
-    ) {
-      return true;
-    }
 
-    return false;
-  };
 
   useEffect(() => {
     handleGetUser();
@@ -139,16 +126,11 @@ const HomePage = () => {
       ),
     },
     {
-      width: 100,
       title: "Mã nhân viên",
       dataIndex: "id",
       key: "id",
-    },
-    {
-      width: 100,
-      title: "Mã nhân viên",
-      dataIndex: "id",
-      key: "id",
+      align: "center",
+
     },
     {
       title: "Họ và tên ",
@@ -179,33 +161,27 @@ const HomePage = () => {
       dataIndex: "position_name",
       key: "position_name",
     },
+
+    // {
+    //   title: "Ảnh ",
+    //   dataIndex: "avatar",
+    //   key: "avatar",
+    //   align: "center",
+    //   render: (v, _) =>
+    //     v && (
+    //       <Image
+    //         alt="avatar"
+    //         src={`${REACT_APP_SERVER_BASE_URL}/${v}`.replace("server", "")}
+    //       />
+    //     ),
+    // },
     {
-      title: "Phòng ban",
-      dataIndex: "department_name",
-      key: "department_name",
-      align: "center",
-    },
-    {
-      title: "Ảnh ",
-      dataIndex: "avatar",
-      key: "avatar",
-      align: "center",
-      render: (v, _) =>
-        v && (
-          <Image
-            alt="avatar"
-            src={`${REACT_APP_SERVER_BASE_URL}/${v}`.replace("server", "")}
-          />
-        ),
-    },
-    {
-      width: 100,
       title: "",
       dataIndex: "operation",
       key: "operation",
       render: (_, r) => (
         <Space>
-          {handleCheckRole(r) && (
+          {userLogin?.position_code === "ADMIN" && (
             <Popconfirm
               title={
                 r.account_stutus === 1
@@ -224,19 +200,17 @@ const HomePage = () => {
       align: "center",
     },
     {
-      width: 150,
       title: "",
       dataIndex: "edit",
       key: "edit",
       render: (_, r) =>
-        (userLogin?.position_code === "P_GIAM_DOC" ||
-          userLogin?.position_code === "GIAM_DOC") && (
-          <Space>
-            <Button type="info" onClick={() => setEditUser(r)}>
-              Sửa
-            </Button>
-          </Space>
-        ),
+      (userLogin?.position_code === "ADMIN" &&
+        <Space>
+          <Button type="primary" onClick={() => setEditUser(r)}>
+            Sửa
+          </Button>
+        </Space>
+      ),
       align: "center",
     },
   ];
@@ -277,31 +251,28 @@ const HomePage = () => {
               />
             </Col>
 
-            {(userLogin.position_code === "GIAM_DOC" ||
-              userLogin.position_code === "TRUONG_PHONG") && (
-              <Col>
-                <Button
-                  className="w-full"
-                  type="primary"
-                  onClick={() => setOpenAddUserModal(true)}
-                >
-                  Thêm nhân viên
-                </Button>
-              </Col>
-            )}
-
-            {userLogin?.position_code === "TRUONG_PHONG" &&
-              userLogin.department_id === 6 && (
+            {userLogin.position_code === "ADMIN"
+              && (
                 <Col>
                   <Button
-                    onClick={handleExportData}
-                    icon={<FilePdfOutlined />}
+                    className="w-full"
                     type="primary"
+                    onClick={() => setOpenAddUserModal(true)}
                   >
-                    Xuất file PDF
+                    Thêm nhân viên
                   </Button>
                 </Col>
               )}
+
+            <Col>
+              <Button
+                onClick={handleExportData}
+                icon={<FilePdfOutlined />}
+                type="primary"
+              >
+                Xuất file PDF
+              </Button>
+            </Col>
           </Row>
         </div>
 

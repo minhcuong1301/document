@@ -11,7 +11,7 @@
   flex-direction: column;
 
   table,
-  th,
+ 
   td {
     text-align: left;
 
@@ -30,20 +30,29 @@
 
     .name-document {
       width: 20%;
-      text-align: left;
+      text-align: center;
     }
 
     .user-create-document {
-      width: 10%
+      width: 10%;
+      text-align: center;
+
     }
 
     .action-document {
-      width: 10%
+      width: 10%;
+      text-align: center;
+
     }
 
     .time-upload-document {
-      width: 10%
+      width: 10%;
+      text-align: center;
+
     }
+  }
+  th{
+    text-align: center;
   }
 }
 

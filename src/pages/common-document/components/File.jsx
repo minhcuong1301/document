@@ -1,4 +1,4 @@
-import { Col, Dropdown, Row, message, Modal, Image } from "antd";
+import { Col, Dropdown, Row, message, Modal, Image, Button, Checkbox } from "antd";
 import React, { useEffect, useState } from "react";
 import { SpinCustom } from "components";
 import { actionDeleteFile, actionGetImage, actionDownLoadFile } from "../action";
@@ -31,6 +31,7 @@ const File = ({ listDocument,
   const [oldName, setOldName] = useState()
   const [idFile, setIdFile] = useState()
   const [modalEditName, setmodalEditName] = useState(false)
+  const [selectedRows, setSelectedRows] = useState([]);
 
   const userLogin = useSelector(state => state?.profile)
 
@@ -39,11 +40,11 @@ const File = ({ listDocument,
 
 
 
-  const handleDeleteFile = async (id) => {
+  const handleDeleteFile = async () => {
     setSpinning(true)
     try {
       const body = {
-        doc_id: id
+        doc_id: selectedRows
       }
       const { data, status } = await actionDeleteFile(body)
       if (status === 200) {
@@ -63,31 +64,31 @@ const File = ({ listDocument,
     setSpinning(false)
   }
 
-  
+
   const handleDetail = async (id) => {
     try {
-    
-       
-      
+
+
+
       const selectedDocument = listDocument.find((doc) => doc.id === id);
-      if(selectedDocument.document_type === 1){
+      if (selectedDocument.document_type === 1) {
         handleGetChildFolder(selectedDocument)
       }
       const arr = selectedDocument.path.split('.')
-      if(arr.includes('mp4')){
+      if (arr.includes('mp4')) {
         handleWatchVideo(selectedDocument)
       }
-       if(arr.includes('jpeg') || arr.includes('jpg') || arr.includes('png')){
-         { <Image src={`${actionGetImage(selectedDocument.id, 2)}`} />}
+      if (arr.includes('jpeg') || arr.includes('jpg') || arr.includes('png')) {
+        { <Image src={`${actionGetImage(selectedDocument.id, 2)}`} /> }
       }
-      else{
+      else {
         setDocumentId(id);
-      setPathDoc(selectedDocument.path);
-      selectedDocument.document_type === 1 ? setOpenDetail(false) : setOpenDetail(true);
+        setPathDoc(selectedDocument.path);
+        selectedDocument.document_type === 1 ? setOpenDetail(false) : setOpenDetail(true);
 
-      
+
       }
-      
+
 
     } catch (error) {
       console.error(error);
@@ -95,38 +96,46 @@ const File = ({ listDocument,
   }
 
   const hadleDownloadFile = async (id) => {
-    actionDownLoadFile(id, 1)
+    setSpinning(true)
+    try {
+      const as_attachment = 1
+      const { data, status } = await actionDownLoadFile(id, as_attachment)
+    } catch (err) {
+      console.log(err)
+    }
+    setSpinning(false)
   }
 
-  const handleEditName = async (name,id,type) => {
-    if(type===1){
+  const handleEditName = async (name, id, type) => {
+    if (type === 1) {
       setOldName(name)
-    }else{
+    } else {
       const nameWithoutExtension = name.split('.').slice(0, -1).join('.');
-    setOldName(nameWithoutExtension)
+      setOldName(nameWithoutExtension)
     }
-    
+
 
     setIdFile(id)
     setmodalEditName(true)
-  
+
   }
-  const handleMenuClick = (e, doc_id, document_type,doc_name) => {
+  const handleMenuClick = (e, doc_id, document_type, doc_name) => {
     setDocumentId(doc_id)
+    setSelectedRows([doc_id])
     if (e.key === '1') {
       setDocumentId(doc_id)
       setOpenModalUpdateFile(true)
     }
     else if (e.key === "2") {
-      confirmDelete(doc_id);
+      confirmDelete();
     }
     else if (e.key === "3") {
-      hadleDownloadFile(doc_name,doc_id)
+      hadleDownloadFile(doc_id)
     }
     else if (e.key === "4") {
-        
-        
-      handleEditName(doc_name,doc_id,document_type)
+
+
+      handleEditName(doc_name, doc_id, document_type)
     }
     else if (e.key === "5") {
       setOpenDecentralize(true)
@@ -134,11 +143,11 @@ const File = ({ listDocument,
     }
   };
 
-  const confirmDelete = (doc_id) => {
+  const confirmDelete = () => {
     Modal.confirm({
       title: "Bạn có chắc muốn xóa tệp tin này?",
       onOk() {
-        handleDeleteFile(doc_id);
+        handleDeleteFile();
       },
       onCancel() {
       },
@@ -162,11 +171,11 @@ const File = ({ listDocument,
   }
 
   const handleClick = (event, name_file, id_file) => {
-    if(event.detail === 1){
+    if (event.detail === 1) {
       handleDetail(id_file)
     }
-    
-    
+
+
   };
   useEffect(() => {
     if (typeDocument === 1) {
@@ -212,90 +221,100 @@ const File = ({ listDocument,
 
 
 
-  const getIconForDocumentType = (documentType, record,extension_file) => {
+  const getIconForDocumentType = (documentType, record, extension_file) => {
     if (documentType === 1) {
-      return <FolderIconDownload className="style-icon" onClick={(e) =>
-        {
-          e.stopPropagation()
-          handleGetChildFolder(record)
-        } 
-      } 
+      return <FolderIconDownload className="style-icon" onClick={(e) => {
+        e.stopPropagation()
+        handleGetChildFolder(record)
+      }
+      }
       />;
     }
-    else{
+    else {
       switch (extension_file) {
-          
+
         case "docx":
         case "doc":
           return <WordIcon className="style-icon" />;
         case "pptx":
           return <PptxIcon className="style-icon" />;
         case "pdf":
-          return <PdfIcon className="style-icon"  />;
+          return <PdfIcon className="style-icon" />;
         case "xls":
         case "xlsx":
           return <ExcelIcon className="style-icon" />;
         case "jpg":
         case "png":
         case "jpeg":
-          return <Image  alt='avatar' src={`${actionGetImage(record.id, 2)}`} className="style-icon"  onClick={e=>console.log(e) }/>;
+          return <Image alt='avatar' src={`${actionGetImage(record.id, 2)}`} className="style-icon" onClick={e => console.log(e)} />;
         case "mp4":
         case "MOV":
           return <video className="style-icon">
             <source src={`${REACT_APP_SERVER_BASE_URL}/${record.path.replace('server', '')}`} type={extension_file == 'mp4' ? 'video/mp4' : 'video/quicktime'} />
           </video>;
         default:
-        return <DefaultIcon  className="style-icon"  />;
-          }
-        }
+          return <DefaultIcon className="style-icon" />;
+      }
+    }
   };
+
+  const handleCheckboxChange = (e, id) => {
+    if (e.target.checked) {
+      setSelectedRows([...selectedRows, id]);
+    } else {
+      setSelectedRows(selectedRows.filter(rowId => rowId !== id));
+    }
+  };
+
 
   const rows = listDocument.map((record, index) => {
     const extension_file = record.name.replace(/\s/g, '').split('.').pop();
-   
+
     return (
-      <tr  className='cursor-pointer' key={index} onClick={() => handleDetail(record?.id)} >
-        <td className="icon-document" style={{ width: '2%' }}>
-          {getIconForDocumentType(record.document_type, record,extension_file)}
+      <tr className='cursor-pointer' key={index} onClick={() => handleDetail(record?.id)} >
+
+        <td style={{ width: '2%' }} onClick={(e) => e.stopPropagation()}>
+          <Checkbox onChange={(e) => handleCheckboxChange(e, record.id)} />
         </td>
-        <td className="name-document"  onClick={(event) => 
-          { 
-            event.stopPropagation()
-            handleClick(event, record.name, record.id)
+        <td className="icon-document" style={{ width: '2%' }}>
+          {getIconForDocumentType(record.document_type, record, extension_file)}
+        </td>
 
-
-          }
-           }>
+        <td className="name-document" onClick={(event) => {
+          event.stopPropagation()
+          handleClick(event, record.name, record.id)
+        }
+        }>
           {record.name}
         </td>
         <td className="time-upload-document">
           {moment((record.time_upload) * 1000).format(DATETIME_FORMAT)}
 
         </td>
-        <td className="user-create-document"  onClick={(event) => 
-          { 
-            event.stopPropagation()
-            handleClick(event, record.name, record.id)
-          }
-           }>
+        <td className="user-create-document" onClick={(event) => {
+          event.stopPropagation()
+          handleClick(event, record.name, record.id)
+        }
+        }>
           {record.user_crearte}
         </td>
-        <td className="action-document"  onClick={(event) => 
-          { 
-            event.stopPropagation()
-           }
-           } >
+        <td className="action-document" onClick={(event) => {
+          event.stopPropagation()
+        }
+        } >
           <Dropdown className="dropdown-action"
             menu={{
               items,
-              onClick: (e) =>{
-                handleMenuClick(e, record.id, record.document_type,record.name)
-                 
-              } 
+              onClick: (e) => {
+                handleMenuClick(e, record.id, record.document_type, record.name)
+
+              }
             }}
+            trigger={["click"]}
+
             onOpenChange={() => handleOpenChange(record.document_type)}
           >
-            <span>Thao tác</span>
+            <Button type="primary">Thao tác</Button>
           </Dropdown>
         </td>
       </tr>
@@ -308,6 +327,8 @@ const File = ({ listDocument,
         <table className="style-table" >
           <thead>
             <tr>
+
+              <th></th>
               <th></th>
               <th>Tên</th>
               <th>Ngày tạo</th>
@@ -325,6 +346,16 @@ const File = ({ listDocument,
     <>
       <SpinCustom spinning={spinning}>
         <Row gutter={[16, 0]} className="style-list-document">
+
+          {
+
+            selectedRows.length >0 && <Col>
+              <Button type="primary" onClick={()=> confirmDelete()}>Xóa</Button>
+            </Col>
+          }
+
+
+
           <Col>
             {renderTable()}
           </Col>

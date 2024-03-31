@@ -44,49 +44,9 @@ const App = () => {
     }
   }
 
-  const handleGetDepartments = async () => {
-    try {
-      const { data, status } = await api({
-        method: "GET",
-        url: "/get-departments",
-      })
-      if (status == 200) {
-        dispatch({ type: actions.SET_DEPARTMENTS, payload: data })
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  
 
-  const handleGetStatusProcedures = async () => {
-    try {
-      const { data, status } = await api({
-        method: "GET",
-        url: "/get-procedures-status"
-      })
-      if (status === 200) {
-        dispatch({ type: actions.SET_PROCEDURE_STATUS, payload: data })
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const handleGetStatusProceduresDetails = async () => {
-    try {
-      const { data, status } = await api({
-        method: "GET",
-        url: "/get-procedures-detail-status"
-      })
-
-      if (status === 200) {
-        dispatch({ type: actions.SET_PROCEDURE_DETAIL_STATUS, payload: data })
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
+  
   const handleCheckNavigate = useCallback(() => {
     const paths = pages.map(page => page.path)
     if (!paths.includes(currentPath)) {
@@ -99,10 +59,7 @@ const App = () => {
 
   useEffect(() => {
     if (token) {
-      handleGetDepartments()
       handleGetPositions()
-      handleGetStatusProcedures()
-      handleGetStatusProceduresDetails()
       actionGetUserProfileByToken(dispatch)
     }
     else if (!isPublicPage) {
