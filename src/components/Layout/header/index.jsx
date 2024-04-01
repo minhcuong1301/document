@@ -87,6 +87,7 @@ const AppHeader = () => {
     }
   };
 
+  console.log("userLogin:", userLogin);
   let tabKey = "";
   const handleCheckProcedureType = (notification) => {
     console.log("noti detail:", notification);
@@ -181,8 +182,9 @@ const AppHeader = () => {
         onClick={() => handleNavigateProcedure(notification)}
       >
         <div
-          className={`notification-item ${notification.status === 0 ? "unread" : "read"
-            }`}
+          className={`notification-item ${
+            notification.status === 0 ? "unread" : "read"
+          }`}
         >
           <div
             className="notification-content"
@@ -198,9 +200,8 @@ const AppHeader = () => {
     <Layout.Header className="app-header">
       <div className="app-header--left">
         <span className="app-header--title hidden-mobile">{page?.label}</span>
-        
+
         <img className="hidden-logo" src={AiptLogo} alt="logo" />
-     
       </div>
       <div className="app-header--right">
         <Space size={8} split={<Divider type="vertical" />}>
