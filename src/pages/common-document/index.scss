@@ -61,8 +61,9 @@
   height: 40px;
 }
 
-.power-modal-btn {
-  width: 90px;
-  height: 40px;
-  text-align: center;
+.ant-modal-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
 }

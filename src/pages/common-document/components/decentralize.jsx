@@ -37,11 +37,13 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
     current: 1,
   });
   const [listEmployeeOption, setListEmployeeOption] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [employeeId, setEmployeeId] = useState(0);
+  //liet ke cac quyen duoc cap
   const [listRole, setlistRole] = useState([]);
   let [roleUser, setRoleUser] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
 
-  const handleGetRoleUser = async () => {
+  const handleGetRoleUser = async (employee) => {
     setSpinning(true);
     try {
       const params = {
@@ -51,6 +53,7 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
       const { data, status } = await actionGetListRole(params);
       if (status === 200) {
         setRoleUser(data?.data);
+        console.log("roleusers", data);
       }
     } catch (err) {
       console.log(err);
@@ -83,7 +86,6 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
       };
       let { data, status } = await actionDecentralize(params);
       if (status === 200) {
-        setOpenRoleUser(false);
         message.success(data?.message);
       }
     } catch (err) {
@@ -181,40 +183,88 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
         };
       },
     },
+    //bug
     {
       title: "Quyền được cấp",
       dataIndex: "power",
       key: "power",
       align: "center",
-      render: (record) => (
-        <Space size="middle">
-          <Checkbox>ok</Checkbox>
-          <Checkbox>ok</Checkbox>
-          <Checkbox>ok</Checkbox>
-          <Checkbox>ok</Checkbox>
-        </Space>
-      ),
+      render: (f, v) => {
+        // handleGetRoleUser(v);
+        console.log("employee", v);
+        handleGetRoleUser(v);
+
+        // console.log("v", v);
+        return (
+          <Space size="middle">
+            {listRole.map((item, index) => {
+              if (fileType === 2) {
+                if (item.code !== "R1") {
+                  return (
+                    <Row key={index}>
+                      <Checkbox
+                        defaultChecked={roleUser
+                          .map((item) => {
+                            return item.id;
+                          })
+                          .includes(item.id)}
+                        onChange={(e) => {
+                          handleCheckbox(item);
+                          console.log("handlecheckbox", e);
+                        }}
+                      >
+                        {item.name}
+                      </Checkbox>
+                    </Row>
+                  );
+                }
+              } else {
+                return (
+                  <Row key={index}>
+                    <Checkbox
+                      defaultChecked={roleUser
+                        .map((item) => {
+                          return item.id;
+                        })
+                        .includes(item.id)}
+                      onChange={(e) => handleCheckbox(item)}
+                    >
+                      {item.name}
+                    </Checkbox>
+                  </Row>
+                );
+              }
+            })}
+          </Space>
+        );
+      },
     },
   ];
 
   useEffect(() => {
     handleGetListEmployee();
     handleGetListEmployeeOptions();
-    console.log("listemployee", listEmployee);
+    const fetchData = async () => {
+      handleShowPowers();
+    };
+    fetchData();
   }, []);
 
   useEffect(() => {
     handleGetListEmployeeOptions();
-    console.log("listemployee", listEmployee);
-    console.log(
-      "list nv filter:",
-      listEmployee.filter((item) => {
-        return item.name == selectedOption;
-      })
-    );
+    // console.log(
+    //   "list nv filter:",
+    //   listEmployee.filter((item) => {
+    //     return item.name == selectedOption;
+    //   })
+    // );
+    const fetchData = async () => {
+      handleShowPowers();
+    };
+    fetchData();
   }, [selectedOption]);
 
-  const handleOpenChange = async () => {
+  const handleShowPowers = async () => {
     setSpinning(true);
     try {
       const { data, status } = await actionGetListRole();
@@ -236,57 +286,34 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
     setSelectedOption(null);
   };
 
-  // const handleSubmit = async () => {
-  //   setSpinning(true);
-  //   try {
-  //     const list_role_id = roleUser.map((item) => {
-  //       return item.id;
-  //     });
-  //     const params = {
-  //       id_emp: employee.id,
-  //       id_boss: userLogin.id,
-  //       emp_role: list_role_id,
-  //       doc_id: documentId,
-  //     };
-  //     let { data, status } = await actionDecentralize(params);
-  //     if (status === 200) {
-  //       onClose();
-  //       message.success(data?.message);
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  //   setSpinning(false);
-  // };
-
   return (
     <Modal
       open={true}
       className="form-modal"
       width={800}
-      height={550}
+      height={470}
       onOk={handleSubmit}
       onCancel={onCancel}
-      footer={[
-        <Row gutter={[16, 0]}>
-          <Col span={8}>
-            <Button onClick={onCancel} className="power-modal-btn">
-              Thoát
-            </Button>
-          </Col>
-          ,
-          <Col span={8}>
-            <Button
-              type="primary"
-              className="power-modal-btn"
-              onClick={handleSubmit}
-            >
-              Lưu
-            </Button>
-          </Col>
-          ,
-        </Row>,
-      ]}
+      // footer={[
+      //   <Row gutter={[16, 0]}>
+      //     <Col span={8}>
+      //       <Button onClick={onCancel} className="power-modal-btn">
+      //         Thoát
+      //       </Button>
+      //     </Col>
+      //     ,
+      //     <Col span={8}>
+      //       <Button
+      //         type="primary"
+      //         className="power-modal-btn"
+      //         onClick={handleSubmit}
+      //       >
+      //         Lưu
+      //       </Button>
+      //     </Col>
+      //     ,
+      //   </Row>,
+      // ]}
     >
       <SpinCustom spinning={spinning}>
         <Space direction="vertical" size={30}>
@@ -327,28 +354,6 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
             scroll={{ y: 200 }}
           ></Table>
         </Space>
-        {/* <Row gutter={[16, 0]}>
-          <Col span={12}>
-            <Button className="w-full" onClick={onCancel}>
-              Thoát
-            </Button>
-          </Col>
-          <Col span={12}>
-            <Button className="w-full" type="primary">
-              Lưu
-            </Button>
-          </Col>
-        </Row> */}
-        {/* <>
-          {openRoleUser && (
-            <RoleUser
-              employee={employee}
-              fileType={fileType}
-              documentId={documentId}
-              onClose={() => setOpenRoleUser(false)}
-            />
-          )}
-        </> */}
       </SpinCustom>
     </Modal>
   );

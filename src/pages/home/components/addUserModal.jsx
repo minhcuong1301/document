@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UploadImage } from "components";
 import {
   DATETIME_FORMAT,
@@ -9,7 +9,7 @@ import {
 import { useSelector } from "react-redux";
 import SpinCutom from "components/spin-custom";
 import moment from "moment";
-import { actionAddUser } from "../actions";
+import { actionAddUser, actionGetDepartments } from "../actions";
 
 import {
   Modal,
@@ -26,12 +26,23 @@ import {
 } from "antd";
 
 const AddUser = ({ onClose, setUser }) => {
-  const departments = useSelector((state) => state?.departments);
   const positions = useSelector((state) => state?.positions);
   const [form] = Form.useForm();
   const [callingApi, setCallApi] = useState(false);
   const [files, setFiles] = useState([]);
   const [date, setDate] = useState(null);
+  const [departments, setDepartments] = useState([]);
+
+  const handleGetDepartmentsList = async () => {
+    try {
+      const { data, status } = await actionGetDepartments();
+      if (status == 200) {
+        setDepartments(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleAddUser = async (values) => {
     setCallApi(true);
@@ -74,6 +85,9 @@ const AddUser = ({ onClose, setUser }) => {
     form.setFieldValue("date_of_birth", date);
   };
 
+  useEffect(() => {
+    handleGetDepartmentsList();
+  }, []);
   return (
     <Modal
       open={true}
@@ -97,6 +111,15 @@ const AddUser = ({ onClose, setUser }) => {
                 rules={[{ required: true, message: "Vui lòng nhập tên" }]}
               >
                 <Input placeholder="Nhập tên " />
+              </Form.Item>
+
+              <Form.Item
+                name="user_code"
+                rules={[
+                  { required: true, message: "Vui lòng nhập mã nhân viên" },
+                ]}
+              >
+                <Input placeholder="Nhập mã nhân viên " />
               </Form.Item>
 
               <Form.Item
@@ -153,6 +176,22 @@ const AddUser = ({ onClose, setUser }) => {
                       value: e.id.toString(),
                       label: e.name,
                     }))}
+                ></Select>
+              </Form.Item>
+
+              <Form.Item
+                name="department_id"
+                rules={[
+                  { required: true, message: "Vui lòng chọn phòng ban !" },
+                ]}
+              >
+                <Select
+                  className="w-full"
+                  placeholder="Phòng ban"
+                  options={departments?.map((e) => ({
+                    value: e.id.toString(),
+                    label: e.name,
+                  }))}
                 ></Select>
               </Form.Item>
 
