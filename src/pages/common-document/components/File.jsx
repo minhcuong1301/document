@@ -65,6 +65,7 @@ const File = ({
       };
       const { data, status } = await actionDeleteFile(body);
       if (status === 200) {
+        setSelectedRows([]);
         if (idDocumentAdd) {
           const idAdd = {
             id: idDocumentAdd,
@@ -147,11 +148,11 @@ const File = ({
     }
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = (selectedRows) => {
     Modal.confirm({
       title: "Bạn có chắc muốn xóa tệp tin này?",
       onOk() {
-        handleDeleteFile();
+        handleDeleteFile(selectedRows);
       },
       onCancel() {},
     });
@@ -180,6 +181,7 @@ const File = ({
       handleDetail(id_file);
     }
   };
+
   useEffect(() => {
     if (typeDocument === 1) {
       setItems([

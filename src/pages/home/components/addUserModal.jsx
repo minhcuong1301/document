@@ -32,7 +32,7 @@ const AddUser = ({ onClose, setUser }) => {
   const [callingApi, setCallApi] = useState(false);
   const [files, setFiles] = useState([]);
   const [date, setDate] = useState(null);
-  console.log("department", departments);
+
   const handleAddUser = async (values) => {
     setCallApi(true);
     try {
@@ -78,7 +78,7 @@ const AddUser = ({ onClose, setUser }) => {
     <Modal
       open={true}
       closeIcon={false}
-      title="Thêm nhân viên"
+      title="Thêm tài khoản"
       className="form-modal"
       width={350}
       footer={false}
@@ -165,23 +165,6 @@ const AddUser = ({ onClose, setUser }) => {
                 <Input.Password placeholder="Mật khẩu" autoComplete="auto" />
               </Form.Item>
 
-              <Form.Item
-                name="department_id"
-                // rules={[
-                //   { required: true, message: "Vui lòng chọn phòng ban !" }
-                // ]}
-              >
-                <Select
-                  showSearch
-                  className="w-full"
-                  placeholder="Phòng ban"
-                  options={departments?.map((e) => ({
-                    value: e.id.toString(),
-                    label: e.name,
-                  }))}
-                />
-              </Form.Item>
-
               <Form.Item name="telegram_chat_id">
                 <InputNumber placeholder="ID telegram" className="w-full" />
               </Form.Item>
@@ -211,7 +194,7 @@ const AddUser = ({ onClose, setUser }) => {
 
                 <Col span={12}>
                   <Button htmlType="submit" type="primary" className="w-full">
-                    Thêm nhân viên
+                    Thêm tài khoản
                   </Button>
                 </Col>
               </Row>

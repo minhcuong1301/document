@@ -21,6 +21,7 @@ export const actionGetUserProfileByToken = async (dispatch) => {
     // set profile state
     if (status === 200) {
       socketIO.emit('join', data)
+      
       dispatch({ type: actions.SET_PROFILE, payload: data })
     }
   } catch (error) {

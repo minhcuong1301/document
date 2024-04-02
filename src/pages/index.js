@@ -26,7 +26,7 @@ const pages = [
     name: "home",
     path: "/",
     auth: true,
-    label: "Quản lý nhân viên",
+    label: "Quản lý tài khoản",
     element: <HomePage />,
     icon: <UsergroupAddOutlined />,
   },

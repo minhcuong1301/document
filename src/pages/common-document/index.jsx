@@ -6,9 +6,7 @@ import './index.scss'
 import dayjs from "dayjs";
 import AddDocument from "./components/addDocument";
 import { DATE_FORMAT } from "utils/constants/config"
-import UpdateNameFile from "./components/updateNameFile";
 import File from "./components/File";
-// import { useSearchParams } from 'react-router-dom';
 import {
   actionGetListDocument,
   actionGetListFolderChid,
@@ -19,21 +17,24 @@ import {
   Layout, Col, Row,
   Input, DatePicker, Button, Breadcrumb
 } from "antd"
+import { useSearchParams } from "react-router-dom";
 
 const CommonDocument = () => {
 
   const [spinning, setSpinning] = useState(false)
   const [listDocument, setListDocument] = useState([]);
   const [name, setName] = useState(null)
-  const [dateStart, setDateStart] = useState(null)
+  const [dateStart, setDateStart] = useState()
   const [dateEnd, setDateEnd] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idDocumentAdd, setIdDocumentAdd] = useState()
   const [breadcrumbs, setBreadcrumbs] = useState([]);
   const [idLastFolder, setIdLastFolder] = useState();
   const [roleUser, setRoleUser] = useState([])
+  const [totalFile, setTotalFile] = useState()
   // const [searchParams] = useSearchParams()
-  // const Document_id = searchParams.get('document_id')
+
+  // const document_id = searchParams.get('document_id');
 
   const handleNavigateBack = (e, breadcrumb, index) => {
     const last_folder = []
@@ -51,7 +52,6 @@ const CommonDocument = () => {
       setBreadcrumbs([]);
       setIdDocumentAdd()
       const params = {
-        accessScope: 2,
         name: name || null,
         time_upload_start: dayjs(dateStart).startOf('D').unix() || null,
         time_upload_end: dayjs(dateEnd).startOf('D').unix() || null,
@@ -70,12 +70,7 @@ const CommonDocument = () => {
 
     setSpinning(true)
     try {
-
-      // window.navigatePage('common-document', null, {
-      //   document_id: Document_id
-      // })
       const params = {
-        accessScope: 2,
         name: name || null,
         time_upload_start: dayjs(dateStart).startOf('D').unix() || null,
         time_upload_end: dayjs(dateEnd).endOf('D').unix() || null,
@@ -89,6 +84,7 @@ const CommonDocument = () => {
       if (status === 200) {
         setListDocument(data?.data)
         setBreadcrumbs([]);
+        setTotalFile(data?.total)
       }
     } catch (err) {
       console.log(err)
@@ -99,30 +95,38 @@ const CommonDocument = () => {
   const handleGetChildFolder = async (value) => {
     setSpinning(true)
     try {
-      // window.navigatePage('common-document', null, {
-      //   document_id: value.id
-      // })
       setIdDocumentAdd(value?.id)
       const params = {
-        accessScope: 2,
         name: name || null,
         time_upload_start: dayjs(dateStart).startOf('D').unix() || null,
         time_upload_end: dayjs(dateEnd).endOf('D').unix() || null,
         document_id: value?.id
-        //   document_id: Document_id
       }
       const { data, status } = await actionGetListFolderChid(params)
       if (status === 200) {
         setListDocument(data?.data)
-        setBreadcrumbs([...breadcrumbs, { id: value?.id, name: value?.name }]);
+
+        if (value && breadcrumbs.some((item) => item.id === value?.id)) {
+
+          setBreadcrumbs(
+            breadcrumbs.map(item => {
+              if (item.id === value?.id) {
+                item.total = data?.total
+                return { ...item };
+              } else {
+                return item;
+              }
+            })
+          );
+        } else if (value && !breadcrumbs.some((item) => item.id === value?.id)) {
+          setBreadcrumbs([...breadcrumbs, { id: value?.id, name: value?.name, total: data?.total }]);
+        }
       }
     } catch (err) {
       console.log(err)
     }
     setSpinning(false)
   }
-
-
 
   const handleGetRoleUser = async () => {
     setSpinning(true)
@@ -136,6 +140,7 @@ const CommonDocument = () => {
     }
     setSpinning(false)
   }
+
   useEffect(() => {
     handleGetListDocument()
   }, [name, dateStart, dateEnd])
@@ -147,11 +152,11 @@ const CommonDocument = () => {
   useEffect(() => {
     handleGetRoleUser()
   }, [])
+
   return (
     <Layout className='common-layout document-page' >
       <SpinCustom spinning={spinning}>
         <div className='common-layout--header'>
-
 
           <Row className='filler' gutter={[8, 8]}>
             <Col span={24}>
@@ -160,9 +165,7 @@ const CommonDocument = () => {
               </Button>
             </Col>
 
-            
             <Col >
-
               <Row gutter={[8, 0]}>
                 <Col className="align--center" >
                   <span>Từ:</span>
@@ -177,9 +180,7 @@ const CommonDocument = () => {
                     format={DATE_FORMAT}
                   />
                 </Col>
-
               </Row>
-
             </Col>
 
             <Col>
@@ -219,21 +220,27 @@ const CommonDocument = () => {
         <div className='common-layout--content'>
           <Row gutter={[8, 16]} >
             <Breadcrumb className="dropdown-action ">
+
               <Breadcrumb.Item
                 onClick={() => {
                   handleCommonBreadcrumbClick()
                 }}>
-                Tài liệu chung
+                Tài liệu({totalFile})
               </Breadcrumb.Item>
 
-              {breadcrumbs.map((breadcrumb, index) => (
-                (<Breadcrumb.Item
-                  key={index}
-                  onClick={(e) => handleNavigateBack(e, breadcrumb, index)}
-                >
-                  {breadcrumb.name}
-                </Breadcrumb.Item>)
-              ))}
+              {breadcrumbs.map((breadcrumb, index) => {
+
+                return (
+                  <Breadcrumb.Item
+                    key={index}
+                    onClick={(e) => handleNavigateBack(e, breadcrumb, index)}
+                  >
+                    {breadcrumb.name}{`(${breadcrumb.total})`}
+                  </Breadcrumb.Item>
+                )
+              }
+              )}
+
             </Breadcrumb>
 
             <File
@@ -243,7 +250,6 @@ const CommonDocument = () => {
               setIsModalOpen={setIsModalOpen}
               idDocumentAdd={idDocumentAdd}
               roleUser={roleUser}
-
             />
 
           </Row>

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { findPageByPath, isEmpty } from "utils/helps";
 import { useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { AIPT_WEB_TOKEN, DATETIME_FORMAT } from "utils/constants/config";
+import { AIPT_WEB_TOKEN, SECOND_FORMAT } from "utils/constants/config";
 import Cookies from "js-cookie";
 import { SET_PROFILE } from "utils/constants/redux-actions";
 import InfoUserModal from "./components/info-user";
@@ -87,85 +87,85 @@ const AppHeader = () => {
     }
   };
 
-  console.log("userLogin:", userLogin);
-  let tabKey = "";
-  const handleCheckProcedureType = (notification) => {
-    console.log("noti detail:", notification);
-    if (
-      notification.content.includes("hoàn thành") ||
-      notification.content.includes("từ chối")
-    ) {
-      tabKey = "tab-2";
-    }
-    if (notification.content.includes("được duyệt")) {
-      tabKey = "tab-3";
-    } else {
-      tabKey = "tab-1";
-    }
-  };
-  const navigate = useNavigate();
+  // let tabKey = "";
+  // const handleCheckProcedureType = (notification) => {
+  //   console.log("noti detail:", notification);
+  //   if (
+  //     notification.content.includes("hoàn thành") ||
+  //     notification.content.includes("từ chối")
+  //   ) {
+  //     tabKey = "tab-2";
+  //   }
+  //   if (notification.content.includes("được duyệt")) {
+  //     tabKey = "tab-3";
+  //   } else {
+  //     tabKey = "tab-1";
+  //   }
+  // };
 
   const handleNavigateProcedure = async (notification) => {
     handleChangeStatus(notification);
-    handleCheckProcedureType(notification);
-    console.log("tabKey:", tabKey);
+    // handleCheckProcedureType(notification);
+    window.navigatePage("common-document", null, {
+      document_id: notification.document_id,
+    });
 
-    switch (notification.procedure_type) {
-      case "QT1":
-        window.navigatePage("vehicle-procedure", null, {
-          procedure_id: notification.procedure_id,
-          tabKey: tabKey,
-        });
-        break;
+    // switch (notification.document_id){
+    //   case "QT1":
+    //     window.navigatePage("vehicle-procedure", null, {
+    //       procedure_id: notification.procedure_id,
+    //       tabKey: tabKey,
+    //     });
+    //     break;
 
-      case "QT5":
-        window.navigatePage("leaveprocess", null, {
-          procedure_id: notification.procedure_id,
-          // tabKey: tabKey,
-        });
-        break;
+    //   case "QT5":
+    //     window.navigatePage("leaveprocess", null, {
+    //       procedure_id: notification.procedure_id,
+    //       // tabKey: tabKey,
+    //     });
+    //     break;
 
-      case "QT6":
-        console.log("general");
-        window.navigatePage("general-purchase-procedure", null, {
-          procedure_id: notification.procedure_id,
-        });
+    //   case "QT6":
+    //     console.log("general");
+    //     window.navigatePage("general-purchase-procedure", null, {
+    //       procedure_id: notification.procedure_id,
+    //     });
 
-        break;
+    //     break;
 
-      case "QT7":
-        window.navigatePage("notarization-procedure", null, {
-          procedure_id: notification.procedure_id,
-        });
-        break;
+    //   case "QT7":
+    //     window.navigatePage("notarization-procedure", null, {
+    //       procedure_id: notification.procedure_id,
+    //     });
+    //     break;
 
-      case "QT8":
-        window.navigatePage("recruitment-procedure", null, {
-          procedure_id: notification.procedure_id,
-        });
-        break;
+    //   case "QT8":
+    //     window.navigatePage("recruitment-procedure", null, {
+    //       procedure_id: notification.procedure_id,
+    //     });
+    //     break;
 
-      case "QT9":
-        window.navigatePage("office-procurement-procedure", null, {
-          procedure_id: notification.procedure_id,
-        });
-        break;
+    //   case "QT9":
+    //     window.navigatePage("office-procurement-procedure", null, {
+    //       procedure_id: notification.procedure_id,
+    //     });
+    //     break;
 
-      case "QT10":
-        window.navigatePage("procurement-proposal", null, {
-          procedure_id: notification.procedure_id,
-        });
-        break;
+    //   case "QT10":
+    //     window.navigatePage("procurement-proposal", null, {
+    //       procedure_id: notification.procedure_id,
+    //     });
+    //     break;
 
-      case "QT11":
-        window.navigatePage("overtime-procedure", null, {
-          procedure_id: notification.procedure_id,
-        });
-        break;
+    //   case "QT11":
+    //     window.navigatePage("overtime-procedure", null, {
+    //       procedure_id: notification.procedure_id,
+    //     });
+    //     break;
 
-      default:
-        break;
-    }
+    //   default:
+    //     break;
+    //}
   };
 
   useEffect(() => {
@@ -191,11 +191,12 @@ const AppHeader = () => {
             dangerouslySetInnerHTML={{ __html: notification?.content }}
           />
           <div className="notification-time">
-            {moment(notification.time_created * 1000).format(DATETIME_FORMAT)}
+            {moment(notification.time_created * 1000).format(SECOND_FORMAT)}
           </div>
         </div>
       </Menu.Item>
     ));
+
   return (
     <Layout.Header className="app-header">
       <div className="app-header--left">
