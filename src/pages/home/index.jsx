@@ -226,7 +226,7 @@ const HomePage = () => {
             >
               Thoát
             </Button>
-            <Col className="filler--item">
+            {/* <Col className="filler--item">
               <Select
                 className="w-full"
                 placeholder="Phòng ban"
@@ -239,7 +239,7 @@ const HomePage = () => {
                   </Select.Option>
                 ))}
               </Select>
-            </Col>
+            </Col> */}
 
             <Col className="filler--item">
               <Input.Search
@@ -259,7 +259,7 @@ const HomePage = () => {
                     type="primary"
                     onClick={() => setOpenAddUserModal(true)}
                   >
-                    Thêm nhân viên
+                    Thêm tài khoản
                   </Button>
                 </Col>
               )}

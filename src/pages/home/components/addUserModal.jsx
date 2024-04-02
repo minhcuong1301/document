@@ -23,23 +23,23 @@ const AddUser = ({ onClose, setUser }) => {
   const [date, setDate] = useState(null)
 
   const handleAddUser = async (values) => {
-    
+
     setCallApi(true)
     try {
       const params = {
         ...values,
         phone: values.phone || null,
-        
+
         avatar: values.avatar || null,
         department_id: values.department_id || null,
-        date_of_birth:(moment(values.date_of_birth).valueOf())/1000  || null
+        date_of_birth: (moment(values.date_of_birth).valueOf()) / 1000 || null
       }
-      if(values?.telegram_chat_id){
-       params.telegram_chat_id=values.telegram_chat_id||null
+      if (values?.telegram_chat_id) {
+        params.telegram_chat_id = values.telegram_chat_id || null
       }
-      if(values?.phone){
-        params.phone=values.phone
-       }
+      if (values?.phone) {
+        params.phone = values.phone
+      }
       const formData = new FormData()
       files.forEach((file) => formData.append(`avatar`, file))
 
@@ -64,12 +64,12 @@ const AddUser = ({ onClose, setUser }) => {
   const handleDateChange = (date) => {
     form.setFieldValue('date_of_birth', date)
   };
-  
+
   return (
     <Modal
       open={true}
       closeIcon={false}
-      title="Thêm nhân viên"
+      title="Thêm tài khoản"
       className='form-modal'
       width={350}
       footer={false}
@@ -103,9 +103,9 @@ const AddUser = ({ onClose, setUser }) => {
                 />
               </Form.Item>
 
-              <Form.Item name="date_of_birth" 
+              <Form.Item name="date_of_birth"
               >
-                
+
                 <Row gutter={[4, 0]}>
                   <Col>
                     <span>Ngày sinh:</span>
@@ -113,11 +113,11 @@ const AddUser = ({ onClose, setUser }) => {
 
                   <Col className="w-full">
                     <DatePicker
-                      onChange={(date)=>handleDateChange(date)}
+                      onChange={(date) => handleDateChange(date)}
                       allowClear={false}
                       format={DATE_FORMAT}
                     />
-                    
+
                   </Col>
                 </Row>
               </Form.Item>
@@ -155,22 +155,6 @@ const AddUser = ({ onClose, setUser }) => {
                 <Input.Password placeholder="Mật khẩu" autoComplete="auto" />
               </Form.Item>
 
-              <Form.Item name="department_id"
-              // rules={[
-              //   { required: true, message: "Vui lòng chọn phòng ban !" }
-              // ]}
-              >
-                <Select
-                  showSearch
-                  className='w-full'
-                  placeholder="Phòng ban"
-                  options={departments?.map(e => ({
-                    value: e.id.toString(),
-                    label: e.name,
-                  }))}
-                />
-              </Form.Item>
-
 
               <Form.Item name="telegram_chat_id">
                 <InputNumber placeholder="ID telegram" className='w-full'
@@ -202,7 +186,7 @@ const AddUser = ({ onClose, setUser }) => {
                 </Col>
 
                 <Col span={12}>
-                  <Button htmlType='submit' type='primary' className='w-full'>Thêm nhân viên</Button>
+                  <Button htmlType='submit' type='primary' className='w-full'>Thêm tài khoản</Button>
                 </Col>
               </Row>
             </Col>

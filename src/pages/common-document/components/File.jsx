@@ -38,16 +38,16 @@ const File = ({ listDocument,
   const [items, setItems] = useState([]);
   const [fileType, setFileType] = useState(null)
 
-
-
-  const handleDeleteFile = async () => {
+  const handleDeleteFile = async (doc_id) => {
     setSpinning(true)
     try {
       const body = {
-        doc_id: selectedRows
+        doc_id: doc_id
       }
+
       const { data, status } = await actionDeleteFile(body)
       if (status === 200) {
+        setSelectedRows([])
         if (idDocumentAdd) {
           const idAdd = {
             id: idDocumentAdd
@@ -64,12 +64,8 @@ const File = ({ listDocument,
     setSpinning(false)
   }
 
-
   const handleDetail = async (id) => {
     try {
-
-
-
       const selectedDocument = listDocument.find((doc) => doc.id === id);
       if (selectedDocument.document_type === 1) {
         handleGetChildFolder(selectedDocument)
@@ -85,8 +81,6 @@ const File = ({ listDocument,
         setDocumentId(id);
         setPathDoc(selectedDocument.path);
         selectedDocument.document_type === 1 ? setOpenDetail(false) : setOpenDetail(true);
-
-
       }
 
 
@@ -113,28 +107,23 @@ const File = ({ listDocument,
       const nameWithoutExtension = name.split('.').slice(0, -1).join('.');
       setOldName(nameWithoutExtension)
     }
-
-
     setIdFile(id)
     setmodalEditName(true)
-
   }
+
   const handleMenuClick = (e, doc_id, document_type, doc_name) => {
     setDocumentId(doc_id)
-    setSelectedRows([doc_id])
     if (e.key === '1') {
       setDocumentId(doc_id)
       setOpenModalUpdateFile(true)
     }
     else if (e.key === "2") {
-      confirmDelete();
+      confirmDelete([doc_id]);
     }
     else if (e.key === "3") {
       hadleDownloadFile(doc_id)
     }
     else if (e.key === "4") {
-
-
       handleEditName(doc_name, doc_id, document_type)
     }
     else if (e.key === "5") {
@@ -143,11 +132,11 @@ const File = ({ listDocument,
     }
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = (selectedRows) => {
     Modal.confirm({
       title: "Bạn có chắc muốn xóa tệp tin này?",
       onOk() {
-        handleDeleteFile();
+        handleDeleteFile(selectedRows);
       },
       onCancel() {
       },
@@ -164,7 +153,6 @@ const File = ({ listDocument,
   };
 
   const handleWatchVideo = (r) => {
-    // console.log(r);
     const videoPath = `${REACT_APP_SERVER_BASE_URL}/${r.path.replace('server', '')}`;
     window.open(videoPath, "_blank");
     openDetail(false)
@@ -177,11 +165,12 @@ const File = ({ listDocument,
 
 
   };
+
   useEffect(() => {
     if (typeDocument === 1) {
       setItems([
         (roleUser.map((item) => { return item.code }).includes(("R4")) ||
-          (userLogin.position_code === "GIAM_DOC" || userLogin.position_code === "P_GIAM_DOC")) && {
+          (userLogin.position_code === "ADMIN")) && {
           label: 'Xóa',
           key: '2',
         },
@@ -189,15 +178,17 @@ const File = ({ listDocument,
           label: 'Sửa tên',
           key: '4',
         },
-        (userLogin.position_code === "GIAM_DOC" || userLogin.position_code === "P_GIAM_DOC") && {
+        (userLogin.position_code === 'ADMIN') && {
           label: "Phân quyền",
           key: '5'
         }
       ])
-    } else if (typeDocument === 2) {
+    }
+  
+    else if (typeDocument === 2) {
       setItems([
         (roleUser.map((item) => { return item.code }).includes(("R4")) ||
-          (userLogin.position_code === "GIAM_DOC" || userLogin.position_code === "P_GIAM_DOC")) && {
+          (userLogin.position_code === "ADMIN")) && {
           label: 'Xóa',
           key: '2',
         },
@@ -210,16 +201,13 @@ const File = ({ listDocument,
           key: '4',
         },
 
-        (userLogin.position_code === "GIAM_DOC" || userLogin.position_code === "P_GIAM_DOC") && {
+        (userLogin.position_code === "ADMIN") && {
           label: "Phân quyền",
           key: '5'
         },
-
       ])
     }
   }, [typeDocument])
-
-
 
   const getIconForDocumentType = (documentType, record, extension_file) => {
     if (documentType === 1) {
@@ -246,11 +234,11 @@ const File = ({ listDocument,
         case "jpg":
         case "png":
         case "jpeg":
-          return <Image alt='avatar' src={`${actionGetImage(record.id, 2)}`} className="style-icon" onClick={e => console.log(e)} />;
+          return <Image alt='avatar' src={`${actionGetImage(record.id, 2)}`} className="style-icon" />;
         case "mp4":
         case "MOV":
           return <video className="style-icon">
-            <source src={`${REACT_APP_SERVER_BASE_URL}/${record.path.replace('server', '')}`} type={extension_file == 'mp4' ? 'video/mp4' : 'video/quicktime'} />
+            <source src={`${REACT_APP_SERVER_BASE_URL}/${record.path.replace('server', '')}`} type={extension_file === 'mp4' ? 'video/mp4' : 'video/quicktime'} />
           </video>;
         default:
           return <DefaultIcon className="style-icon" />;
@@ -265,7 +253,6 @@ const File = ({ listDocument,
       setSelectedRows(selectedRows.filter(rowId => rowId !== id));
     }
   };
-
 
   const rows = listDocument.map((record, index) => {
     const extension_file = record.name.replace(/\s/g, '').split('.').pop();
@@ -306,12 +293,11 @@ const File = ({ listDocument,
             menu={{
               items,
               onClick: (e) => {
-                handleMenuClick(e, record.id, record.document_type, record.name)
 
+                handleMenuClick(e, record.id, record.document_type, record.name)
               }
             }}
             trigger={["click"]}
-
             onOpenChange={() => handleOpenChange(record.document_type)}
           >
             <Button type="primary">Thao tác</Button>
@@ -346,16 +332,11 @@ const File = ({ listDocument,
     <>
       <SpinCustom spinning={spinning}>
         <Row gutter={[16, 0]} className="style-list-document">
-
           {
-
-            selectedRows.length >0 && <Col>
-              <Button type="primary" onClick={()=> confirmDelete()}>Xóa</Button>
+            selectedRows.length > 0 && <Col>
+              <Button type="primary" onClick={() => confirmDelete(selectedRows)}>Xóa</Button>
             </Col>
           }
-
-
-
           <Col>
             {renderTable()}
           </Col>
@@ -370,6 +351,7 @@ const File = ({ listDocument,
             onCancel={() => setOpenDetail(false)}
           />
         )}
+
         {
           openDecentralize && <Decentralize
             documentId={documentId}

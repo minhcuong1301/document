@@ -3,7 +3,6 @@ import { AIPT_WEB_TOKEN } from "utils/constants/config"
 import { actionLogin } from "./actions"
 import Cookies from "js-cookie"
 import { SpinCustom } from "components"
-
 import {
   Form, Input, Button, Layout
 } from "antd"

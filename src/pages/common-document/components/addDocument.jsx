@@ -32,7 +32,8 @@ const AddDocument = ({ idDocumentAdd, onCancel, handleGetListDocument, handleGet
       if (status === 200) {
         if (idDocumentAdd) {
           const idAdd = {
-            id: idDocumentAdd
+            id: idDocumentAdd,
+           
           }
           await handleGetChildFolder(idAdd)
         }
