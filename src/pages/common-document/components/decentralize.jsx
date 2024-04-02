@@ -9,11 +9,16 @@ import {
   Space,
   Select,
   Spin,
+  message,
+  Checkbox,
 } from "antd";
 import { useEffect, useState, useMemo, useRef } from "react";
-import { actionGetlistEmpoyee } from "../action";
+import {
+  actionGetlistEmpoyee,
+  actionGetListRole,
+  actionDecentralize,
+} from "../action";
 import { useSelector } from "react-redux";
-import RoleUser from "./roleUser";
 import debounce from "lodash/debounce";
 const { Option } = Select;
 
@@ -32,15 +37,60 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
     current: 1,
   });
   const [listEmployeeOption, setListEmployeeOption] = useState([]);
+  const [listRole, setlistRole] = useState([]);
+  let [roleUser, setRoleUser] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const handleChangePage = (page, pageSize) => {
-    setPagination({
-      current: page,
-      pageSize: pageSize,
-    });
+  const handleGetRoleUser = async () => {
+    setSpinning(true);
+    try {
+      const params = {
+        user_id: employee.id,
+        doc_id: documentId,
+      };
+      const { data, status } = await actionGetListRole(params);
+      if (status === 200) {
+        setRoleUser(data?.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    setSpinning(false);
   };
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const handleCheckbox = (role) => {
+    const list_role_id = roleUser.map((item) => {
+      return item.id;
+    });
+    if (list_role_id.includes(role.id)) {
+      roleUser = roleUser.filter((item) => item.id !== role.id);
+    } else {
+      roleUser.push(role);
+    }
+  };
+
+  const handleSubmit = async () => {
+    setSpinning(true);
+    try {
+      const list_role_id = roleUser.map((item) => {
+        return item.id;
+      });
+      const params = {
+        id_emp: employee.id,
+        id_boss: userLogin.id,
+        emp_role: list_role_id,
+        doc_id: documentId,
+      };
+      let { data, status } = await actionDecentralize(params);
+      if (status === 200) {
+        setOpenRoleUser(false);
+        message.success(data?.message);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    setSpinning(false);
+  };
 
   const handleGetListEmployee = async () => {
     setSpinning(true);
@@ -119,6 +169,7 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
     {
       title: "Tên",
       dataIndex: "name",
+      width: 230,
       key: "name",
       align: "center",
       onCell: (cell) => {
@@ -129,6 +180,20 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
           },
         };
       },
+    },
+    {
+      title: "Quyền được cấp",
+      dataIndex: "power",
+      key: "power",
+      align: "center",
+      render: (record) => (
+        <Space size="middle">
+          <Checkbox>ok</Checkbox>
+          <Checkbox>ok</Checkbox>
+          <Checkbox>ok</Checkbox>
+          <Checkbox>ok</Checkbox>
+        </Space>
+      ),
     },
   ];
 
@@ -149,6 +214,19 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
     );
   }, [selectedOption]);
 
+  const handleOpenChange = async () => {
+    setSpinning(true);
+    try {
+      const { data, status } = await actionGetListRole();
+      if (status === 200) {
+        setlistRole(data?.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    setSpinning(false);
+  };
+
   const handleOptionChange = (value) => {
     setSelectedOption(value);
     console.log("vua chon", value);
@@ -157,23 +235,61 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
   const handleClearSearch = () => {
     setSelectedOption(null);
   };
+
+  // const handleSubmit = async () => {
+  //   setSpinning(true);
+  //   try {
+  //     const list_role_id = roleUser.map((item) => {
+  //       return item.id;
+  //     });
+  //     const params = {
+  //       id_emp: employee.id,
+  //       id_boss: userLogin.id,
+  //       emp_role: list_role_id,
+  //       doc_id: documentId,
+  //     };
+  //     let { data, status } = await actionDecentralize(params);
+  //     if (status === 200) {
+  //       onClose();
+  //       message.success(data?.message);
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  //   setSpinning(false);
+  // };
+
   return (
     <Modal
       open={true}
-      title="Phân quyền"
       className="form-modal"
-      footer={true}
-      width={300}
-      height={350}
+      width={800}
+      height={550}
+      onOk={handleSubmit}
+      onCancel={onCancel}
+      footer={[
+        <Row gutter={[16, 0]}>
+          <Col span={8}>
+            <Button onClick={onCancel} className="power-modal-btn">
+              Thoát
+            </Button>
+          </Col>
+          ,
+          <Col span={8}>
+            <Button
+              type="primary"
+              className="power-modal-btn"
+              onClick={handleSubmit}
+            >
+              Lưu
+            </Button>
+          </Col>
+          ,
+        </Row>,
+      ]}
     >
       <SpinCustom spinning={spinning}>
-        <Row>
-          {/* <Input.Search
-            placeholder="Nhập tên ..."
-            onSearch={(v) => {
-              setNameUser(v);
-            }}
-          /> */}
+        <Space direction="vertical" size={30}>
           <Select
             mode="multiple"
             value={selectedOption}
@@ -194,34 +310,36 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
               </Option>
             ))}
           </Select>
-        </Row>
-        <Table
-          width="250"
-          height="300"
-          dataSource={
-            selectedOption?.length > 0
-              ? listEmployee.filter((item) => {
-                  return item.name == selectedOption;
-                })
-              : listEmployee
-          }
-          columns={columns}
-          rowKey={(r) => r.id}
-          scroll={{ y: 200 }}
-          pagination={{
-            pageSize: pagination.pageSize,
-            current: pagination.current,
-            onChange: handleChangePage,
-          }}
-        ></Table>
-        <Row gutter={[16, 0]}>
+          <Table
+            width="250"
+            //
+            height="300"
+            dataSource={
+              selectedOption?.length > 0
+                ? listEmployee.filter((item) => {
+                    return item.name == selectedOption;
+                  })
+                : listEmployee
+            }
+            columns={columns}
+            rowKey={(r) => r.id}
+            pagination={false}
+            scroll={{ y: 200 }}
+          ></Table>
+        </Space>
+        {/* <Row gutter={[16, 0]}>
           <Col span={12}>
             <Button className="w-full" onClick={onCancel}>
               Thoát
             </Button>
           </Col>
-        </Row>
-        <>
+          <Col span={12}>
+            <Button className="w-full" type="primary">
+              Lưu
+            </Button>
+          </Col>
+        </Row> */}
+        {/* <>
           {openRoleUser && (
             <RoleUser
               employee={employee}
@@ -230,7 +348,7 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
               onClose={() => setOpenRoleUser(false)}
             />
           )}
-        </>
+        </> */}
       </SpinCustom>
     </Modal>
   );
