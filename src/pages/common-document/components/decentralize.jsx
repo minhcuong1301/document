@@ -196,7 +196,8 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
 
         <Space direction="vertical" size={30}>
           <Table
-            dataSource={permissionType === 0 ? listEmployee : department}
+            dataSource={listEmployee}
+            // dataSource={permissionType === 0 ? listEmployee : department}
             columns={columns}
             rowKey={(r) => r.id}
             pagination={false}
