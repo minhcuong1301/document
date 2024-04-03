@@ -37,8 +37,7 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
     current: 1,
   });
   const [listEmployeeOption, setListEmployeeOption] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [employeeId, setEmployeeId] = useState(0);
+
   //liet ke cac quyen duoc cap
   const [listRole, setlistRole] = useState([]);
   let [roleUser, setRoleUser] = useState([]);
@@ -244,10 +243,7 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
   useEffect(() => {
     handleGetListEmployee();
     handleGetListEmployeeOptions();
-    const fetchData = async () => {
-      handleShowPowers();
-    };
-    fetchData();
+    handleShowPowers();
   }, []);
 
   useEffect(() => {
@@ -258,10 +254,7 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
     //     return item.name == selectedOption;
     //   })
     // );
-    const fetchData = async () => {
-      handleShowPowers();
-    };
-    fetchData();
+    handleShowPowers();
   }, [selectedOption]);
 
   const handleShowPowers = async () => {

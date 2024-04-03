@@ -26,7 +26,6 @@ const RoleUser = ({ onClose, employee, documentId, fileType }) => {
   };
 
   const handleGetRoleUser = async () => {
-    setSpinning(true);
     try {
       const params = {
         user_id: employee.id,
@@ -39,7 +38,6 @@ const RoleUser = ({ onClose, employee, documentId, fileType }) => {
     } catch (err) {
       console.log(err);
     }
-    setSpinning(false);
   };
 
   const handleCheckbox = (role) => {

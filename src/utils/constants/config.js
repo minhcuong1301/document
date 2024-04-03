@@ -21,13 +21,13 @@ export const SPINNING_SIZE = "large";
 export const BTN_SIZE_TABLE = "small";
 
 export const DEPARTMENTS_CODE = {
-  1: "Phòng kỹ thuật phần mềm",
-  2: "Phòng kỹ thuật phần cứng",
-  3: "Phòng kỹ thuật sản xuất",
-  4: "Phòng xuất nhập khẩu",
-  5: "Phòng kế toán",
-  6: "Phòng hành chính nhân sự",
-  7: "Phòng kinh doanh",
+  1: "Phòng ban 1",
+  2: "Phòng ban 2",
+  3: "Phòng ban 3",
+  //   4: "Phòng xuất nhập khẩu",
+  //   5: "Phòng kế toán",
+  //   6: "Phòng hành chính nhân sự",
+  //   7: "Phòng kinh doanh",
 };
 
 export const VEHICLE_STATUS = {
@@ -39,8 +39,8 @@ export const VEHICLE_STATUS = {
 export const TYPE_OVER_TIME = {
   0: "Cuối ngày",
   1: " Cuối tuần( chủ nhật)",
-  2: "Ngày lễ tết"
-}
+  2: "Ngày lễ tết",
+};
 
 export const NOTARIZATION_PROCEDURE_TYPES = {
   0: "Công chứng tư",
@@ -78,6 +78,11 @@ export const USE_NEEDS = {
 export const GENDER = {
   0: "Nữ",
   1: "Nam",
+};
+
+export const POSITION_CODE = {
+  1: "Admin",
+  2: "Nhân viên",
 };
 
 export const INTERVIEW_STATUS = {
@@ -121,19 +126,19 @@ export const TYPE_DAY = {
 export const TYPE_KEEPING = {
   0: "Đi công tác",
   1: "Xin nghỉ",
-  2: "Đi muộn"
-}
+  2: "Đi muộn",
+};
 
 export const PROPOSE_STATUS = {
   ACCEPT: 0,
   PROPOSE: 1,
   ACCEPT_PROPOSE: 2,
-  REFUSE_PROPOSE: 3
-}
+  REFUSE_PROPOSE: 3,
+};
 
 export const PROPOSE_DISPLAY = {
-  0: 'Đã xác nhận',
-  1: 'Đã kiến nghị',
-  2: 'Kiến nghị được duyệt',
-  3: 'Kiến nghị bị từ chối'
-}
+  0: "Đã xác nhận",
+  1: "Đã kiến nghị",
+  2: "Kiến nghị được duyệt",
+  3: "Kiến nghị bị từ chối",
+};
