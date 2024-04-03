@@ -10,7 +10,7 @@ import {
 import InfoUserModal from "./components/info-user";
 
 import * as XLSX from "xlsx";
-import ExportPDF from "./exportPDF";
+// import ExportPDF from "./exportPDF";
 import { IoLockClosedOutline } from "react-icons/io5";
 import { GoUnlock } from "react-icons/go";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

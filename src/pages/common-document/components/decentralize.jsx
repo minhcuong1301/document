@@ -26,7 +26,6 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
 
   const [listRole, setlistRole] = useState([]);
   const [roleUserMap, setRoleUserMap] = useState([]);
-  const [roleDepartmentMap, setRoleDepartmentMap] = useState([]);
 
   const handleGetListEmployee = async () => {
     setSpinning(true);
@@ -76,22 +75,19 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
   const handleSubmit = async () => {
     setSpinning(true);
     try {
-      const paramsArray = [];
-
-
+      const list_role = [];
       for (const employee of roleUserMap) {
         const params = {
           id_emp: employee.id,
           emp_role: employee.role,
 
         };
-       // list_role.push(params);
+        // list_role.push(params);
       }
-      // console.log(list_role);
-      // const { data, status } = await actionDecentralize({ list_role: list_role, department_id: [], role_department: [] }, documentId);
-      // if (status === 200) {
-      //   message.success(data?.message);
-      // }
+      const { data, status } = await actionDecentralize({ list_role: list_role, department_id: [], role_department: [] }, documentId);
+      if (status === 200) {
+        message.success(data?.message);
+      }
       // if(permissionType === 0){
       //   for (const employee of roleUserMap) {
       //     const params = {
@@ -112,10 +108,7 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
       // }
 
 
-      const { data, status } = await actionDecentralize({ list_role: paramsArray, department_id: [], role_department: [] }, documentId);
-      if (status === 200) {
-        message.success(data?.message);
-      }
+
     } catch (err) {
       console.log(err);
     }
