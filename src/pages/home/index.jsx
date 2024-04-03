@@ -4,7 +4,6 @@ import { actionGetUsers, actionLockUser } from "./actions";
 import { useSelector } from "react-redux";
 import AddUserModal from "./components/addUserModal";
 import {
-  REACT_APP_SERVER_BASE_URL,
   DEPARTMENTS_CODE,
   POSITION_CODE,
 } from "utils/constants/config";
@@ -27,17 +26,20 @@ import {
   Table,
   Row,
   Col,
-  Pagination,
   message,
-  Image,
   Popconfirm,
   Select,
   Input,
 } from "antd";
 import EditUser from "./components/editUserModal";
+import { actionGetDepartments } from "./actions";
+import * as actions from 'utils/constants/redux-actions'
+import { useDispatch } from "react-redux";
+import ImportExcel from './components/importExcel'
 
 const HomePage = () => {
   const userLogin = useSelector((state) => state?.profile);
+  const dispatch = useDispatch()
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [name, setName] = useState(null);
   const [phone, setPhone] = useState(null);
@@ -47,10 +49,12 @@ const HomePage = () => {
   const [user, setUser] = useState([]);
   const [editUser, setEditUser] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const [departments, setDepartments] = useState([]);
+  const [openUpload, setOpenUpload] = useState(false)
+
   //modal
   const [isOpenAddUserModal, setOpenAddUserModal] = useState(false);
   const [isOpenUserModal, setOpenUserModal] = useState(false);
-  const [dataExport, setDataExport] = useState();
 
   //paginate
   const pagination = {
@@ -64,24 +68,33 @@ const HomePage = () => {
   };
 
   const handleExportData = async () => {
-    setSpinning(true);
-    try {
-      const params = {
-        department_id: selectedStatus,
-        name: name,
+    const tmp = user.map((e, index) => {
+      return {
+        STT: index + 1,
+        "Mã nhân viên": e?.user_code,
+        "Họ và tên": e?.name,
+        "Phòng ban": e?.department_name,
+        "Số điện thoại": e?.phone,
+        "Email": e?.email,
+        "Chức vụ": e?.position_name,
+        "Telegram": e?.telegram_chat_id
       };
-
-      const { data, status } = await actionGetUsers(params);
-      if (status === 200) {
-        setDataExport({
-          reports: data,
-          total: data?.length,
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    setSpinning(false);
+    });
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(tmp);
+    const wscols = [
+      { wch: 10 },
+      { wch: 25 },
+      { wch: 25 },
+      { wch: 20 },
+      { wch: 20 },
+      { wch: 20 },
+      { wch: 20 },
+      { wch: 20 },
+    ];
+    worksheet["!cols"] = wscols;
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Danh_sach_nhan_vien");
+    XLSX.writeFile(workbook, "Danh_sach_nhan_vien.xlsx");
   };
 
   const handleGetUser = async () => {
@@ -136,6 +149,11 @@ const HomePage = () => {
     handleGetUser();
   }, [selectedStatus, name, code, phone, position]);
 
+
+  useEffect(() => {
+    handleGetDepartmentsList();
+  }, []);
+
   const columns = [
     {
       fixed: "left",
@@ -167,6 +185,12 @@ const HomePage = () => {
           },
         };
       },
+    },
+    {
+      title: "Phòng ban",
+      dataIndex: "department_name",
+      key: "department_name",
+      align: "center",
     },
     {
       title: "Số điện thoại",
@@ -335,10 +359,10 @@ const HomePage = () => {
             <Col>
               <Button
                 onClick={handleExportData}
-                icon={<FilePdfOutlined />}
+                // icon={<FilePdfOutlined />}
                 type="primary"
               >
-                Xuất file PDF
+                Xuất excel
               </Button>
             </Col>
           </Row>
@@ -364,8 +388,10 @@ const HomePage = () => {
         {isOpenAddUserModal && (
           <AddUserModal
             setUser={setUser}
+            departments={departments}
             onClose={() => {
               setOpenAddUserModal(false);
+
             }}
           />
         )}
@@ -388,9 +414,7 @@ const HomePage = () => {
           />
         )}
 
-        {dataExport && (
-          <ExportPDF data={dataExport} onClose={() => setDataExport(null)} />
-        )}
+        {/* {openUpload && <ImportExcel />} */}
       </>
     </Layout>
   );
