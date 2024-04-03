@@ -9,7 +9,7 @@ import {
 } from "utils/constants/config";
 import InfoUserModal from "./components/info-user";
 
-import * as XLSX from "xlsx";
+// import ExportPDF from "./exportPDF";
 import { IoLockClosedOutline } from "react-icons/io5";
 import { GoUnlock } from "react-icons/go";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,6 +18,10 @@ import { GoUnlock } from "react-icons/go";
 // import { faEdit } from "@fortawesome/free-regular-svg-icons";
 // import { faUserPen } from "@fortawesome/free-regular-svg-icons";
 import { FiEdit } from "react-icons/fi";
+
+
+import * as XLSX from "xlsx";
+
 
 import {
   Button,
@@ -47,6 +51,9 @@ const HomePage = () => {
   const [spinning, setSpinning] = useState(false);
   const [user, setUser] = useState([]);
   const [editUser, setEditUser] = useState(false);
+
+  const [searchValue, setSearchValue] = useState("");
+
   const [departments, setDepartments] = useState([]);
   const [openUpload, setOpenUpload] = useState(false)
 
@@ -344,18 +351,19 @@ const HomePage = () => {
               </Select>
             </Col>
 
-            {userLogin.position_code === "ADMIN"
-              && (
-                <Col>
-                  <Button
-                    className="w-full"
-                    type="primary"
-                    onClick={() => setOpenAddUserModal(true)}
-                  >
-                    Thêm tài khoản
-                  </Button>
-                </Col>
-              )}
+
+            {userLogin.position_code === "ADMIN" && (
+              <Col>
+                <Button
+                  className="w-full"
+                  type="primary"
+                  onClick={() => setOpenAddUserModal(true)}
+                >
+                  Thêm tài khoản
+                </Button>
+              </Col>
+            )}
+
             {userLogin.position_code === "ADMIN"
               && (
                 <Col>
@@ -369,6 +377,7 @@ const HomePage = () => {
                   </Button>
                 </Col>
               )}
+
 
             <Col>
               <Button
