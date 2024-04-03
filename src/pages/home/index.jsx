@@ -10,7 +10,6 @@ import {
 import InfoUserModal from "./components/info-user";
 
 import * as XLSX from "xlsx";
-import ExportPDF from "./exportPDF";
 import { IoLockClosedOutline } from "react-icons/io5";
 import { GoUnlock } from "react-icons/go";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,7 +17,6 @@ import { GoUnlock } from "react-icons/go";
 // import { faLockOpen } from "@fortawesome/free-regular-svg-icons";
 // import { faEdit } from "@fortawesome/free-regular-svg-icons";
 // import { faUserPen } from "@fortawesome/free-regular-svg-icons";
-import { FilePdfOutlined } from "@ant-design/icons";
 import { FiEdit } from "react-icons/fi";
 
 import {
@@ -37,7 +35,6 @@ import EditUser from "./components/editUserModal";
 import { actionGetDepartments } from "./actions";
 import * as actions from 'utils/constants/redux-actions'
 import { useDispatch } from "react-redux";
-import ImportExcel from './components/importExcel'
 
 const HomePage = () => {
   const userLogin = useSelector((state) => state?.profile);
