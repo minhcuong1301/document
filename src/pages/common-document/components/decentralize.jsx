@@ -82,7 +82,7 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
           emp_role: employee.role,
 
         };
-        // list_role.push(params);
+        list_role.push(params);
       }
       const { data, status } = await actionDecentralize({ list_role: list_role, department_id: [], role_department: [] }, documentId);
       if (status === 200) {

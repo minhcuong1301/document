@@ -20,6 +20,7 @@ import { GoUnlock } from "react-icons/go";
 // import { faUserPen } from "@fortawesome/free-regular-svg-icons";
 import { FilePdfOutlined } from "@ant-design/icons";
 import { FiEdit } from "react-icons/fi";
+import UploadExcel from './components/uploadExcel'
 
 import {
   Button,
@@ -37,7 +38,7 @@ import EditUser from "./components/editUserModal";
 import { actionGetDepartments } from "./actions";
 import * as actions from 'utils/constants/redux-actions'
 import { useDispatch } from "react-redux";
-import ImportExcel from './components/importExcel'
+
 
 const HomePage = () => {
   const userLogin = useSelector((state) => state?.profile);
@@ -52,6 +53,7 @@ const HomePage = () => {
   const [editUser, setEditUser] = useState(false);
   const [departments, setDepartments] = useState([]);
   const [openUpload, setOpenUpload] = useState(false)
+  console.log(openUpload)
 
   //modal
   const [isOpenAddUserModal, setOpenAddUserModal] = useState(false);
@@ -368,7 +370,7 @@ const HomePage = () => {
                     type="primary"
 
                   >
-                    Nhập excel
+                    {`${openUpload}`}
                   </Button>
                 </Col>
               )}
@@ -431,7 +433,9 @@ const HomePage = () => {
           />
         )}
 
-        {/* {openUpload && <ImportExcel />} */}
+        {/* {true && <UploadExcel
+        />
+        } */}
       </>
     </Layout>
   );

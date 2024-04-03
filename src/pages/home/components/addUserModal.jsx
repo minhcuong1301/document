@@ -29,9 +29,6 @@ const AddUser = ({ onClose, setUser, departments }) => {
   const [callingApi, setCallApi] = useState(false);
   const [files, setFiles] = useState([]);
 
-
-  
-
   const handleAddUser = async (values) => {
     setCallApi(true);
     try {
@@ -69,11 +66,12 @@ const AddUser = ({ onClose, setUser, departments }) => {
     }
     setCallApi(false);
   };
+
   const handleDateChange = (date) => {
     form.setFieldValue("date_of_birth", date);
   };
 
- 
+
   return (
     <Modal
       open={true}
@@ -83,7 +81,7 @@ const AddUser = ({ onClose, setUser, departments }) => {
       width={350}
       footer={false}
     >
-      <SpinCutom SpinCutom spinning={callingApi}>
+      <SpinCutom spinning={callingApi}>
         <Form
           layout="vertical"
           className="commom-form"
