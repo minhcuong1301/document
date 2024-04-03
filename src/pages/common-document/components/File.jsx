@@ -203,7 +203,7 @@ const File = ({
           .includes("R4") ||
           userLogin.position_code === "GIAM_DOC" ||
           userLogin.position_code === "P_GIAM_DOC") && {
-          label: <FaRegTrashAlt />,
+          label: "Xóa",
           key: "2",
         },
         roleUser
@@ -211,13 +211,13 @@ const File = ({
             return item.code;
           })
           .includes("R2") && {
-          label: <FiEdit />,
+          label: "Sửa tên",
           key: "4",
         },
         (userLogin.position_code === "GIAM_DOC" ||
           userLogin.position_code === "P_GIAM_DOC" ||
           userLogin.position_code === "ADMIN") && {
-          label: <MdOutlinePersonAddAlt />,
+          label: "Phân quyền",
           key: "5",
         },
       ]);
@@ -230,7 +230,7 @@ const File = ({
           .includes("R4") ||
           userLogin.position_code === "GIAM_DOC" ||
           userLogin.position_code === "P_GIAM_DOC") && {
-          label: <FaRegTrashAlt />,
+          label: "Xóa",
           key: "2",
         },
         roleUser
@@ -238,7 +238,7 @@ const File = ({
             return item.code;
           })
           .includes("R2") && {
-          label: <BsDownload />,
+          label: "Tải xuống",
           key: "3",
         },
         roleUser
@@ -246,14 +246,14 @@ const File = ({
             return item.code;
           })
           .includes("R2") && {
-          label: <FiEdit />,
+          label: "Sửa tên",
           key: "4",
         },
 
         (userLogin.position_code === "GIAM_DOC" ||
           userLogin.position_code === "P_GIAM_DOC" ||
           userLogin.position_code === "ADMIN") && {
-          label: <MdOutlinePersonAddAlt />,
+          label: "Phân quyền",
           key: "5",
         },
       ]);
