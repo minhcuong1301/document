@@ -5,10 +5,21 @@ import { useSelector } from "react-redux";
 import AddUserModal from "./components/addUserModal";
 import {
   DEPARTMENTS_CODE,
+  POSITION_CODE,
 } from "utils/constants/config";
 import InfoUserModal from "./components/info-user";
 
 import * as XLSX from "xlsx";
+import ExportPDF from "./exportPDF";
+import { IoLockClosedOutline } from "react-icons/io5";
+import { GoUnlock } from "react-icons/go";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faLock } from "@fortawesome/free-regular-svg-icons";
+// import { faLockOpen } from "@fortawesome/free-regular-svg-icons";
+// import { faEdit } from "@fortawesome/free-regular-svg-icons";
+// import { faUserPen } from "@fortawesome/free-regular-svg-icons";
+import { FilePdfOutlined } from "@ant-design/icons";
+import { FiEdit } from "react-icons/fi";
 
 import {
   Button,
@@ -33,6 +44,9 @@ const HomePage = () => {
   const dispatch = useDispatch()
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [name, setName] = useState(null);
+  const [phone, setPhone] = useState(null);
+  const [position, setPosition] = useState(null);
+  const [code, setCode] = useState(null);
   const [spinning, setSpinning] = useState(false);
   const [user, setUser] = useState([]);
   const [editUser, setEditUser] = useState(false);
@@ -90,10 +104,15 @@ const HomePage = () => {
       const params = {
         department_id: selectedStatus,
         name: name,
+        phone: phone,
+        user_code: code,
+        position: position,
       };
       const { data, status } = await actionGetUsers(params);
 
       if (status === 200) {
+        console.log("params", params);
+        console.log("data", data);
         setUser(data);
       }
     } catch (error) {
@@ -131,7 +150,7 @@ const HomePage = () => {
 
   useEffect(() => {
     handleGetUser();
-  }, [selectedStatus, name]);
+  }, [selectedStatus, name, code, phone, position]);
 
 
   useEffect(() => {
@@ -153,10 +172,9 @@ const HomePage = () => {
     },
     {
       title: "Mã nhân viên",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "user_code",
+      key: "user_code",
       align: "center",
-
     },
     {
       title: "Họ và tên ",
@@ -187,11 +205,13 @@ const HomePage = () => {
       title: "Email",
       dataIndex: "email",
       key: "email",
+      align: "center",
     },
     {
       title: "Chức vụ",
       dataIndex: "position_name",
       key: "position_name",
+      align: "center",
     },
 
     // {
@@ -224,7 +244,11 @@ const HomePage = () => {
               cancelText="Hủy"
               onConfirm={() => handleLock(r.id)}
             >
-              <Button>{r.account_stutus === 1 ? "Khóa" : "Mở khóa"}</Button>
+              {r.account_stutus === 1 && r.position_code !== "ADMIN" ? (
+                <IoLockClosedOutline className="icon-fa" />
+              ) : (
+                r.position_code !== "ADMIN" && <GoUnlock className="icon-fa" />
+              )}
             </Popconfirm>
           )}
         </Space>
@@ -236,13 +260,11 @@ const HomePage = () => {
       dataIndex: "edit",
       key: "edit",
       render: (_, r) =>
-      (userLogin?.position_code === "ADMIN" &&
-        <Space>
-          <Button type="primary" onClick={() => setEditUser(r)}>
-            Sửa
-          </Button>
-        </Space>
-      ),
+        userLogin?.position_code === "ADMIN" && (
+          <Space>
+            <FiEdit onClick={() => setEditUser(r)} className="icon-fa" />
+          </Space>
+        ),
       align: "center",
     },
   ];
@@ -262,7 +284,7 @@ const HomePage = () => {
               <Select
                 className="w-full"
                 placeholder="Phòng ban"
-                onChange={setSelectedStatus}
+                onChange={(e) => setSelectedStatus(e)}
                 allowClear
               >
                 {Object.keys(DEPARTMENTS_CODE).map((key) => (
@@ -281,6 +303,48 @@ const HomePage = () => {
                 placeholder="Nhập tên ..."
                 allowClear
               />
+            </Col>
+            <Col className="filler--item">
+              <Input.Search
+                onSearch={(v) => {
+                  setCode(v);
+                }}
+                placeholder="Nhập mã nhân viên ..."
+                allowClear
+              />
+            </Col>
+            <Col className="filler--item">
+              <Input.Search
+                onSearch={(v) => {
+                  setPhone(v);
+                }}
+                placeholder="Nhập số điên thoại ..."
+                allowClear
+              />
+            </Col>
+            <Col className="filler--item">
+              {
+                /* <Input.Search
+                onSearch={(v) => {
+                  setPosition(v);
+                }}
+                placeholder="Nhập chức vụ ..."
+                allowClear */
+                //  onChange={handleInputPositionChange}
+                //  value={position}
+              }
+              <Select
+                className="w-full"
+                placeholder=" Chức vụ"
+                onChange={(e) => setPosition(e)}
+                allowClear
+              >
+                {Object.keys(POSITION_CODE).map((key) => (
+                  <Select.Option key={key} value={key}>
+                    {POSITION_CODE[key]}
+                  </Select.Option>
+                ))}
+              </Select>
             </Col>
 
             {userLogin.position_code === "ADMIN"

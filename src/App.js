@@ -44,7 +44,19 @@ const App = () => {
     }
   }
 
-  
+  const handleGetDepartments = async () => {
+    try {
+      const { data, status } = await api({
+        method: "GET",
+        url: "/get-departments",
+      })
+      if (status == 200) {
+        dispatch({ type: actions.SET_DEPARTMENTS, payload: data })
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   
   const handleCheckNavigate = useCallback(() => {
@@ -60,6 +72,7 @@ const App = () => {
   useEffect(() => {
     if (token) {
       handleGetPositions()
+      handleGetDepartments()
       actionGetUserProfileByToken(dispatch)
     }
     else if (!isPublicPage) {

@@ -83,6 +83,14 @@ export const actionGetlistEmpoyee = (params) => {
   })
 
 }
+export const actionGetlistDepartment = (params) => {
+  return api({
+    method: 'GET',
+    url: "/get-departments",
+    params: params
+  })
+
+}
 
 export const actionGetListRole = (params) => {
   return api({
@@ -92,10 +100,10 @@ export const actionGetListRole = (params) => {
   })
 }
 
-export const actionDecentralize = (params, documentId) => {
+export const actionDecentralize = (params, id_doc) => {
   return api({
     method: "POST",
-    url: `/decentralization/${documentId}`,
+    url: `/decentralization/${id_doc}`,
     data: params
 
   })

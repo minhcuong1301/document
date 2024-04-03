@@ -32,6 +32,17 @@ import { REACT_APP_SERVER_BASE_URL } from "utils/constants/config";
 import { actionGetListRole } from "../action";
 import { FileOutlined } from "@ant-design/icons";
 import UpdateNameFile from "./updateNameFile";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faTrash } from "@fortawesome/free-regular-svg-icons";
+// import { faDownload } from "@fortawesome/free-regular-svg-icons";
+// import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+// import { faPersonCircleCheck } from "@fortawesome/free-regular-svg-icons";
+
+import { FaRegTrashAlt } from "react-icons/fa";
+import { FiEdit } from "react-icons/fi";
+import { MdOutlinePersonAddAlt } from "react-icons/md";
+import { BsDownload } from "react-icons/bs";
+
 const File = ({
   listDocument,
   handleGetListDocument,
