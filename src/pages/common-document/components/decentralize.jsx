@@ -1,9 +1,9 @@
 import { SpinCustom } from "components";
 import {
   Button,
-  Col,Row,Modal,Table,
-  Space,Select,message,
-  Checkbox,
+  Col, Row, Modal, Table,
+  Space, Select, message,
+  Checkbox, Radio
 } from "antd";
 import { useEffect, useState } from "react";
 import {
@@ -12,17 +12,21 @@ import {
   actionDecentralize,
 } from "../action";
 import { useSelector } from "react-redux";
+import { TYPE_POWER } from "utils/constants/config";
 
 //debounce function for searching
 
-const Decentralize = ({ onCancel, documentId, department, fileType }) => {
+const Decentralize = ({ onCancel, documentId, fileType }) => {
   const [spinning, setSpinning] = useState(false);
   const [listEmployee, setListEmployee] = useState([]);
   const [employee, setEmployee] = useState();
   const userLogin = useSelector((state) => state.profile);
+  const department = useSelector((state) => state.departments);
+  const [permissionType, setPermissionType] = useState(0);
 
   const [listRole, setlistRole] = useState([]);
-  const [roleUserMap, setRoleUserMap] = useState([]); 
+  const [roleUserMap, setRoleUserMap] = useState([]);
+  const [roleDepartmentMap, setRoleDepartmentMap] = useState([]);
 
   const handleGetListEmployee = async () => {
     setSpinning(true);
@@ -41,7 +45,7 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
     }
     setSpinning(false);
   };
-
+  // setRoleDepartmentMap(department.map((item) => ({ id: item.id, role: [] })))
   const handleCheckbox = (employeeId, role) => {
     setRoleUserMap((prevMap) => {
       return prevMap.map((item) => {
@@ -73,26 +77,46 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
     setSpinning(true);
     try {
       const paramsArray = [];
+
+
       for (const employee of roleUserMap) {
         const params = {
           id_emp: employee.id,
-          id_boss: userLogin.id,
           emp_role: employee.role,
-          doc_id: documentId,
+
         };
         paramsArray.push(params);
       }
-      console.log(paramsArray);
-      // const { data, status } = await actionDecentralize(paramsArray);
-      // if (status === 200) {
-      //   message.success(data?.message);
+      // if(permissionType === 0){
+      //   for (const employee of roleUserMap) {
+      //     const params = {
+      //       id_emp: employee.id,
+      //       list_role:employee.role
+      //     };
+      //     paramsArray.push(params);
+      //   }
       // }
+      // if(permissionType === 1){
+      //   for (const employee of roleUserMap) {
+      //     const params = {
+      //       id_emp: employee.id,
+      //       emp_roles:employee.role
+      //     };
+      //     paramsArray.push(params);
+      //   }
+      // }
+
+
+      const { data, status } = await actionDecentralize({ list_role: paramsArray, department_id: [], role_department: [] }, documentId);
+      if (status === 200) {
+        message.success(data?.message);
+      }
     } catch (err) {
       console.log(err);
     }
     setSpinning(false);
   };
-  
+
 
   useEffect(() => {
     handleGetListEmployee();
@@ -153,9 +177,26 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
       }
     >
       <SpinCustom spinning={spinning}>
+        {/* <Row gutter={[16, 16]}>
+
+          <Col >
+            <Select
+              className="w-full"
+              placeholder="Kiểu phân quyền"
+              options={Object.entries(TYPE_POWER)?.map(([key, value]) => ({
+                value: Number(key),
+                label: value,
+              }))}
+              onChange={(value) => setPermissionType(value)}
+            ></Select>
+          </Col>
+
+        </Row>
+         */}
+
         <Space direction="vertical" size={30}>
           <Table
-            dataSource={listEmployee}
+            dataSource={permissionType === 0 ? listEmployee : department}
             columns={columns}
             rowKey={(r) => r.id}
             pagination={false}
