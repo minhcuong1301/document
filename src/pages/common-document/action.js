@@ -92,10 +92,10 @@ export const actionGetListRole = (params) => {
   })
 }
 
-export const actionDecentralize = (params) => {
+export const actionDecentralize = (params, documentId) => {
   return api({
     method: "POST",
-    url: "/decentralization",
+    url: `/decentralization/${documentId}`,
     data: params
 
   })

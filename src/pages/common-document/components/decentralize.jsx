@@ -1,8 +1,8 @@
 import { SpinCustom } from "components";
 import {
   Button,
-  Col,Row,Modal,Table,
-  Space,Select,message,
+  Col, Row, Modal, Table,
+  Space, Select, message,
   Checkbox,
 } from "antd";
 import { useEffect, useState } from "react";
@@ -22,7 +22,7 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
   const userLogin = useSelector((state) => state.profile);
 
   const [listRole, setlistRole] = useState([]);
-  const [roleUserMap, setRoleUserMap] = useState([]); 
+  const [roleUserMap, setRoleUserMap] = useState([]);
 
   const handleGetListEmployee = async () => {
     setSpinning(true);
@@ -72,27 +72,26 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
   const handleSubmit = async () => {
     setSpinning(true);
     try {
-      const paramsArray = [];
+      const list_role = [];
       for (const employee of roleUserMap) {
         const params = {
           id_emp: employee.id,
-          id_boss: userLogin.id,
           emp_role: employee.role,
-          doc_id: documentId,
+
         };
-        paramsArray.push(params);
+        list_role.push(params);
       }
-      console.log(paramsArray);
-      // const { data, status } = await actionDecentralize(paramsArray);
-      // if (status === 200) {
-      //   message.success(data?.message);
-      // }
+      console.log(list_role);
+      const { data, status } = await actionDecentralize({ list_role: list_role, department_id: [], role_department: [] }, documentId);
+      if (status === 200) {
+        message.success(data?.message);
+      }
     } catch (err) {
       console.log(err);
     }
     setSpinning(false);
   };
-  
+
 
   useEffect(() => {
     handleGetListEmployee();

@@ -4,13 +4,11 @@ import { actionGetUsers, actionLockUser } from "./actions";
 import { useSelector } from "react-redux";
 import AddUserModal from "./components/addUserModal";
 import {
-  REACT_APP_SERVER_BASE_URL,
   DEPARTMENTS_CODE,
 } from "utils/constants/config";
 import InfoUserModal from "./components/info-user";
-import ExportPDF from "./exportPDF";
 
-import { FilePdfOutlined } from "@ant-design/icons";
+import * as XLSX from "xlsx";
 
 import {
   Button,
@@ -19,27 +17,31 @@ import {
   Table,
   Row,
   Col,
-  Pagination,
   message,
-  Image,
   Popconfirm,
   Select,
   Input,
 } from "antd";
 import EditUser from "./components/editUserModal";
+import { actionGetDepartments } from "./actions";
+import * as actions from 'utils/constants/redux-actions'
+import { useDispatch } from "react-redux";
+import ImportExcel from './components/importExcel'
 
 const HomePage = () => {
   const userLogin = useSelector((state) => state?.profile);
+  const dispatch = useDispatch()
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [name, setName] = useState(null);
   const [spinning, setSpinning] = useState(false);
   const [user, setUser] = useState([]);
   const [editUser, setEditUser] = useState(false);
+  const [departments, setDepartments] = useState([]);
+  const [openUpload, setOpenUpload] = useState(false)
 
   //modal
   const [isOpenAddUserModal, setOpenAddUserModal] = useState(false);
   const [isOpenUserModal, setOpenUserModal] = useState(false);
-  const [dataExport, setDataExport] = useState();
 
   //paginate
   const pagination = {
@@ -53,24 +55,33 @@ const HomePage = () => {
   };
 
   const handleExportData = async () => {
-    setSpinning(true);
-    try {
-      const params = {
-        department_id: selectedStatus,
-        name: name,
+    const tmp = user.map((e, index) => {
+      return {
+        STT: index + 1,
+        "Mã nhân viên": e?.user_code,
+        "Họ và tên": e?.name,
+        "Phòng ban": e?.department_name,
+        "Số điện thoại": e?.phone,
+        "Email": e?.email,
+        "Chức vụ": e?.position_name,
+        "Telegram": e?.telegram_chat_id
       };
-
-      const { data, status } = await actionGetUsers(params);
-      if (status === 200) {
-        setDataExport({
-          reports: data,
-          total: data?.length,
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    setSpinning(false);
+    });
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(tmp);
+    const wscols = [
+      { wch: 10 },
+      { wch: 25 },
+      { wch: 25 },
+      { wch: 20 },
+      { wch: 20 },
+      { wch: 20 },
+      { wch: 20 },
+      { wch: 20 },
+    ];
+    worksheet["!cols"] = wscols;
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Danh_sach_nhan_vien");
+    XLSX.writeFile(workbook, "Danh_sach_nhan_vien.xlsx");
   };
 
   const handleGetUser = async () => {
@@ -106,11 +117,26 @@ const HomePage = () => {
     setSpinning(false);
   };
 
-
+  const handleGetDepartmentsList = async () => {
+    try {
+      const { data, status } = await actionGetDepartments();
+      if (status === 200) {
+        setDepartments(data);
+        dispatch({ type: actions.SET_PROFILE, payload: data })
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     handleGetUser();
   }, [selectedStatus, name]);
+
+
+  useEffect(() => {
+    handleGetDepartmentsList();
+  }, []);
 
   const columns = [
     {
@@ -144,6 +170,12 @@ const HomePage = () => {
           },
         };
       },
+    },
+    {
+      title: "Phòng ban",
+      dataIndex: "department_name",
+      key: "department_name",
+      align: "center",
     },
     {
       title: "Số điện thoại",
@@ -226,7 +258,7 @@ const HomePage = () => {
             >
               Thoát
             </Button>
-            {/* <Col className="filler--item">
+            <Col className="filler--item">
               <Select
                 className="w-full"
                 placeholder="Phòng ban"
@@ -239,7 +271,7 @@ const HomePage = () => {
                   </Select.Option>
                 ))}
               </Select>
-            </Col> */}
+            </Col>
 
             <Col className="filler--item">
               <Input.Search
@@ -263,14 +295,27 @@ const HomePage = () => {
                   </Button>
                 </Col>
               )}
+            {userLogin.position_code === "ADMIN"
+              && (
+                <Col>
+                  <Button
+                    onClick={() => { setOpenUpload(true) }}
+                    className="w-full"
+                    type="primary"
+
+                  >
+                    Nhập excel
+                  </Button>
+                </Col>
+              )}
 
             <Col>
               <Button
                 onClick={handleExportData}
-                icon={<FilePdfOutlined />}
+                // icon={<FilePdfOutlined />}
                 type="primary"
               >
-                Xuất file PDF
+                Xuất excel
               </Button>
             </Col>
           </Row>
@@ -296,8 +341,10 @@ const HomePage = () => {
         {isOpenAddUserModal && (
           <AddUserModal
             setUser={setUser}
+            departments={departments}
             onClose={() => {
               setOpenAddUserModal(false);
+
             }}
           />
         )}
@@ -320,9 +367,7 @@ const HomePage = () => {
           />
         )}
 
-        {dataExport && (
-          <ExportPDF data={dataExport} onClose={() => setDataExport(null)} />
-        )}
+        {/* {openUpload && <ImportExcel />} */}
       </>
     </Layout>
   );

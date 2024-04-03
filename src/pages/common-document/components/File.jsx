@@ -130,6 +130,7 @@ const File = ({
     setIdFile(id);
     setmodalEditName(true);
   };
+  
   const handleMenuClick = (e, doc_id, document_type, doc_name) => {
     setDocumentId(doc_id);
     setSelectedRows([doc_id]);
@@ -154,7 +155,7 @@ const File = ({
       onOk() {
         handleDeleteFile(selectedRows);
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -384,7 +385,7 @@ const File = ({
             <tr>
               <th></th>
               <th></th>
-              <th></th>
+              <th>Tên</th>
               <th>Ngày tạo</th>
               <th>Người tạo</th>
               <th></th>

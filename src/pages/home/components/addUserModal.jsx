@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { UploadImage } from "components";
 import {
-  DATETIME_FORMAT,
   DATE_FORMAT,
   EMAIL_PATTERN,
   PHONE_PATTERN,
@@ -9,7 +8,7 @@ import {
 import { useSelector } from "react-redux";
 import SpinCutom from "components/spin-custom";
 import moment from "moment";
-import { actionAddUser, actionGetDepartments } from "../actions";
+import { actionAddUser } from "../actions";
 
 import {
   Modal,
@@ -20,29 +19,18 @@ import {
   Input,
   Select,
   message,
-  Spin,
   DatePicker,
   InputNumber,
 } from "antd";
 
-const AddUser = ({ onClose, setUser }) => {
+const AddUser = ({ onClose, setUser, departments }) => {
   const positions = useSelector((state) => state?.positions);
   const [form] = Form.useForm();
   const [callingApi, setCallApi] = useState(false);
   const [files, setFiles] = useState([]);
-  const [date, setDate] = useState(null);
-  const [departments, setDepartments] = useState([]);
 
-  const handleGetDepartmentsList = async () => {
-    try {
-      const { data, status } = await actionGetDepartments();
-      if (status == 200) {
-        setDepartments(data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
+  
 
   const handleAddUser = async (values) => {
     setCallApi(true);
@@ -71,7 +59,7 @@ const AddUser = ({ onClose, setUser }) => {
       });
 
       const { data, status } = await actionAddUser(formData);
-      if (status == 200) {
+      if (status === 200) {
         message.success(data?.message);
         setUser(data?.employees);
         onClose();
@@ -85,9 +73,7 @@ const AddUser = ({ onClose, setUser }) => {
     form.setFieldValue("date_of_birth", date);
   };
 
-  useEffect(() => {
-    handleGetDepartmentsList();
-  }, []);
+ 
   return (
     <Modal
       open={true}

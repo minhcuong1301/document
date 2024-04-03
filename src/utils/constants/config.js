@@ -21,13 +21,10 @@ export const SPINNING_SIZE = "large";
 export const BTN_SIZE_TABLE = "small";
 
 export const DEPARTMENTS_CODE = {
-  1: "Phòng kỹ thuật phần mềm",
-  2: "Phòng kỹ thuật phần cứng",
-  3: "Phòng kỹ thuật sản xuất",
-  4: "Phòng xuất nhập khẩu",
-  5: "Phòng kế toán",
-  6: "Phòng hành chính nhân sự",
-  7: "Phòng kinh doanh",
+  1: "Phòng ban 1",
+  2: "Phòng ban 2",
+  3: "Phòng ban 3",
+
 };
 
 export const VEHICLE_STATUS = {
