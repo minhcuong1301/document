@@ -274,7 +274,11 @@ input::placeholder {
 		}
 	}
 }
-
+.checkbox-style{
+	display: flex;
+	// padding: 30px;
+	gap: 30px;
+}
 .process {
 	padding: 5px;
 	color: #fff;
