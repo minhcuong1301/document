@@ -34,8 +34,8 @@
 					}
 				}
 			}
-			
-			.item-center{
+
+			.item-center {
 				justify-content: center;
 				align-items: center;
 			}
@@ -44,8 +44,6 @@
 		&--footer {
 			padding: 8px;
 		}
-
-		
 	}
 
 	.auth-page {
@@ -63,7 +61,6 @@
 			box-shadow: 0px 0px 5px #ccc;
 		}
 	}
-
 }
 textarea:focus {
 	outline: none;
@@ -216,7 +213,7 @@ textarea:focus {
 	border-color: var(--input-boder-color) !important;
 }
 
-.exit-home{
+.exit-home {
 	display: none;
 }
 
@@ -259,17 +256,17 @@ input::placeholder {
 	// .app-sider{
 	// 	display: none;
 	// }
-	.app-header{
-		&--left{
-			.table-title{
+	.app-header {
+		&--left {
+			.table-title {
 				display: none;
-			  }
+			}
 			//   .hidden-logo{
 			// 	display: block;
 			// 	width: 80%;
 			// 	padding: 12px 8px ;
 			// 	text-align: center;
-			
+
 			// 	img {
 			// 	  height: 50px;
 			// 	}
@@ -308,6 +305,9 @@ input::placeholder {
 	background-color: #f5f5f5;
 }
 
+.icon-fa:hover {
+	cursor: pointer;
+}
 img {
 	max-width: 100%;
 }
