@@ -1,5 +1,5 @@
-import { Upload } from "antd"
-import { PlusOutlined } from "@ant-design/icons"
+import { Button, Upload } from "antd"
+import { PlusOutlined, UploadOutlined } from "@ant-design/icons"
 import React, { useEffect } from 'react';
 const UploadFIle = ({ files, setFiles, maxCount, defaultFile }) => {
   useEffect(() => {
@@ -11,7 +11,7 @@ const UploadFIle = ({ files, setFiles, maxCount, defaultFile }) => {
 
   return (
     <Upload
-      listType="picture-card"
+      // listType="picture-card"
       multiple={true}
       maxCount={maxCount}
       fileList={files}
@@ -26,7 +26,7 @@ const UploadFIle = ({ files, setFiles, maxCount, defaultFile }) => {
         setFiles(files.filter(f => f.uid !== file.uid))
       }}
     >
-      {files && files.length >= maxCount ? null : <PlusOutlined />}
+      {files && files.length >= maxCount ? null : <Button icon={<UploadOutlined />}>Tải lên</Button>}
     </Upload>
   )
 }

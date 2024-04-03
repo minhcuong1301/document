@@ -1,125 +1,40 @@
 import { SpinCustom } from "components";
 import {
   Button,
-  Col,
-  Row,
-  Modal,
-  Table,
-  Input,
-  Space,
-  Select,
-  Spin,
-  message,
+  Col,Row,Modal,Table,
+  Space,Select,message,
   Checkbox,
 } from "antd";
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState } from "react";
 import {
   actionGetlistEmpoyee,
   actionGetListRole,
   actionDecentralize,
 } from "../action";
 import { useSelector } from "react-redux";
-import debounce from "lodash/debounce";
-const { Option } = Select;
 
 //debounce function for searching
 
 const Decentralize = ({ onCancel, documentId, department, fileType }) => {
   const [spinning, setSpinning] = useState(false);
-  const [nameUser, setNameUser] = useState([]);
-  const [openRoleUser, setOpenRoleUser] = useState(false);
   const [listEmployee, setListEmployee] = useState([]);
   const [employee, setEmployee] = useState();
   const userLogin = useSelector((state) => state.profile);
-  const [selectedOption, setSelectedOption] = useState();
-  const [pagination, setPagination] = useState({
-    pageSize: 10,
-    current: 1,
-  });
-  const [listEmployeeOption, setListEmployeeOption] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [employeeId, setEmployeeId] = useState(0);
-  //liet ke cac quyen duoc cap
+
   const [listRole, setlistRole] = useState([]);
-  let [roleUser, setRoleUser] = useState([]);
-
-  const handleGetRoleUser = async (employee) => {
-    setSpinning(true);
-    try {
-      const params = {
-        user_id: employee.id,
-        doc_id: documentId,
-      };
-      const { data, status } = await actionGetListRole(params);
-      if (status === 200) {
-        setRoleUser(data?.data);
-        console.log("roleusers", data);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-    setSpinning(false);
-  };
-
-  const handleCheckbox = (role) => {
-    const list_role_id = roleUser.map((item) => {
-      return item.id;
-    });
-    if (list_role_id.includes(role.id)) {
-      roleUser = roleUser.filter((item) => item.id !== role.id);
-    } else {
-      roleUser.push(role);
-    }
-  };
-
-  const handleSubmit = async () => {
-    setSpinning(true);
-    try {
-      const list_role_id = roleUser.map((item) => {
-        return item.id;
-      });
-      const params = {
-        id_emp: employee.id,
-        id_boss: userLogin.id,
-        emp_role: list_role_id,
-        doc_id: documentId,
-      };
-      let { data, status } = await actionDecentralize(params);
-      if (status === 200) {
-        message.success(data?.message);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-    setSpinning(false);
-  };
+  const [roleUserMap, setRoleUserMap] = useState([]); 
 
   const handleGetListEmployee = async () => {
     setSpinning(true);
     try {
       const params = {
         department_id: department || userLogin.department_id,
-        name: selectedOption,
       };
       let { data, status } = await actionGetlistEmpoyee(params);
       if (status === 200) {
-        console.log("data", data);
-        setListEmployee(
-          data.filter(
-            (item) =>
-              item.position_code !== "MANAGER" &&
-              item.position_code !== "P_MANAGER" &&
-              item.position_code !== "ADMIN"
-          )
-        );
-        setListEmployeeOption(
-          data.filter(
-            (item) =>
-              item.position_code !== "MANAGER" &&
-              item.position_code !== "P_MANAGER" &&
-              item.position_code !== "ADMIN"
-          )
-        );
+        const roleUserInitState = data.map((item) => ({ id: item.id, role: [] }));
+        setListEmployee(data.filter((item) => item.position_code !== "ADMIN"));
+        setRoleUserMap(roleUserInitState);
       }
     } catch (err) {
       console.log(err);
@@ -127,142 +42,19 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
     setSpinning(false);
   };
 
-  const handleGetListEmployeeOptions = async () => {
-    setSpinning(true);
-    try {
-      const params = {
-        department_id: department || userLogin.department_id,
-      };
-      let { data, status } = await actionGetlistEmpoyee(params);
-      if (status === 200) {
-        setListEmployeeOption(
-          data.filter(
-            (item) =>
-              item.position_code !== "MANAGER" &&
-              item.position_code !== "P_MANAGER" &&
-              item.position_code !== "ADMIN"
-          )
-        );
-      }
-    } catch (err) {
-      console.log(err);
-    }
-    setSpinning(false);
+  const handleCheckbox = (employeeId, role) => {
+    setRoleUserMap((prevMap) => {
+      return prevMap.map((item) => {
+        if (item.id === employeeId) {
+          const updatedRoles = item.role.includes(role.id)
+            ? item.role.filter((id) => id !== role.id)
+            : [...item.role, role.id];
+          return { ...item, role: updatedRoles };
+        }
+        return item;
+      });
+    });
   };
-  //search with debounce
-  const handleSearch = debounce((value) => {
-    setSelectedOption(value);
-    console.log("value", value);
-  }, 2000);
-
-  const columns = [
-    {
-      fixed: "left",
-      width: 60,
-      title: "STT",
-      dataIndex: "id",
-      key: "id",
-      render: (text, record, index) => (
-        <Space>
-          {index + 1 + (pagination.current - 1) * pagination.pageSize}
-        </Space>
-      ),
-    },
-    {
-      title: "Tên",
-      dataIndex: "name",
-      width: 230,
-      key: "name",
-      align: "center",
-      onCell: (cell) => {
-        return {
-          onClick: (record, rowIndex) => {
-            setOpenRoleUser(record);
-            setEmployee(cell);
-          },
-        };
-      },
-    },
-    //bug
-    {
-      title: "Quyền được cấp",
-      dataIndex: "power",
-      key: "power",
-      align: "center",
-      render: (f, v) => {
-        // handleGetRoleUser(v);
-        console.log("employee", v);
-        handleGetRoleUser(v);
-
-        // console.log("v", v);
-        return (
-          <Space size="middle">
-            {listRole.map((item, index) => {
-              if (fileType === 2) {
-                if (item.code !== "R1") {
-                  return (
-                    <Row key={index}>
-                      <Checkbox
-                        defaultChecked={roleUser
-                          .map((item) => {
-                            return item.id;
-                          })
-                          .includes(item.id)}
-                        onChange={(e) => {
-                          handleCheckbox(item);
-                          console.log("handlecheckbox", e);
-                        }}
-                      >
-                        {item.name}
-                      </Checkbox>
-                    </Row>
-                  );
-                }
-              } else {
-                return (
-                  <Row key={index}>
-                    <Checkbox
-                      defaultChecked={roleUser
-                        .map((item) => {
-                          return item.id;
-                        })
-                        .includes(item.id)}
-                      onChange={(e) => handleCheckbox(item)}
-                    >
-                      {item.name}
-                    </Checkbox>
-                  </Row>
-                );
-              }
-            })}
-          </Space>
-        );
-      },
-    },
-  ];
-
-  useEffect(() => {
-    handleGetListEmployee();
-    handleGetListEmployeeOptions();
-    const fetchData = async () => {
-      handleShowPowers();
-    };
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    handleGetListEmployeeOptions();
-    // console.log(
-    //   "list nv filter:",
-    //   listEmployee.filter((item) => {
-    //     return item.name == selectedOption;
-    //   })
-    // );
-    const fetchData = async () => {
-      handleShowPowers();
-    };
-    fetchData();
-  }, [selectedOption]);
 
   const handleShowPowers = async () => {
     setSpinning(true);
@@ -277,82 +69,97 @@ const Decentralize = ({ onCancel, documentId, department, fileType }) => {
     setSpinning(false);
   };
 
-  const handleOptionChange = (value) => {
-    setSelectedOption(value);
-    console.log("vua chon", value);
+  const handleSubmit = async () => {
+    setSpinning(true);
+    try {
+      const paramsArray = [];
+      for (const employee of roleUserMap) {
+        const params = {
+          id_emp: employee.id,
+          id_boss: userLogin.id,
+          emp_role: employee.role,
+          doc_id: documentId,
+        };
+        paramsArray.push(params);
+      }
+      console.log(paramsArray);
+      // const { data, status } = await actionDecentralize(paramsArray);
+      // if (status === 200) {
+      //   message.success(data?.message);
+      // }
+    } catch (err) {
+      console.log(err);
+    }
+    setSpinning(false);
   };
+  
 
-  const handleClearSearch = () => {
-    setSelectedOption(null);
-  };
+  useEffect(() => {
+    handleGetListEmployee();
+    handleShowPowers();
+  }, []);
+
+  const columns = [
+    {
+      title: "STT",
+      dataIndex: "id",
+      key: "id",
+    },
+    {
+      title: "Tên",
+      dataIndex: "name",
+      key: "name",
+      align: "center",
+    },
+    {
+      title: "Quyền được cấp",
+      dataIndex: "power",
+      key: "power",
+      align: "center",
+      render: (f, employee) => (
+        <Space size="middle">
+          {listRole.map((role) => (
+            <Row key={role.id}>
+              <Checkbox
+                checked={roleUserMap.find((item) => item.id === employee.id)?.role.includes(role.id)}
+                onChange={() => handleCheckbox(employee.id, role)}
+              >
+                {role.name}
+              </Checkbox>
+            </Row>
+          ))}
+        </Space>
+      ),
+    },
+  ];
 
   return (
     <Modal
       open={true}
-      className="form-modal"
-      width={800}
-      height={470}
-      onOk={handleSubmit}
-      onCancel={onCancel}
-      // footer={[
-      //   <Row gutter={[16, 0]}>
-      //     <Col span={8}>
-      //       <Button onClick={onCancel} className="power-modal-btn">
-      //         Thoát
-      //       </Button>
-      //     </Col>
-      //     ,
-      //     <Col span={8}>
-      //       <Button
-      //         type="primary"
-      //         className="power-modal-btn"
-      //         onClick={handleSubmit}
-      //       >
-      //         Lưu
-      //       </Button>
-      //     </Col>
-      //     ,
-      //   </Row>,
-      // ]}
+      className="common-long-modal"
+      title="Phân quyền"
+      width={600}
+      footer={
+        <Row gutter={[16, 0]} justify={"center"}>
+          <Col>
+            <Button onClick={onCancel}>Thoát</Button>
+          </Col>
+          <Col>
+            <Button type="primary" onClick={handleSubmit}>
+              Lưu
+            </Button>
+          </Col>
+        </Row>
+      }
     >
       <SpinCustom spinning={spinning}>
         <Space direction="vertical" size={30}>
-          <Select
-            mode="multiple"
-            value={selectedOption}
-            showSearch
-            style={{
-              width: "100%",
-              height: "40px",
-            }}
-            className="employee-searchbar"
-            placeholder="Chọn hoặc nhập tên để tìm kiếm nhân viên"
-            onChange={handleOptionChange}
-            onSearch={handleSearch}
-            onClear={handleClearSearch}
-          >
-            {listEmployeeOption.map((item) => (
-              <Option key={item.id} value={item.name}>
-                {item.name}
-              </Option>
-            ))}
-          </Select>
           <Table
-            width="250"
-            //
-            height="300"
-            dataSource={
-              selectedOption?.length > 0
-                ? listEmployee.filter((item) => {
-                    return item.name == selectedOption;
-                  })
-                : listEmployee
-            }
+            dataSource={listEmployee}
             columns={columns}
             rowKey={(r) => r.id}
             pagination={false}
-            scroll={{ y: 200 }}
-          ></Table>
+          />
         </Space>
       </SpinCustom>
     </Modal>

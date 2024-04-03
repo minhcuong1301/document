@@ -30,7 +30,7 @@ const DetailFile = ({  documentId, onCancel }) => {
             title="Chi tiết file"
             open={true}
             footer={<Row justify={"end"}>
-                <Col span={4}>
+                <Col >
                     <Button onClick={onCancel} className="w-full" >Thoát</Button>
                 </Col>
             </Row>}

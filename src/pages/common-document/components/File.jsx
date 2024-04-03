@@ -384,7 +384,7 @@ const File = ({
             <tr>
               <th></th>
               <th></th>
-              <th>Tên</th>
+              <th></th>
               <th>Ngày tạo</th>
               <th>Người tạo</th>
               <th></th>

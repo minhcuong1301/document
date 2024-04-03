@@ -67,10 +67,10 @@ const EditUser = ({ onClose, setUser, editUser }) => {
       className="common-long-modal"
       width={350}
       footer={<Row gutter={[16, 0]} justify={"center"}>
-        <Col span={10} >
+        <Col  >
           <Button onClick={onClose} className="w-full" >Thoát</Button>
         </Col>
-        <Col span={10}>
+        <Col >
           <Button className="w-full"
             onClick={handleEditUser}
             type="primary"
