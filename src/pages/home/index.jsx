@@ -8,7 +8,7 @@ import {
   POSITION_CODE,
 } from "utils/constants/config";
 import InfoUserModal from "./components/info-user";
-import ExportPDF from "./exportPDF";
+// import ExportPDF from "./exportPDF";
 import { IoLockClosedOutline } from "react-icons/io5";
 import { GoUnlock } from "react-icons/go";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,6 +18,8 @@ import { GoUnlock } from "react-icons/go";
 // import { faUserPen } from "@fortawesome/free-regular-svg-icons";
 import { FilePdfOutlined } from "@ant-design/icons";
 import { FiEdit } from "react-icons/fi";
+
+import * as XLSX from "xlsx";
 
 import {
   Button,
@@ -135,13 +137,15 @@ const HomePage = () => {
     setSpinning(false);
   };
 
-  const handleInputPositionChange = (e) => {
-    const { value } = e.target;
-    setPosition(value);
-    if (value === "") {
-      // Handle clear action (e.g., reset search results)
-      console.log("Search value cleared");
-      setPosition(null);
+  const handleGetDepartmentsList = async () => {
+    try {
+      const { data, status } = await actionGetDepartments();
+      if (status === 200) {
+        setDepartments(data);
+        dispatch({ type: actions.SET_PROFILE, payload: data })
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
