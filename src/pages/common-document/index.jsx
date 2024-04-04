@@ -36,9 +36,7 @@ const CommonDocument = () => {
   const [idLastFolder, setIdLastFolder] = useState();
   const [roleUser, setRoleUser] = useState([]);
   const [totalFile, setTotalFile] = useState();
-  // const [searchParams] = useSearchParams()
 
-  // const document_id = searchParams.get('document_id');
 
   const handleNavigateBack = (e, breadcrumb, index) => {
     const last_folder = [];
@@ -210,6 +208,7 @@ const CommonDocument = () => {
                 </Col>
               </Row>
             </Col>
+
             <Col className="filler--item">
               <Input.Search
                 onSearch={(v) => {
@@ -219,10 +218,7 @@ const CommonDocument = () => {
                 allowClear
               />
             </Col>
-          </Row>
-        </div>
-        <div className="common-layout--content">
-          <Row>
+
             <Col span={12}>
               <Button
                 onClick={() => setIsModalOpen(true)}
@@ -233,6 +229,8 @@ const CommonDocument = () => {
               </Button>
             </Col>
           </Row>
+        </div>
+        <div className="common-layout--content">
 
           <Row gutter={[8, 16]}>
             <Breadcrumb className="dropdown-action ">

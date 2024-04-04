@@ -240,12 +240,12 @@ const HomePage = () => {
               onConfirm={() => handleLock(r.id)}
             >
               {r.account_stutus === 1 && r.position_code !== "ADMIN" ? (
-                <Button danger className="btn-lock">
+                <Button className="btn-unlock">
                   <IoLockClosedOutline className="icon-fa icon-fa-lock" />
                 </Button>
               ) : (
                 r.position_code !== "ADMIN" && (
-                  <Button className="btn-unlock">
+                  <Button danger className="btn-lock">
                     <GoUnlock className="icon-fa icon-fa-unlock" />
                   </Button>
                 )
