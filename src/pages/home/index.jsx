@@ -3,10 +3,7 @@ import { SpinCustom } from "components";
 import { actionGetUsers, actionLockUser } from "./actions";
 import { useSelector } from "react-redux";
 import AddUserModal from "./components/addUserModal";
-import {
-  DEPARTMENTS_CODE,
-  POSITION_CODE,
-} from "utils/constants/config";
+import { DEPARTMENTS_CODE, POSITION_CODE } from "utils/constants/config";
 import InfoUserModal from "./components/info-user";
 
 // import ExportPDF from "./exportPDF";
@@ -19,9 +16,7 @@ import { GoUnlock } from "react-icons/go";
 // import { faUserPen } from "@fortawesome/free-regular-svg-icons";
 import { FiEdit } from "react-icons/fi";
 
-
 import * as XLSX from "xlsx";
-
 
 import {
   Button,
@@ -37,12 +32,12 @@ import {
 } from "antd";
 import EditUser from "./components/editUserModal";
 import { actionGetDepartments } from "./actions";
-import * as actions from 'utils/constants/redux-actions'
+import * as actions from "utils/constants/redux-actions";
 import { useDispatch } from "react-redux";
 
 const HomePage = () => {
   const userLogin = useSelector((state) => state?.profile);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [name, setName] = useState(null);
   const [phone, setPhone] = useState(null);
@@ -55,7 +50,7 @@ const HomePage = () => {
   const [searchValue, setSearchValue] = useState("");
 
   const [departments, setDepartments] = useState([]);
-  const [openUpload, setOpenUpload] = useState(false)
+  const [openUpload, setOpenUpload] = useState(false);
 
   //modal
   const [isOpenAddUserModal, setOpenAddUserModal] = useState(false);
@@ -80,9 +75,9 @@ const HomePage = () => {
         "Họ và tên": e?.name,
         "Phòng ban": e?.department_name,
         "Số điện thoại": e?.phone,
-        "Email": e?.email,
+        Email: e?.email,
         "Chức vụ": e?.position_name,
-        "Telegram": e?.telegram_chat_id
+        Telegram: e?.telegram_chat_id,
       };
     });
     const workbook = XLSX.utils.book_new();
@@ -145,7 +140,7 @@ const HomePage = () => {
       const { data, status } = await actionGetDepartments();
       if (status === 200) {
         setDepartments(data);
-        dispatch({ type: actions.SET_PROFILE, payload: data })
+        dispatch({ type: actions.SET_PROFILE, payload: data });
       }
     } catch (error) {
       console.log(error);
@@ -155,7 +150,6 @@ const HomePage = () => {
   useEffect(() => {
     handleGetUser();
   }, [selectedStatus, name, code, phone, position]);
-
 
   useEffect(() => {
     handleGetDepartmentsList();
@@ -249,9 +243,15 @@ const HomePage = () => {
               onConfirm={() => handleLock(r.id)}
             >
               {r.account_stutus === 1 && r.position_code !== "ADMIN" ? (
-                <IoLockClosedOutline className="icon-fa" />
+                <Button danger className="btn-lock">
+                  <IoLockClosedOutline className="icon-fa icon-fa-lock" />
+                </Button>
               ) : (
-                r.position_code !== "ADMIN" && <GoUnlock className="icon-fa" />
+                r.position_code !== "ADMIN" && (
+                  <Button className="btn-unlock">
+                    <GoUnlock className="icon-fa icon-fa-unlock" />
+                  </Button>
+                )
               )}
             </Popconfirm>
           )}
@@ -277,118 +277,111 @@ const HomePage = () => {
     <Layout className="common-layout">
       <SpinCustom spinning={spinning}>
         <div className="common-layout--header">
-          <Row className="filler" gutter={[8, 8]}>
-            <Button
-              className="exit-home"
-              onClick={() => window.navigatePage("home-navigate")}
-            >
-              Thoát
-            </Button>
-            <Col className="filler--item">
-              <Select
-                className="w-full"
-                placeholder="Phòng ban"
-                onChange={(e) => setSelectedStatus(e)}
-                allowClear
+          <Space direction="vertical" size="middle">
+            <Row className="filler" gutter={[8, 8]}>
+              <Button
+                className="exit-home"
+                onClick={() => window.navigatePage("home-navigate")}
               >
-                {Object.keys(DEPARTMENTS_CODE).map((key) => (
-                  <Select.Option key={key} value={key}>
-                    {DEPARTMENTS_CODE[key]}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Col>
-
-            <Col className="filler--item">
-              <Input.Search
-                onSearch={(v) => {
-                  setName(v);
-                }}
-                placeholder="Nhập tên ..."
-                allowClear
-              />
-            </Col>
-            <Col className="filler--item">
-              <Input.Search
-                onSearch={(v) => {
-                  setCode(v);
-                }}
-                placeholder="Nhập mã nhân viên ..."
-                allowClear
-              />
-            </Col>
-            <Col className="filler--item">
-              <Input.Search
-                onSearch={(v) => {
-                  setPhone(v);
-                }}
-                placeholder="Nhập số điên thoại ..."
-                allowClear
-              />
-            </Col>
-            <Col className="filler--item">
-              {
-                /* <Input.Search
-                onSearch={(v) => {
-                  setPosition(v);
-                }}
-                placeholder="Nhập chức vụ ..."
-                allowClear */
-                //  onChange={handleInputPositionChange}
-                //  value={position}
-              }
-              <Select
-                className="w-full"
-                placeholder=" Chức vụ"
-                onChange={(e) => setPosition(e)}
-                allowClear
-              >
-                {Object.keys(POSITION_CODE).map((key) => (
-                  <Select.Option key={key} value={key}>
-                    {POSITION_CODE[key]}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Col>
-
-
-            {userLogin.position_code === "ADMIN" && (
-              <Col>
-                <Button
+                Thoát
+              </Button>
+              <Col className="filler--item">
+                <Select
                   className="w-full"
-                  type="primary"
-                  onClick={() => setOpenAddUserModal(true)}
+                  placeholder="Phòng ban"
+                  onChange={(e) => setSelectedStatus(e)}
+                  allowClear
                 >
-                  Thêm tài khoản
-                </Button>
+                  {Object.keys(DEPARTMENTS_CODE).map((key) => (
+                    <Select.Option key={key} value={key}>
+                      {DEPARTMENTS_CODE[key]}
+                    </Select.Option>
+                  ))}
+                </Select>
               </Col>
-            )}
 
-            {userLogin.position_code === "ADMIN"
-              && (
+              <Col className="filler--item">
+                <Input.Search
+                  onSearch={(v) => {
+                    setName(v);
+                  }}
+                  placeholder="Nhập tên ..."
+                  allowClear
+                />
+              </Col>
+              <Col className="filler--item">
+                <Input.Search
+                  onSearch={(v) => {
+                    setCode(v);
+                  }}
+                  placeholder="Nhập mã nhân viên ..."
+                  allowClear
+                />
+              </Col>
+              <Col className="filler--item">
+                <Input.Search
+                  onSearch={(v) => {
+                    setPhone(v);
+                  }}
+                  placeholder="Nhập số điên thoại ..."
+                  allowClear
+                />
+              </Col>
+              <Col className="filler--item">
+                <Select
+                  className="w-full"
+                  placeholder=" Chức vụ"
+                  onChange={(e) => setPosition(e)}
+                  allowClear
+                >
+                  {Object.keys(POSITION_CODE).map((key) => (
+                    <Select.Option key={key} value={key}>
+                      {POSITION_CODE[key]}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Col>
+            </Row>
+            <Row>
+              <Space size="large">
+                {userLogin.position_code === "ADMIN" && (
+                  <Col>
+                    <Button
+                      className="w-full"
+                      type="primary"
+                      onClick={() => setOpenAddUserModal(true)}
+                    >
+                      Thêm tài khoản
+                    </Button>
+                  </Col>
+                )}
+
+                {userLogin.position_code === "ADMIN" && (
+                  <Col>
+                    <Button
+                      onClick={() => {
+                        setOpenUpload(true);
+                      }}
+                      className="w-full"
+                      type="primary"
+                    >
+                      Nhập excel
+                    </Button>
+                  </Col>
+                )}
+
                 <Col>
                   <Button
-                    onClick={() => { setOpenUpload(true) }}
-                    className="w-full"
+                    onClick={handleExportData}
+                    // icon={<FilePdfOutlined />}
                     type="primary"
-
                   >
-                    Nhập excel
+                    Xuất excel
                   </Button>
                 </Col>
-              )}
-
-
-            <Col>
-              <Button
-                onClick={handleExportData}
-                // icon={<FilePdfOutlined />}
-                type="primary"
-              >
-                Xuất excel
-              </Button>
-            </Col>
-          </Row>
+              </Space>
+            </Row>
+          </Space>
         </div>
 
         <div className="common-layout--content">
@@ -414,7 +407,6 @@ const HomePage = () => {
             departments={departments}
             onClose={() => {
               setOpenAddUserModal(false);
-
             }}
           />
         )}
