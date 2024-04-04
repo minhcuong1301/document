@@ -14,8 +14,8 @@ import {
   actionGetListRoleUser,
 } from "../action";
 import { useSelector } from "react-redux";
-import { TYPE_POWER } from "utils/constants/config";
 
+import { DEPARTMENTS_CODE } from "utils/constants/config";
 //debounce function for searching
 
 const Decentralize = ({ onCancel, documentId, fileType }) => {
@@ -29,12 +29,13 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
   const [selectedDep, setSelectedDep] = useState([]);
   const [listRole, setlistRole] = useState([]);
   const [roleUserMap, setRoleUserMap] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState(null);
 
   const handleGetListEmployee = async () => {
     setSpinning(true);
     try {
       const params = {
-        // department_id: department || userLogin.department_id,
+        department_id: selectedStatus || null,
         document_id: documentId
       };
       const { data, status } = await actionGetlistEmpoyee(params);
@@ -59,7 +60,7 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
 
   const handleCheckbox = (employeeId, role) => {
     for (let i = 0; i < roleUserMap.length; i++) {
-      if (roleUserMap[i].user_id === employeeId) {  
+      if (roleUserMap[i].user_id === employeeId) {
         if (roleUserMap[i].role.indexOf(role.id) !== -1) {
           roleUserMap[i].role = roleUserMap[i].role.filter(item => item !== role.id) || []
         } else {
@@ -106,7 +107,7 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
           };
           list_role.push(params);
         }
-        
+
         const { data, status } = await actionDecentralize({ list_role: list_role }, documentId);
         if (status === 200) {
           const list_n_role = []
@@ -141,7 +142,8 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
 
   useEffect(() => {
     handleGetListEmployee();
-  }, [tabKey]);
+  }, [tabKey, selectedStatus]);
+
 
   useEffect(() => {
     handleShowPowers();
@@ -186,12 +188,35 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
   ];
 
   const Tab1 = () => (
-    <Table
-      dataSource={listEmployee}
-      columns={columns}
-      rowKey={(r) => r.id}
-      pagination={false}
-    />
+    <Row gutter={[0, 8]}>
+      <Col span={24}>
+        <Col md={8} sx={24} >
+          <Select
+            className="w-full"
+            placeholder="Phòng ban"
+            onChange={(e) => setSelectedStatus(e)}
+            allowClear
+            value={selectedStatus}
+          >
+            {Object.keys(DEPARTMENTS_CODE).map((key) => (
+              <Select.Option key={key} value={key}>
+                {DEPARTMENTS_CODE[key]}
+              </Select.Option>
+            ))}
+          </Select>
+        </Col>
+
+        <Col>
+          <Table
+            dataSource={listEmployee}
+            columns={columns}
+            rowKey={(r) => r.id}
+            pagination={false}
+          />
+        </Col>
+
+      </Col>
+    </Row>
   )
 
   const Tab2 = () => (
@@ -282,7 +307,6 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
           defaultActiveKey={tabKey}
           onTabClick={(e) => handleSelectedTabKey(e)}
         />
-
 
       </SpinCustom>
     </Modal>

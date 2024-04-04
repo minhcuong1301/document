@@ -266,16 +266,7 @@ const CommonDocument = () => {
           </Row>
         </div>
       </SpinCustom>
-      <>
-        {isModalOpen && (
-          <AddDocument
-            idDocumentAdd={idDocumentAdd}
-            onCancel={() => setIsModalOpen(false)}
-            handleGetListDocument={handleGetListDocument}
-            handleGetChildFolder={handleGetChildFolder}
-          />
-        )}
-      </>
+
     </Layout>
   );
 };

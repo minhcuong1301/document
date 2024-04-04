@@ -41,7 +41,7 @@ const HomePage = () => {
   const dispatch = useDispatch();
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [name, setName] = useState(null);
-  const [phone, setPhone] = useState(null);
+  // const [phone, setPhone] = useState(null);
   const [position, setPosition] = useState(null);
   const [code, setCode] = useState(null);
   const [spinning, setSpinning] = useState(false);
@@ -49,7 +49,6 @@ const HomePage = () => {
   const [editUser, setEditUser] = useState(false);
   const [departments, setDepartments] = useState([]);
   const [openUpload, setOpenUpload] = useState(false)
-  console.log("openUpload", openUpload);
 
   //modal
   const [isOpenAddUserModal, setOpenAddUserModal] = useState(false);
@@ -102,7 +101,6 @@ const HomePage = () => {
       const params = {
         department_id: selectedStatus,
         name: name,
-        phone: phone,
         user_code: code,
         position: position,
       };
@@ -146,7 +144,7 @@ const HomePage = () => {
 
   useEffect(() => {
     handleGetUser();
-  }, [selectedStatus, name, code, phone, position]);
+  }, [selectedStatus, name, code, position]);
 
   useEffect(() => {
     handleGetDepartmentsList();
@@ -281,6 +279,7 @@ const HomePage = () => {
             >
               Thoát
             </Button>
+
             <Col className="filler--item">
               <Select
                 className="w-full"
@@ -314,15 +313,7 @@ const HomePage = () => {
                 allowClear
               />
             </Col>
-            <Col className="filler--item">
-              <Input.Search
-                onSearch={(v) => {
-                  setPhone(v);
-                }}
-                placeholder="Nhập số điên thoại ..."
-                allowClear
-              />
-            </Col>
+
             <Col className="filler--item">
               <Select
                 className="w-full"
