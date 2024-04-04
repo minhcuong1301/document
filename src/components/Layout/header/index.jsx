@@ -105,67 +105,9 @@ const AppHeader = () => {
 
   const handleNavigateProcedure = async (notification) => {
     handleChangeStatus(notification);
-    // handleCheckProcedureType(notification);
     window.navigatePage("common-document", null, {
       document_id: notification.document_id,
     });
-
-    // switch (notification.document_id){
-    //   case "QT1":
-    //     window.navigatePage("vehicle-procedure", null, {
-    //       procedure_id: notification.procedure_id,
-    //       tabKey: tabKey,
-    //     });
-    //     break;
-
-    //   case "QT5":
-    //     window.navigatePage("leaveprocess", null, {
-    //       procedure_id: notification.procedure_id,
-    //       // tabKey: tabKey,
-    //     });
-    //     break;
-
-    //   case "QT6":
-    //     console.log("general");
-    //     window.navigatePage("general-purchase-procedure", null, {
-    //       procedure_id: notification.procedure_id,
-    //     });
-
-    //     break;
-
-    //   case "QT7":
-    //     window.navigatePage("notarization-procedure", null, {
-    //       procedure_id: notification.procedure_id,
-    //     });
-    //     break;
-
-    //   case "QT8":
-    //     window.navigatePage("recruitment-procedure", null, {
-    //       procedure_id: notification.procedure_id,
-    //     });
-    //     break;
-
-    //   case "QT9":
-    //     window.navigatePage("office-procurement-procedure", null, {
-    //       procedure_id: notification.procedure_id,
-    //     });
-    //     break;
-
-    //   case "QT10":
-    //     window.navigatePage("procurement-proposal", null, {
-    //       procedure_id: notification.procedure_id,
-    //     });
-    //     break;
-
-    //   case "QT11":
-    //     window.navigatePage("overtime-procedure", null, {
-    //       procedure_id: notification.procedure_id,
-    //     });
-    //     break;
-
-    //   default:
-    //     break;
-    //}
   };
 
   useEffect(() => {

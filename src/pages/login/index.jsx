@@ -16,7 +16,7 @@ const LoginPage = () => {
     try {
       const { data, status } = await actionLogin(values)
       if (status === 200) {
-        Cookies.set(AIPT_WEB_TOKEN, `Bearer ${data?.token}`)
+        Cookies.set(AIPT_WEB_TOKEN, `Bearer ${data?.token}`,{expires:7})
         window.navigatePage("home")
       }
     } catch (error) {

@@ -36,8 +36,9 @@ const CommonDocument = () => {
   const [idLastFolder, setIdLastFolder] = useState();
   const [roleUser, setRoleUser] = useState([]);
   const [totalFile, setTotalFile] = useState();
-
-
+  const [searchParams] = useSearchParams();
+  const documentId = searchParams.get("document_id");
+console.log(documentId);
   const handleNavigateBack = (e, breadcrumb, index) => {
     const last_folder = [];
     breadcrumbs.map((item, index1) => {
@@ -75,7 +76,7 @@ const CommonDocument = () => {
         name: name || null,
         time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
-        // document_id: Document_id || idDocumentAdd
+   
       };
       if (idDocumentAdd) {
         params.document_id = idDocumentAdd;
@@ -101,7 +102,7 @@ const CommonDocument = () => {
         name: name || null,
         time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
-        document_id: value?.id,
+        document_id:  documentId|| value?.id,
       };
       const { data, status } = await actionGetListFolderChid(params);
       if (status === 200) {
