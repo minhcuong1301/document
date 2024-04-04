@@ -42,6 +42,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
 import { MdOutlinePersonAddAlt } from "react-icons/md";
 import { BsDownload } from "react-icons/bs";
+import { textAlign } from "@mui/system";
 
 const File = ({
   listDocument,
@@ -77,6 +78,7 @@ const File = ({
       const { data, status } = await actionDeleteFile(body);
       if (status === 200) {
         setSelectedRows([]);
+        console.log("selectedRows", selectedRows)
         if (idDocumentAdd) {
           const idAdd = {
             id: idDocumentAdd,
@@ -141,14 +143,15 @@ const File = ({
     setIdFile(id);
     setmodalEditName(true);
   };
-  
+
   const handleMenuClick = (e, doc_id, document_type, doc_name) => {
     setDocumentId(doc_id);
-    setSelectedRows([doc_id]);
+
     if (e.key === "1") {
       setDocumentId(doc_id);
       setOpenModalUpdateFile(true);
     } else if (e.key === "2") {
+      setSelectedRows([doc_id]);
       confirmDelete();
     } else if (e.key === "3") {
       hadleDownloadFile(doc_id);
@@ -166,7 +169,9 @@ const File = ({
       onOk() {
         handleDeleteFile(selectedRows);
       },
-      onCancel() { },
+      onCancel() {
+        setSelectedRows([]);
+      },
     });
   };
 
@@ -202,8 +207,8 @@ const File = ({
             return item.code;
           })
           .includes("R4") ||
-          userLogin.position_code === "GIAM_DOC" ||
-          userLogin.position_code === "P_GIAM_DOC") && {
+          userLogin.position_code === "ADMIN"
+        ) && {
           label: "Xóa",
           key: "2",
         },
@@ -215,8 +220,7 @@ const File = ({
           label: "Sửa tên",
           key: "4",
         },
-        (userLogin.position_code === "GIAM_DOC" ||
-          userLogin.position_code === "P_GIAM_DOC" ||
+        (
           userLogin.position_code === "ADMIN") && {
           label: "Phân quyền",
           key: "5",
@@ -229,8 +233,7 @@ const File = ({
             return item.code;
           })
           .includes("R4") ||
-          userLogin.position_code === "GIAM_DOC" ||
-          userLogin.position_code === "P_GIAM_DOC") && {
+          userLogin.position_code === "ADMIN") && {
           label: "Xóa",
           key: "2",
         },
@@ -251,8 +254,7 @@ const File = ({
           key: "4",
         },
 
-        (userLogin.position_code === "GIAM_DOC" ||
-          userLogin.position_code === "P_GIAM_DOC" ||
+        (
           userLogin.position_code === "ADMIN") && {
           label: "Phân quyền",
           key: "5",
@@ -304,7 +306,7 @@ const File = ({
                   "server",
                   ""
                 )}`}
-                type={extension_file == "mp4" ? "video/mp4" : "video/quicktime"}
+                type={extension_file === "mp4" ? "video/mp4" : "video/quicktime"}
               />
             </video>
           );
@@ -396,7 +398,7 @@ const File = ({
             <tr>
               <th></th>
               <th></th>
-              <th>Tên</th>
+              <th >Tên</th>
               <th>Ngày tạo</th>
               <th>Người tạo</th>
               <th></th>

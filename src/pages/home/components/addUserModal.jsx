@@ -71,7 +71,6 @@ const AddUser = ({ onClose, setUser, departments }) => {
     form.setFieldValue("date_of_birth", date);
   };
 
-
   return (
     <Modal
       open={true}

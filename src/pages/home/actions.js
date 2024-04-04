@@ -22,7 +22,7 @@ export const actionLockUser = (id) => {
   })
 }
 
-export const actionUpdateUser = (id,data) => {
+export const actionUpdateUser = (id, data) => {
   return api({
     method: "PUT",
     url: `/update-info-employee/${id}`,
@@ -41,5 +41,13 @@ export const actionGetDepartments = () => {
   return api({
     method: "GET",
     url: "/get-departments"
+  })
+}
+
+export const actionImportExcel = (data) => {
+  return api({
+    method: "POST",
+    url: "/add-user-by-excel",
+    data
   })
 }

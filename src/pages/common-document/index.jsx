@@ -23,8 +23,9 @@ const CommonDocument = () => {
 
   const [spinning, setSpinning] = useState(false)
   const [listDocument, setListDocument] = useState([]);
+  console.log("list", listDocument);
   const [name, setName] = useState(null)
-  const [dateStart, setDateStart] = useState()
+  const [dateStart, setDateStart] = useState(null)
   const [dateEnd, setDateEnd] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idDocumentAdd, setIdDocumentAdd] = useState()
@@ -242,21 +243,19 @@ const CommonDocument = () => {
               )}
 
             </Breadcrumb>
-
             <File
               listDocument={listDocument}
               handleGetListDocument={handleGetListDocument}
               handleGetChildFolder={handleGetChildFolder}
               setIsModalOpen={setIsModalOpen}
               idDocumentAdd={idDocumentAdd}
+              setListDocument={setListDocument}
               roleUser={roleUser}
             />
-
           </Row>
 
         </div>
       </SpinCustom>
-
       <>
         {isModalOpen && <AddDocument
           idDocumentAdd={idDocumentAdd}

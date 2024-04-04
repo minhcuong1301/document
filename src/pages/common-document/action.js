@@ -108,3 +108,20 @@ export const actionDecentralize = (params, id_doc) => {
 
   })
 }
+
+export const actionDecentralizeDep = (params, id_doc) => {
+  return api({
+    method: "POST",
+    url: `/decentralization-department/${id_doc}`,
+    data: params
+
+  })
+}
+
+export const actionGetListRoleUser = ( id_doc,data) => {
+  return api({
+    method: "POST",
+    url: `/get-list-role-user/${id_doc}`,
+    data: data
+  })
+}

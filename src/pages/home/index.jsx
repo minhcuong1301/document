@@ -9,7 +9,6 @@ import {
 } from "utils/constants/config";
 import InfoUserModal from "./components/info-user";
 
-import * as XLSX from "xlsx";
 // import ExportPDF from "./exportPDF";
 import { IoLockClosedOutline } from "react-icons/io5";
 import { GoUnlock } from "react-icons/go";
@@ -18,9 +17,11 @@ import { GoUnlock } from "react-icons/go";
 // import { faLockOpen } from "@fortawesome/free-regular-svg-icons";
 // import { faEdit } from "@fortawesome/free-regular-svg-icons";
 // import { faUserPen } from "@fortawesome/free-regular-svg-icons";
-import { FilePdfOutlined } from "@ant-design/icons";
 import { FiEdit } from "react-icons/fi";
-import UploadExcel from './components/uploadExcel'
+
+
+import * as XLSX from "xlsx";
+
 
 import {
   Button,
@@ -38,7 +39,7 @@ import EditUser from "./components/editUserModal";
 import { actionGetDepartments } from "./actions";
 import * as actions from 'utils/constants/redux-actions'
 import { useDispatch } from "react-redux";
-
+import UploadExcel from './components/uploadExcel'
 
 const HomePage = () => {
   const userLogin = useSelector((state) => state?.profile);
@@ -53,7 +54,7 @@ const HomePage = () => {
   const [editUser, setEditUser] = useState(false);
   const [departments, setDepartments] = useState([]);
   const [openUpload, setOpenUpload] = useState(false)
-  console.log(openUpload)
+  console.log("openUpload", openUpload);
 
   //modal
   const [isOpenAddUserModal, setOpenAddUserModal] = useState(false);
@@ -113,8 +114,6 @@ const HomePage = () => {
       const { data, status } = await actionGetUsers(params);
 
       if (status === 200) {
-        console.log("params", params);
-        console.log("data", data);
         setUser(data);
       }
     } catch (error) {
@@ -325,16 +324,6 @@ const HomePage = () => {
               />
             </Col>
             <Col className="filler--item">
-              {
-                /* <Input.Search
-                onSearch={(v) => {
-                  setPosition(v);
-                }}
-                placeholder="Nhập chức vụ ..."
-                allowClear */
-                //  onChange={handleInputPositionChange}
-                //  value={position}
-              }
               <Select
                 className="w-full"
                 placeholder=" Chức vụ"
@@ -348,19 +337,19 @@ const HomePage = () => {
                 ))}
               </Select>
             </Col>
+            {userLogin.position_code === "ADMIN" && (
+              <Col>
+                <Button
+                  className="w-full"
+                  type="primary"
+                  onClick={() => setOpenAddUserModal(true)}
+                >
+                  Thêm tài khoản
+                </Button>
+              </Col>
+            )}
 
-            {userLogin.position_code === "ADMIN"
-              && (
-                <Col>
-                  <Button
-                    className="w-full"
-                    type="primary"
-                    onClick={() => setOpenAddUserModal(true)}
-                  >
-                    Thêm tài khoản
-                  </Button>
-                </Col>
-              )}
+
             {userLogin.position_code === "ADMIN"
               && (
                 <Col>
@@ -368,9 +357,8 @@ const HomePage = () => {
                     onClick={() => { setOpenUpload(true) }}
                     className="w-full"
                     type="primary"
-
                   >
-                    {`${openUpload}`}
+                    Nhập excel
                   </Button>
                 </Col>
               )}
@@ -433,9 +421,9 @@ const HomePage = () => {
           />
         )}
 
-        {/* {true && <UploadExcel
-        />
-        } */}
+        {openUpload && <UploadExcel
+          setUser={setUser}
+          onClose={() => setOpenUpload(false)} />}
       </>
     </Layout>
   );

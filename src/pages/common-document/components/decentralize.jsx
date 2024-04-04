@@ -3,13 +3,15 @@ import {
   Button,
   Col, Row, Modal, Table,
   Space, Select, message,
-  Checkbox, Radio
+  Checkbox, Tabs
 } from "antd";
 import { useEffect, useState } from "react";
 import {
   actionGetlistEmpoyee,
   actionGetListRole,
   actionDecentralize,
+  actionDecentralizeDep,
+  actionGetListRoleUser,
 } from "../action";
 import { useSelector } from "react-redux";
 import { TYPE_POWER } from "utils/constants/config";
@@ -19,11 +21,12 @@ import { TYPE_POWER } from "utils/constants/config";
 const Decentralize = ({ onCancel, documentId, fileType }) => {
   const [spinning, setSpinning] = useState(false);
   const [listEmployee, setListEmployee] = useState([]);
-  const [employee, setEmployee] = useState();
-  const userLogin = useSelector((state) => state.profile);
+  // const [employee, setEmployee] = useState();
+  // const userLogin = useSelector((state) => state.profile);
   const department = useSelector((state) => state.departments);
-  const [permissionType, setPermissionType] = useState(0);
-
+  const [tabKey, setTabKey] = useState("tab-1");
+  const [selectedRoles, setSelectedRoles] = useState([]);
+  const [selectedDep, setSelectedDep] = useState([]);
   const [listRole, setlistRole] = useState([]);
   const [roleUserMap, setRoleUserMap] = useState([]);
 
@@ -31,31 +34,50 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
     setSpinning(true);
     try {
       const params = {
-        department_id: department || userLogin.department_id,
+        // department_id: department || userLogin.department_id,
+        document_id: documentId
       };
-      let { data, status } = await actionGetlistEmpoyee(params);
+      const { data, status } = await actionGetlistEmpoyee(params);
       if (status === 200) {
-        const roleUserInitState = data.map((item) => ({ id: item.id, role: [] }));
         setListEmployee(data.filter((item) => item.position_code !== "ADMIN"));
-        setRoleUserMap(roleUserInitState);
+        const respone = await actionGetListRoleUser(documentId, { list_user: data.map(e => e.id) });
+        const init_role = []
+        JSON.parse(respone.data.list_role).map(item => {
+          const obj = {
+            user_id: item.user_id,
+            role: item.role.map(r => r.id)
+          }
+          init_role.push(obj)
+        })
+        setRoleUserMap(init_role);
       }
     } catch (err) {
       console.log(err);
     }
     setSpinning(false);
   };
-  // setRoleDepartmentMap(department.map((item) => ({ id: item.id, role: [] })))
+
   const handleCheckbox = (employeeId, role) => {
-    setRoleUserMap((prevMap) => {
-      return prevMap.map((item) => {
-        if (item.id === employeeId) {
-          const updatedRoles = item.role.includes(role.id)
-            ? item.role.filter((id) => id !== role.id)
-            : [...item.role, role.id];
-          return { ...item, role: updatedRoles };
+    for (let i = 0; i < roleUserMap.length; i++) {
+      if (roleUserMap[i].user_id === employeeId) {  
+        if (roleUserMap[i].role.indexOf(role.id) !== -1) {
+          roleUserMap[i].role = roleUserMap[i].role.filter(item => item !== role.id) || []
+        } else {
+          roleUserMap[i].role = [...roleUserMap[i].role, role.id] || []
         }
-        return item;
-      });
+        console.log(roleUserMap[i])
+      }
+    }
+    setRoleUserMap(roleUserMap)
+  }
+
+  const handleCheckboxTab2 = (roleId) => {
+    setSelectedRoles(prevSelectedRoles => {
+      if (prevSelectedRoles.includes(roleId)) {
+        return prevSelectedRoles.filter(id => id !== roleId);
+      } else {
+        return [...prevSelectedRoles, roleId];
+      }
     });
   };
 
@@ -75,39 +97,41 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
   const handleSubmit = async () => {
     setSpinning(true);
     try {
-      const list_role = [];
-      for (const employee of roleUserMap) {
+      if (tabKey === 'tab-1') {
+        const list_role = [];
+        for (const employee of roleUserMap) {
+          const params = {
+            id_emp: employee.user_id,
+            emp_role: employee.role,
+          };
+          list_role.push(params);
+        }
+        
+        const { data, status } = await actionDecentralize({ list_role: list_role }, documentId);
+        if (status === 200) {
+          const list_n_role = []
+          JSON.parse(data?.list_role).map(item => {
+            list_n_role.push({
+              user_id: item.id_emp,
+              role: item.emp_role
+            })
+          })
+
+          setRoleUserMap(list_n_role)
+          message.success(data?.message);
+        }
+
+      }
+      else {
         const params = {
-          id_emp: employee.id,
-          emp_role: employee.role,
-
-        };
-        list_role.push(params);
+          department: selectedDep,
+          role: selectedRoles
+        }
+        const { data, status } = await actionDecentralizeDep({ list_role: params }, documentId);
+        if (status === 200) {
+          message.success(data?.message);
+        }
       }
-      const { data, status } = await actionDecentralize({ list_role: list_role, department_id: [], role_department: [] }, documentId);
-      if (status === 200) {
-        message.success(data?.message);
-      }
-      // if(permissionType === 0){
-      //   for (const employee of roleUserMap) {
-      //     const params = {
-      //       id_emp: employee.id,
-      //       list_role:employee.role
-      //     };
-      //     paramsArray.push(params);
-      //   }
-      // }
-      // if(permissionType === 1){
-      //   for (const employee of roleUserMap) {
-      //     const params = {
-      //       id_emp: employee.id,
-      //       emp_roles:employee.role
-      //     };
-      //     paramsArray.push(params);
-      //   }
-      // }
-
-
 
     } catch (err) {
       console.log(err);
@@ -115,11 +139,17 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
     setSpinning(false);
   };
 
-
   useEffect(() => {
     handleGetListEmployee();
+  }, [tabKey]);
+
+  useEffect(() => {
     handleShowPowers();
   }, []);
+
+  const handleChecked = (list, employee, role_id) => {
+    return list.find((item) => item.user_id === employee.id)?.role.includes(role_id)
+  }
 
   const columns = [
     {
@@ -140,27 +170,99 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
       align: "center",
       render: (f, employee) => (
         <Space size="middle">
-          {listRole.map((role) => (
-            <Row key={role.id}>
+          {listRole.map((role, index) => (
+            (<Row key={role.id}>
               <Checkbox
-                checked={roleUserMap.find((item) => item.id === employee.id)?.role.includes(role.id)}
+                defaultChecked={handleChecked(roleUserMap, employee, role.id)}
                 onChange={() => handleCheckbox(employee.id, role)}
               >
                 {role.name}
               </Checkbox>
-            </Row>
+            </Row>)
           ))}
         </Space>
       ),
     },
   ];
 
+  const Tab1 = () => (
+    <Table
+      dataSource={listEmployee}
+      columns={columns}
+      rowKey={(r) => r.id}
+      pagination={false}
+    />
+  )
+
+  const Tab2 = () => (
+    <Row gutter={[16, 30]}>
+
+      <Col md={8} xs={24}>
+        <Select
+          className="w-full"
+          mode="multiple"
+          placeholder="Phòng ban"
+          showSearch
+          optionFilterProp="children"
+          filterOption={(input, option) =>
+            `${option.children}`
+              .toLocaleLowerCase()
+              .includes(input.toLocaleLowerCase())
+          }
+          value={selectedDep}
+          onChange={(v) => setSelectedDep(v)}
+        >
+          {department.map((u) => (
+            <Select.Option key={u?.id} value={u.id}>
+              {u?.name}
+            </Select.Option>
+          ))}
+        </Select>
+      </Col>
+
+      <Col span={16} className="checkbox-style">
+
+        {listRole.map((role) => (
+          <Row key={role.id}>
+            <Checkbox
+              checked={selectedRoles.includes(role.id)}
+              onChange={() => handleCheckboxTab2(role.id)}
+            >
+              {role.name}
+            </Checkbox>
+          </Row>
+        ))}
+      </Col>
+
+    </Row>
+
+
+  )
+
+  const TabItem = [
+    {
+      key: "tab-1",
+      label: "Quyền theo nhân sự",
+      children: <Tab1 />,
+    },
+    {
+      key: "tab-2",
+      label: "Quyền theo phòng ban",
+      children: <Tab2 />,
+    },
+  ]
+
+  const handleSelectedTabKey = (e) => {
+    setTabKey(e);
+    // window.history.pushState(null, null, `?tabKey=${e}`);
+  };
+
   return (
     <Modal
       open={true}
       className="common-long-modal"
       title="Phân quyền"
-      width={600}
+      width={800}
       footer={
         <Row gutter={[16, 0]} justify={"center"}>
           <Col>
@@ -175,32 +277,13 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
       }
     >
       <SpinCustom spinning={spinning}>
-        {/* <Row gutter={[16, 16]}>
+        <Tabs
+          items={TabItem}
+          defaultActiveKey={tabKey}
+          onTabClick={(e) => handleSelectedTabKey(e)}
+        />
 
-          <Col >
-            <Select
-              className="w-full"
-              placeholder="Kiểu phân quyền"
-              options={Object.entries(TYPE_POWER)?.map(([key, value]) => ({
-                value: Number(key),
-                label: value,
-              }))}
-              onChange={(value) => setPermissionType(value)}
-            ></Select>
-          </Col>
 
-        </Row>
-         */}
-
-        <Space direction="vertical" size={30}>
-          <Table
-            dataSource={listEmployee}
-            // dataSource={permissionType === 0 ? listEmployee : department}
-            columns={columns}
-            rowKey={(r) => r.id}
-            pagination={false}
-          />
-        </Space>
       </SpinCustom>
     </Modal>
   );

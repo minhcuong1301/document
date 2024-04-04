@@ -20,12 +20,14 @@ const UpdateNameFile = ({ oldName, onCancel, idFile, idDocumentAdd, handleGetLis
       }
       const { data, status } = await actionUpdateNameFile(body);
       if (status === 200) {
+        onCancel()
         if (!idDocumentAdd) {
           await handleGetListDocument()
+
         } else {
+
           const body1 = {
             document_id: idDocumentAdd,
-            accessScope: 2
           };
           const { data, status } = await actionGetListFolderChid(body1);
           if (status === 200) {
@@ -42,7 +44,7 @@ const UpdateNameFile = ({ oldName, onCancel, idFile, idDocumentAdd, handleGetLis
     }
     setSpinning(false)
   }
-  
+
   return (
     <Modal
       className="form-modal"

@@ -23,7 +23,7 @@ const AddDocument = ({ idDocumentAdd, onCancel, handleGetListDocument, handleGet
       files.forEach((file) => {
         formData.append("files", file);
       });
-      // formData.append("type", formData.getAll("files").length === 1 ? 2 : 1)
+
       formData.append("ascc_id", 2)
       if (idDocumentAdd) {
         formData.append("document_id", idDocumentAdd)
@@ -33,7 +33,7 @@ const AddDocument = ({ idDocumentAdd, onCancel, handleGetListDocument, handleGet
         if (idDocumentAdd) {
           const idAdd = {
             id: idDocumentAdd,
-           
+
           }
           await handleGetChildFolder(idAdd)
         }
@@ -62,6 +62,7 @@ const AddDocument = ({ idDocumentAdd, onCancel, handleGetListDocument, handleGet
           >
             <Input placeholder="Tên tài liệu" />
           </Form.Item>
+          
           <Form.Item>
             <UploadFile
               setFiles={setFiles}
