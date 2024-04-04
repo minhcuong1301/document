@@ -17,6 +17,7 @@ import {
   Form,
   Input,
   Select,
+  Space,
   message,
   DatePicker,
 } from "antd";
@@ -68,20 +69,21 @@ const EditUser = ({ onClose, setUser, editUser }) => {
       closeIcon={false}
       title="Sửa nhân viên"
       className="common-long-modal"
-      width={350}
-      footer={<Row gutter={[16, 0]} justify={"center"}>
-        <Col  >
-          <Button onClick={onClose} className="w-full" >Thoát</Button>
-        </Col>
-        <Col >
-          <Button className="w-full"
-            onClick={handleEditUser}
-            type="primary"
-          >
-            Cập nhật
-          </Button>
-        </Col>
-      </Row>}
+      width={500}
+      footer={
+        <Row gutter={[16, 0]} justify={"center"}>
+          <Col>
+            <Button onClick={onClose} className="w-full">
+              Thoát
+            </Button>
+          </Col>
+          <Col>
+            <Button className="w-full" onClick={handleEditUser} type="primary">
+              Cập nhật
+            </Button>
+          </Col>
+        </Row>
+      }
     >
       <SpinCutom SpinCutom spinning={callingApi}>
         <Form
@@ -94,81 +96,97 @@ const EditUser = ({ onClose, setUser, editUser }) => {
         >
           <Row>
             <Col span={24}>
-              <Form.Item
-                name="name"
-                rules={[{ required: true, message: "Vui lòng nhập tên" }]}
-                label="Họ và tên:"
-              >
-                <Input placeholder="Nhập tên " />
-              </Form.Item>
+              <Row gutter={30}>
+                <Col span={12}>
+                  <Form.Item
+                    name="name"
+                    rules={[{ required: true, message: "Vui lòng nhập tên" }]}
+                    label="Họ và tên:"
+                  >
+                    <Input placeholder="Nhập tên " />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    name="email"
+                    rules={[
+                      { required: true, message: "Vui lòng nhập email" },
+                      {
+                        pattern: EMAIL_PATTERN,
+                        message: "Email không đúng định dạng !",
+                      },
+                    ]}
+                    label="Email:"
+                  >
+                    <Input placeholder="Nhập email " />
+                  </Form.Item>
+                </Col>
+              </Row>
 
-              <Form.Item
-                name="email"
-                rules={[
-                  { required: true, message: "Vui lòng nhập email" },
-                  {
-                    pattern: EMAIL_PATTERN,
-                    message: "Email không đúng định dạng !",
-                  },
-                ]}
-                label="Email:"
-              >
-                <Input placeholder="Nhập email " />
-              </Form.Item>
+              <Row gutter={30}>
+                {/* <Space size="large"> */}
+                <Col span={12}>
+                  <Form.Item name="date_of_birth" label="Ngày sinh:">
+                    <Col className="w-full">
+                      <DatePicker
+                        onChange={(date) => handleDateChange(date)}
+                        allowClear={false}
+                        format={DATE_FORMAT}
+                      />
+                    </Col>
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    name="phone"
+                    rules={[
+                      {
+                        pattern: PHONE_PATTERN,
+                        message: "Số điện thoại không đúng định dạng !",
+                      },
+                    ]}
+                    label="Số điện thoại:"
+                  >
+                    <Input placeholder="Nhập số điện thoại " />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={30}>
+                <Col span={12}>
+                  <Form.Item
+                    name="position_id"
+                    rules={[
+                      { required: true, message: "Vui lòng chọn chức vụ !" },
+                    ]}
+                    label="Vị trí"
+                  >
+                    <Select
+                      className="w-full"
+                      placeholder="chức vụ"
+                      options={Object.entries(
+                        positions?.filter((a) => a?.code !== "GIAM_DOC")
+                      )?.map((e) => ({
+                        value: e[1].id,
+                        label: e[1].name,
+                      }))}
+                    ></Select>
+                  </Form.Item>
+                </Col>
 
-              <Form.Item name="date_of_birth" label="Ngày sinh">
-                <Row gutter={[4, 0]}>
-                  <Col className="w-full">
-                    <DatePicker
-                      onChange={(date) => handleDateChange(date)}
-                      allowClear={false}
-                      format={DATE_FORMAT}
+                <Col span={12}>
+                  <Form.Item name="department_id" label="Phòng ban">
+                    <Select
+                      showSearch
+                      className="w-full"
+                      placeholder="Phòng ban"
+                      options={Object.entries(departments)?.map((e) => ({
+                        value: e[1].id,
+                        label: e[1].name,
+                      }))}
                     />
-                  </Col>
-                </Row>
-              </Form.Item>
-
-              <Form.Item
-                name="phone"
-                rules={[
-                  {
-                    pattern: PHONE_PATTERN,
-                    message: "Số điện thoại không đúng định dạng !",
-                  },
-                ]}
-                label="Số điện thoại:"
-              >
-                <Input placeholder="Nhập số điện thoại " />
-              </Form.Item>
-
-              <Form.Item
-                name="position_id"
-                rules={[{ required: true, message: "Vui lòng chọn chức vụ !" }]}
-                label="Vị trí"
-              >
-                <Select
-                  className="w-full"
-                  placeholder="chức vụ"
-                  options={Object.entries(
-                    positions?.filter((a) => a?.code !== "GIAM_DOC")
-                  )?.map((e) => ({
-                    value: e[1].id,
-                    label: e[1].name,
-                  }))}
-                ></Select>
-              </Form.Item>
-
-              <Form.Item name="department_id" label="Phòng ban">
-                <Select
-                  showSearch
-                  className="w-full"
-                  placeholder="Phòng ban"
-                  options={Object.entries(departments)?.map((e) => ({
-                    value: e[1].id,
-                    label: e[1].name,
-                  }))}
-                />
-              </Form.Item>
+                  </Form.Item>
+                </Col>
+              </Row>
 
               <Form.Item name="telegram_chat_id" label="Telegram ID:">
                 <Input placeholder="Nhập telegram id " />

@@ -3,10 +3,7 @@ import { SpinCustom } from "components";
 import { actionGetUsers, actionLockUser } from "./actions";
 import { useSelector } from "react-redux";
 import AddUserModal from "./components/addUserModal";
-import {
-  DEPARTMENTS_CODE,
-  POSITION_CODE,
-} from "utils/constants/config";
+import { DEPARTMENTS_CODE, POSITION_CODE } from "utils/constants/config";
 import InfoUserModal from "./components/info-user";
 
 // import ExportPDF from "./exportPDF";
@@ -19,9 +16,7 @@ import { GoUnlock } from "react-icons/go";
 // import { faUserPen } from "@fortawesome/free-regular-svg-icons";
 import { FiEdit } from "react-icons/fi";
 
-
 import * as XLSX from "xlsx";
-
 
 import {
   Button,
@@ -37,13 +32,13 @@ import {
 } from "antd";
 import EditUser from "./components/editUserModal";
 import { actionGetDepartments } from "./actions";
-import * as actions from 'utils/constants/redux-actions'
+import * as actions from "utils/constants/redux-actions";
 import { useDispatch } from "react-redux";
 import UploadExcel from './components/uploadExcel'
 
 const HomePage = () => {
   const userLogin = useSelector((state) => state?.profile);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [name, setName] = useState(null);
   const [phone, setPhone] = useState(null);
@@ -79,9 +74,9 @@ const HomePage = () => {
         "Họ và tên": e?.name,
         "Phòng ban": e?.department_name,
         "Số điện thoại": e?.phone,
-        "Email": e?.email,
+        Email: e?.email,
         "Chức vụ": e?.position_name,
-        "Telegram": e?.telegram_chat_id
+        Telegram: e?.telegram_chat_id,
       };
     });
     const workbook = XLSX.utils.book_new();
@@ -142,7 +137,7 @@ const HomePage = () => {
       const { data, status } = await actionGetDepartments();
       if (status === 200) {
         setDepartments(data);
-        dispatch({ type: actions.SET_PROFILE, payload: data })
+        dispatch({ type: actions.SET_PROFILE, payload: data });
       }
     } catch (error) {
       console.log(error);
@@ -152,7 +147,6 @@ const HomePage = () => {
   useEffect(() => {
     handleGetUser();
   }, [selectedStatus, name, code, phone, position]);
-
 
   useEffect(() => {
     handleGetDepartmentsList();
@@ -246,9 +240,15 @@ const HomePage = () => {
               onConfirm={() => handleLock(r.id)}
             >
               {r.account_stutus === 1 && r.position_code !== "ADMIN" ? (
-                <IoLockClosedOutline className="icon-fa" />
+                <Button danger className="btn-lock">
+                  <IoLockClosedOutline className="icon-fa icon-fa-lock" />
+                </Button>
               ) : (
-                r.position_code !== "ADMIN" && <GoUnlock className="icon-fa" />
+                r.position_code !== "ADMIN" && (
+                  <Button className="btn-unlock">
+                    <GoUnlock className="icon-fa icon-fa-unlock" />
+                  </Button>
+                )
               )}
             </Popconfirm>
           )}
