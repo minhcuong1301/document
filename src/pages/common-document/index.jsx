@@ -38,7 +38,7 @@ const CommonDocument = () => {
   const [totalFile, setTotalFile] = useState();
   const [searchParams] = useSearchParams();
   const documentId = searchParams.get("document_id");
-console.log(documentId);
+  console.log(documentId);
   const handleNavigateBack = (e, breadcrumb, index) => {
     const last_folder = [];
     breadcrumbs.map((item, index1) => {
@@ -76,7 +76,6 @@ console.log(documentId);
         name: name || null,
         time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
-   
       };
       if (idDocumentAdd) {
         params.document_id = idDocumentAdd;
@@ -102,7 +101,7 @@ console.log(documentId);
         name: name || null,
         time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
-        document_id:  documentId|| value?.id,
+        document_id: documentId || value?.id,
       };
       const { data, status } = await actionGetListFolderChid(params);
       if (status === 200) {
@@ -164,75 +163,77 @@ console.log(documentId);
     <Layout className="common-layout document-page">
       <SpinCustom spinning={spinning}>
         <div className="common-layout--header">
-          <Row className="filler" gutter={[8, 8]}>
-            <Col span={24}>
-              <Button
-                className="exit-home"
-                onClick={() => window.navigatePage("home-navigate")}
-              >
-                Thoát
-              </Button>
-            </Col>
+          <Space direction="vertical" size="middle">
+            <Row className="filler" gutter={[8, 8]}>
+              <Col span={24}>
+                <Button
+                  className="exit-home"
+                  onClick={() => window.navigatePage("home-navigate")}
+                >
+                  Thoát
+                </Button>
+              </Col>
 
-            <Col>
-              <Row gutter={[8, 0]}>
-                <Col className="align--center">
-                  <span>Từ:</span>
-                </Col>
-                <Col>
-                  <DatePicker
-                    defaultValue={dateStart}
-                    onChange={(v) => {
-                      setDateStart(v);
-                    }}
-                    allowClear
-                    format={DATE_FORMAT}
-                  />
-                </Col>
-              </Row>
-            </Col>
+              <Col>
+                <Row gutter={[8, 0]}>
+                  <Col className="align--center">
+                    <span>Từ:</span>
+                  </Col>
+                  <Col>
+                    <DatePicker
+                      defaultValue={dateStart}
+                      onChange={(v) => {
+                        setDateStart(v);
+                      }}
+                      allowClear
+                      format={DATE_FORMAT}
+                    />
+                  </Col>
+                </Row>
+              </Col>
 
-            <Col>
-              <Row gutter={[8, 0]}>
-                <Col className="align--center">
-                  <span>Đến:</span>
-                </Col>
-                <Col>
-                  <DatePicker
-                    defaultValue={dateEnd}
-                    onChange={(v) => {
-                      setDateEnd(v);
-                    }}
-                    allowClear
-                    format={DATE_FORMAT}
-                  />
-                </Col>
-              </Row>
-            </Col>
+              <Col>
+                <Row gutter={[8, 0]}>
+                  <Col className="align--center">
+                    <span>Đến:</span>
+                  </Col>
+                  <Col>
+                    <DatePicker
+                      defaultValue={dateEnd}
+                      onChange={(v) => {
+                        setDateEnd(v);
+                      }}
+                      allowClear
+                      format={DATE_FORMAT}
+                    />
+                  </Col>
+                </Row>
+              </Col>
 
-            <Col className="filler--item">
-              <Input.Search
-                onSearch={(v) => {
-                  setName(v);
-                }}
-                placeholder="Nhập tên ..."
-                allowClear
-              />
-            </Col>
-
-            <Col span={12}>
-              <Button
-                onClick={() => setIsModalOpen(true)}
-                type="primary"
-                className="doc-add-btn"
-              >
-                Thêm tài liệu
-              </Button>
-            </Col>
-          </Row>
+              <Col className="filler--item">
+                <Input.Search
+                  onSearch={(v) => {
+                    setName(v);
+                  }}
+                  placeholder="Nhập tên ..."
+                  allowClear
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <Button
+                  onClick={() => setIsModalOpen(true)}
+                  type="primary"
+                  className="doc-add-btn"
+                >
+                  Thêm tài liệu
+                </Button>
+              </Col>
+            </Row>
+          </Space>
         </div>
         <div className="common-layout--content">
-
           <Row gutter={[8, 16]}>
             <Breadcrumb className="dropdown-action ">
               <Breadcrumb.Item
@@ -267,7 +268,16 @@ console.log(documentId);
           </Row>
         </div>
       </SpinCustom>
-
+      <>
+        {isModalOpen && (
+          <AddDocument
+            idDocumentAdd={idDocumentAdd}
+            onCancel={() => setIsModalOpen(false)}
+            handleGetListDocument={handleGetListDocument}
+            handleGetChildFolder={handleGetChildFolder}
+          />
+        )}
+      </>
     </Layout>
   );
 };

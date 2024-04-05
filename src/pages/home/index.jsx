@@ -34,7 +34,7 @@ import EditUser from "./components/editUserModal";
 import { actionGetDepartments } from "./actions";
 import * as actions from "utils/constants/redux-actions";
 import { useDispatch } from "react-redux";
-import UploadExcel from './components/uploadExcel'
+import UploadExcel from "./components/uploadExcel";
 
 const HomePage = () => {
   const userLogin = useSelector((state) => state?.profile);
@@ -48,7 +48,7 @@ const HomePage = () => {
   const [user, setUser] = useState([]);
   const [editUser, setEditUser] = useState(false);
   const [departments, setDepartments] = useState([]);
-  const [openUpload, setOpenUpload] = useState(false)
+  const [openUpload, setOpenUpload] = useState(false);
 
   //modal
   const [isOpenAddUserModal, setOpenAddUserModal] = useState(false);
@@ -238,12 +238,12 @@ const HomePage = () => {
               onConfirm={() => handleLock(r.id)}
             >
               {r.account_stutus === 1 && r.position_code !== "ADMIN" ? (
-                <Button className="btn-unlock">
+                <Button className="btn-lock">
                   <IoLockClosedOutline className="icon-fa icon-fa-lock" />
                 </Button>
               ) : (
                 r.position_code !== "ADMIN" && (
-                  <Button danger className="btn-lock">
+                  <Button danger className="btn-unlock">
                     <GoUnlock className="icon-fa icon-fa-unlock" />
                   </Button>
                 )
@@ -272,98 +272,105 @@ const HomePage = () => {
     <Layout className="common-layout">
       <SpinCustom spinning={spinning}>
         <div className="common-layout--header">
-          <Row className="filler" gutter={[8, 8]}>
-            <Button
-              className="exit-home"
-              onClick={() => window.navigatePage("home-navigate")}
-            >
-              Thoát
-            </Button>
-
-            <Col className="filler--item">
-              <Select
-                className="w-full"
-                placeholder="Phòng ban"
-                onChange={(e) => setSelectedStatus(e)}
-                allowClear
+          <Space direction="vertical" size="middle">
+            <Row className="filler" gutter={[8, 8]}>
+              <Button
+                className="exit-home"
+                onClick={() => window.navigatePage("home-navigate")}
               >
-                {Object.keys(DEPARTMENTS_CODE).map((key) => (
-                  <Select.Option key={key} value={key}>
-                    {DEPARTMENTS_CODE[key]}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Col>
+                Thoát
+              </Button>
+              <Space size="large">
+                <Col className="filler--item">
+                  <Select
+                    className="w-full"
+                    placeholder="Phòng ban"
+                    onChange={(e) => setSelectedStatus(e)}
+                    allowClear
+                  >
+                    {Object.keys(DEPARTMENTS_CODE).map((key) => (
+                      <Select.Option key={key} value={key}>
+                        {DEPARTMENTS_CODE[key]}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Col>
 
-            <Col className="filler--item">
-              <Input.Search
-                onSearch={(v) => {
-                  setName(v);
-                }}
-                placeholder="Nhập tên ..."
-                allowClear
-              />
-            </Col>
-            <Col className="filler--item">
-              <Input.Search
-                onSearch={(v) => {
-                  setCode(v);
-                }}
-                placeholder="Nhập mã nhân viên ..."
-                allowClear
-              />
-            </Col>
+                <Col className="filler--item">
+                  <Input.Search
+                    onSearch={(v) => {
+                      setName(v);
+                    }}
+                    placeholder="Nhập tên ..."
+                    allowClear
+                  />
+                </Col>
+                <Col className="filler--item">
+                  <Input.Search
+                    onSearch={(v) => {
+                      setCode(v);
+                    }}
+                    placeholder="Nhập mã nhân viên ..."
+                    allowClear
+                  />
+                </Col>
 
-            <Col className="filler--item">
-              <Select
-                className="w-full"
-                placeholder=" Chức vụ"
-                onChange={(e) => setPosition(e)}
-                allowClear
-              >
-                {Object.keys(POSITION_CODE).map((key) => (
-                  <Select.Option key={key} value={key}>
-                    {POSITION_CODE[key]}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Col>
-            {userLogin.position_code === "ADMIN" && (
-              <Col>
-                <Button
-                  className="w-full"
-                  type="primary"
-                  onClick={() => setOpenAddUserModal(true)}
-                >
-                  Thêm tài khoản
-                </Button>
-              </Col>
-            )}
+                <Col className="filler--item">
+                  <Select
+                    className="w-full"
+                    placeholder=" Chức vụ"
+                    onChange={(e) => setPosition(e)}
+                    allowClear
+                  >
+                    {Object.keys(POSITION_CODE).map((key) => (
+                      <Select.Option key={key} value={key}>
+                        {POSITION_CODE[key]}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Col>
+              </Space>
+            </Row>
+            <Row>
+              <Space size="large">
+                {userLogin.position_code === "ADMIN" && (
+                  <Col>
+                    <Button
+                      className="w-full"
+                      type="primary"
+                      onClick={() => setOpenAddUserModal(true)}
+                    >
+                      Thêm tài khoản
+                    </Button>
+                  </Col>
+                )}
 
+                {userLogin.position_code === "ADMIN" && (
+                  <Col>
+                    <Button
+                      onClick={() => {
+                        setOpenUpload(true);
+                      }}
+                      className="w-full"
+                      type="primary"
+                    >
+                      Nhập excel
+                    </Button>
+                  </Col>
+                )}
 
-            {userLogin.position_code === "ADMIN"
-              && (
                 <Col>
                   <Button
-                    onClick={() => { setOpenUpload(true) }}
-                    className="w-full"
+                    onClick={handleExportData}
+                    // icon={<FilePdfOutlined />}
                     type="primary"
                   >
-                    Nhập excel
+                    Xuất excel
                   </Button>
                 </Col>
-              )}
-
-            <Col>
-              <Button
-                onClick={handleExportData}
-                // icon={<FilePdfOutlined />}
-                type="primary"
-              >
-                Xuất excel
-              </Button>
-            </Col>
-          </Row>
+              </Space>
+            </Row>
+          </Space>
         </div>
 
         <div className="common-layout--content">
@@ -389,7 +396,6 @@ const HomePage = () => {
             departments={departments}
             onClose={() => {
               setOpenAddUserModal(false);
-
             }}
           />
         )}
@@ -412,9 +418,9 @@ const HomePage = () => {
           />
         )}
 
-        {openUpload && <UploadExcel
-          setUser={setUser}
-          onClose={() => setOpenUpload(false)} />}
+        {openUpload && (
+          <UploadExcel setUser={setUser} onClose={() => setOpenUpload(false)} />
+        )}
       </>
     </Layout>
   );
