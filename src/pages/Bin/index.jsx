@@ -1,19 +1,18 @@
 import { SpinCustom } from "components";
-import { Button, Col, DatePicker, Input, Layout, Row, Space, Table } from "antd";
+import { Button, Checkbox, Col, DatePicker, Input, Layout, Row, Space, Table } from "antd";
 import { useState } from "react";
 import moment from "moment";
 import { DATETIME_FORMAT } from "utils/constants/config";
 const Bin = () => {
   const [spinning, setSpinning] = useState(false)
+  const [openSelect, setOpenSelect] = useState(false)
+  const [listSelect, setListSelect] = useState([])
   const [listFile, setListFile] = useState([{
     name: "Tài liệu 1",
     time_create: 1712289945,
     department_name: "Nguyễn Văn A",
     day: 1712289990,
     user_delete: "Nguyễn Văn A"
-
-
-
   }])
 
   const pagination = {
@@ -21,7 +20,24 @@ const Bin = () => {
     pageSize: 10,
   };
 
+  const handleCheckboxChange = (e, id) => {
+    if (e.target.checked) {
+      setListSelect([...listSelect, id]);
+    } else {
+      setListSelect(listSelect.filter((rowId) => rowId !== id));
+    }
+  };
+
+
   const columns = [
+    {
+      width: 5,
+      dataIndex: "checkbox",
+      hidden: false,
+      render: (v, record, index) => (
+        <Checkbox onChange={(e) => handleCheckboxChange(e, record.id)} />
+      )
+    },
     {
       fixed: "left",
       width: 60,
@@ -35,40 +51,25 @@ const Bin = () => {
       ),
     },
     {
-      title: "Tên",
-      dataIndex: "name",
-      key: "name",
+      title: "ID",
+      width: 50,
+      dataIndex: "document_id",
+      key: "document_id",
       align: "center",
     },
     {
-      title: "Ngày tạo ",
-      dataIndex: "time_create",
-      key: "name",
-      align: "center",
-      render: (r, v) => {
-        return moment(v.time_create * 1000).format(DATETIME_FORMAT)
-      }
+      title: "icon",
+      width: 70,
+      dataIndex: "document_id",
+      key: "document_id",
+      align: "left",
     },
     {
-      title: "Nguời tạo",
-      dataIndex: "department_name",
-      key: "department_name",
-      align: "center",
-    },
-    {
-      title: "Ngày xóa ",
-      dataIndex: "day",
-      key: "name",
-      align: "center",
-      render: (r, v) => {
-        return moment(v.time_create * 1000).format(DATETIME_FORMAT)
-      }
-    },
-    {
-      title: "Nguời xóa",
-      dataIndex: "user_delete",
-      key: "department_name",
-      align: "center",
+      title: "Tên tài liệu ",
+      width: 500,
+      dataIndex: "document_name",
+      key: "document_name",
+      align: "left",
     },
     {
       title: "Hành động",
@@ -93,6 +94,9 @@ const Bin = () => {
     },
 
   ];
+
+
+
   return (
     <Layout className="common-layout document-page">
       <SpinCustom spinning={spinning}>
@@ -162,12 +166,7 @@ const Bin = () => {
             dataSource={listFile}
             rowKey={(r) => r.id}
             columns={columns}
-          // pagination={{
-          //   pageSize: pagination.pageSize,
-          //   current: pagination.current,
-          //   onChange: handleChangePage,
-          // }}
-          // scroll={{ x: 1024 }}
+
           />
         </div>
       </SpinCustom>
