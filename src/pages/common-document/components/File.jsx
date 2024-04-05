@@ -337,6 +337,7 @@ const File = ({
         <td style={{ width: "2%" }} onClick={(e) => e.stopPropagation()}>
           <Checkbox onChange={(e) => handleCheckboxChange(e, record.id)} />
         </td>
+        
         <td className="icon-document" style={{ width: "2%" }}>
           {getIconForDocumentType(record.document_type, record, extension_file)}
         </td>
@@ -434,6 +435,7 @@ const File = ({
             onCancel={() => setOpenDetail(false)}
           />
         )}
+
         {openDecentralize && (
           <Decentralize
             documentId={documentId}
@@ -441,6 +443,7 @@ const File = ({
             onCancel={() => setOpenDecentralize(false)}
           />
         )}
+
         {modalEditName && (
           <UpdateNameFile
             oldName={oldName}

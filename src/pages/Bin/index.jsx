@@ -1,10 +1,25 @@
 import { SpinCustom } from "components";
-import { Button, Col, DatePicker, Input, Layout, Row, Table } from "antd";
+import { Button, Col, DatePicker, Input, Layout, Row, Space, Table } from "antd";
 import { useState } from "react";
-
-
+import moment from "moment";
+import { DATETIME_FORMAT } from "utils/constants/config";
 const Bin = () => {
   const [spinning, setSpinning] = useState(false)
+  const [listFile, setListFile] = useState([{
+    name: "Tài liệu 1",
+    time_create: 1712289945,
+    department_name: "Nguyễn Văn A",
+    day: 1712289990,
+    user_delete: "Nguyễn Văn A"
+
+
+
+  }])
+
+  const pagination = {
+    pageNum: 1,
+    pageSize: 10,
+  };
 
   const columns = [
     {
@@ -13,23 +28,26 @@ const Bin = () => {
       title: "STT",
       dataIndex: "id",
       key: "id",
-      // render: (v, record, index) => (
-      //   <Space>
-      //     {/* {index + 1 + (pagination.pageNum - 1) * pagination.pageSize} */}
-      //   </Space>
-      // ),
+      render: (v, record, index) => (
+        <Space>
+          {index + 1 + (pagination.pageNum - 1) * pagination.pageSize}
+        </Space>
+      ),
     },
     {
       title: "Tên",
-      dataIndex: "user_code",
-      key: "user_code",
+      dataIndex: "name",
+      key: "name",
       align: "center",
     },
     {
       title: "Ngày tạo ",
-      dataIndex: "name",
+      dataIndex: "time_create",
       key: "name",
       align: "center",
+      render: (r, v) => {
+        return moment(v.time_create * 1000).format(DATETIME_FORMAT)
+      }
     },
     {
       title: "Nguời tạo",
@@ -39,13 +57,16 @@ const Bin = () => {
     },
     {
       title: "Ngày xóa ",
-      dataIndex: "name",
+      dataIndex: "day",
       key: "name",
       align: "center",
+      render: (r, v) => {
+        return moment(v.time_create * 1000).format(DATETIME_FORMAT)
+      }
     },
     {
       title: "Nguời xóa",
-      dataIndex: "department_name",
+      dataIndex: "user_delete",
       key: "department_name",
       align: "center",
     },
@@ -54,6 +75,21 @@ const Bin = () => {
       dataIndex: "phone",
       key: "phone",
       align: "center",
+      render: (v, r) => {
+        return (
+          <Space>
+            <Button
+              type="primary"
+              className="ant-btn-primary">
+              Khôi phục
+            </Button>
+            <Button type="primary"
+              className="ant-btn-cancel">
+              Xóa
+            </Button>
+          </Space>
+        )
+      }
     },
 
   ];
@@ -123,7 +159,7 @@ const Bin = () => {
         <div className="common-layout--content">
           <Table
             width="100%"
-            // dataSource={user}
+            dataSource={listFile}
             rowKey={(r) => r.id}
             columns={columns}
           // pagination={{

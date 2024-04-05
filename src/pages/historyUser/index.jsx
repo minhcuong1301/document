@@ -1,22 +1,40 @@
 import { SpinCustom } from "components"
-import { Breadcrumb, Button, Col, DatePicker, Input, Layout, Row, Space, Table } from "antd"
+import { Button, Checkbox, Col, Input, Layout, Row, Space, Table, message } from "antd"
 
 import { useEffect, useState } from "react"
-import { actionGetListHistory } from './action';
+import { actionGetListHistory, actionDeleteHistory } from './action';
 
 const History = () => {
   const [spinning, setSpinning] = useState(false)
   const [listHistory, setListHistory] = useState([])
   const [name, setName] = useState()
+  const [openSelect, setOpenSelect] = useState(false)
+  const [listSelect, setListSelect] = useState([])
   const pagination = {
     pageNum: 1,
     pageSize: 10,
   };
 
+  const handleCheckboxChange = (e, id) => {
+    if (e.target.checked) {
+      setListSelect([...listSelect, id]);
+    } else {
+      setListSelect(listSelect.filter((rowId) => rowId !== id));
+    }
+  };
+
   const columns = [
     {
-      fixed: "left",
-      width: 60,
+      width: 5,
+      dataIndex: "checkbox",
+      hidden: false,
+      render: (v, record, index) => (
+        <Checkbox onChange={(e) => handleCheckboxChange(e, record.id)} />
+      )
+    },
+    {
+      fixed: "center",
+      width: 2,
       title: "STT",
       dataIndex: "id",
       key: "id",
@@ -28,22 +46,23 @@ const History = () => {
     },
     {
       title: "ID tài liệu",
+      width: 150,
       dataIndex: "document_id",
       key: "document_id",
       align: "center",
     },
     {
       title: "Tên tài liệu ",
+      width: 500,
       dataIndex: "document_name",
       key: "document_name",
-      align: "center",
+      align: "left",
     },
-
     {
       title: "Người sửa",
       dataIndex: "user_name",
       key: "user_name",
-      align: "center",
+      align: "left",
     },
     {
       title: "Hành động",
@@ -51,7 +70,7 @@ const History = () => {
       key: "action_name",
       align: "center",
     },
-  ];
+  ].filter(item => { return openSelect ? item : item.dataIndex !== "checkbox" });
 
   const handleGetHistory = async () => {
     setSpinning(true)
@@ -70,6 +89,21 @@ const History = () => {
     }
     setSpinning(false)
   }
+
+  const handleDeleteHistory = async () => {
+    setSpinning(true)
+    try {
+      const { data, status } = await actionDeleteHistory({ list_his: listSelect });
+      if (status === 200) {
+        message.success(data?.message);
+        setListHistory(data?.history)
+      }
+    } catch (err) {
+      console.log(err)
+    }
+    setSpinning(false)
+  }
+
 
   useEffect(() => {
     handleGetHistory()
@@ -99,11 +133,26 @@ const History = () => {
             <Col>
               <Button
                 className="w-full"
-                type="primary">
-                Chọn
+                type="primary"
+                onClick={() => {
+                  setOpenSelect(!openSelect)
+                  openSelect && setListSelect([])
+                }}>
+                {!openSelect ? 'Chọn' : 'Bỏ chọn'}
               </Button>
             </Col>
+
+            {listSelect.length > 0 && (<Col>
+              <Button
+                className="w-full"
+                type="primary"
+                onClick={handleDeleteHistory}>
+                Xóa
+              </Button>
+            </Col>)}
           </Row>
+
+
 
 
           <Table
@@ -116,7 +165,7 @@ const History = () => {
           //   current: pagination.current,
           //   onChange: handleChangePage,
           // }}
-          // scroll={{ x: 1024 }}
+          // scroll={{ x: 500 }}
           />
         </div>
       </SpinCustom>

@@ -7,6 +7,7 @@
 		background: var(--common-background) !important;
 		margin: 4px 0px 4px;
 		border-radius: 2px;
+		user-select: none;
 
 		&--header {
 			height: fit-content;
@@ -62,9 +63,11 @@
 		}
 	}
 }
+
 textarea:focus {
 	outline: none;
 }
+
 .bieumau-pdf-btn {
 	background-color: #0a2946;
 	color: #fff;
@@ -203,6 +206,7 @@ textarea:focus {
 		&--content {
 			display: flex;
 			flex: auto;
+			user-select: none;
 		}
 	}
 }
@@ -250,6 +254,7 @@ input::placeholder {
 }
 
 @media screen and (max-width: 376px) {
+
 	// .exit-home{
 	// 	display: block;
 	// }
@@ -261,6 +266,7 @@ input::placeholder {
 			.table-title {
 				display: none;
 			}
+
 			//   .hidden-logo{
 			// 	display: block;
 			// 	width: 80%;
@@ -274,15 +280,18 @@ input::placeholder {
 		}
 	}
 }
+
 .checkbox-style {
 	display: flex;
 	// padding: 30px;
 	gap: 30px;
 }
-.ant-col{
+
+.ant-col {
 
 	user-select: none;
 }
+
 .process {
 	padding: 5px;
 	color: #fff;
@@ -317,6 +326,7 @@ input::placeholder {
 	&-lock {
 		color: #fff;
 	}
+
 	&-unlock {
 		color: #fff;
 	}
@@ -339,6 +349,7 @@ input::placeholder {
 	align-items: center;
 	justify-content: center;
 }
+
 img {
 	max-width: 100%;
 }
