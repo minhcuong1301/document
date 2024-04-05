@@ -77,7 +77,7 @@ const AddUser = ({ onClose, setUser, departments }) => {
       closeIcon={false}
       title="Thêm tài khoản"
       className="form-modal"
-      width={350}
+      width={500}
       footer={false}
     >
       <SpinCutom spinning={callingApi}>
@@ -87,15 +87,18 @@ const AddUser = ({ onClose, setUser, departments }) => {
           onFinish={handleAddUser}
           form={form}
         >
-          <Row>
-            <Col span={24}>
+          <Row gutter={30}>
+            <Col span={12}>
               <Form.Item
                 name="name"
                 rules={[{ required: true, message: "Vui lòng nhập tên" }]}
               >
                 <Input placeholder="Nhập tên " />
               </Form.Item>
+            </Col>
 
+            <Col span={12}>
+              {" "}
               <Form.Item
                 name="user_code"
                 rules={[
@@ -104,9 +107,12 @@ const AddUser = ({ onClose, setUser, departments }) => {
               >
                 <Input placeholder="Nhập mã nhân viên " />
               </Form.Item>
+            </Col>
 
+            <Col span={12}>
               <Form.Item
                 name="email"
+                label="Email:"
                 rules={[
                   { required: true, message: "Vui lòng nhập email" },
                   {
@@ -117,23 +123,23 @@ const AddUser = ({ onClose, setUser, departments }) => {
               >
                 <Input placeholder="Nhập email " />
               </Form.Item>
+            </Col>
 
-              <Form.Item name="date_of_birth">
-                <Row gutter={[4, 0]}>
-                  <Col>
-                    <span>Ngày sinh:</span>
-                  </Col>
-
-                  <Col className="w-full">
-                    <DatePicker
-                      onChange={(date) => handleDateChange(date)}
-                      allowClear={false}
-                      format={DATE_FORMAT}
-                    />
-                  </Col>
-                </Row>
+            <Col span={12}>
+              {" "}
+              <Form.Item name="date_of_birth" label="Ngày sinh:">
+                <Col className="w-full">
+                  <DatePicker
+                    onChange={(date) => handleDateChange(date)}
+                    allowClear={false}
+                    format={DATE_FORMAT}
+                    className="w-full"
+                  />
+                </Col>
               </Form.Item>
+            </Col>
 
+            <Col span={12}>
               <Form.Item
                 name="phone"
                 rules={[
@@ -145,7 +151,10 @@ const AddUser = ({ onClose, setUser, departments }) => {
               >
                 <Input placeholder="Nhập số điện thoại " />
               </Form.Item>
+            </Col>
 
+            <Col span={12}>
+              {" "}
               <Form.Item
                 name="position_id"
                 rules={[{ required: true, message: "Vui lòng chọn chức vụ !" }]}
@@ -161,7 +170,9 @@ const AddUser = ({ onClose, setUser, departments }) => {
                     }))}
                 ></Select>
               </Form.Item>
+            </Col>
 
+            <Col span={12}>
               <Form.Item
                 name="department_id"
                 rules={[
@@ -177,7 +188,9 @@ const AddUser = ({ onClose, setUser, departments }) => {
                   }))}
                 ></Select>
               </Form.Item>
+            </Col>
 
+            <Col span={12}>
               <Form.Item
                 name="password"
                 rules={[
@@ -186,11 +199,15 @@ const AddUser = ({ onClose, setUser, departments }) => {
               >
                 <Input.Password placeholder="Mật khẩu" autoComplete="auto" />
               </Form.Item>
+            </Col>
 
+            <Col span={12}>
               <Form.Item name="telegram_chat_id">
                 <InputNumber placeholder="ID telegram" className="w-full" />
               </Form.Item>
+            </Col>
 
+            <Col span={12}>
               <Form.Item name="avatar">
                 <Row>
                   <Col>Ảnh:</Col>

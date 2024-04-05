@@ -336,18 +336,25 @@ input::placeholder {
 	cursor: pointer;
 }
 
+.tag-btn {
+	width: 50px;
+	height: 32px;
+}
+
 .btn-lock {
-	background-color: #f41f1f;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	text-align: center;
+	width: 50px;
+	height: 32px;
+	position: relative;
+	right: 7px;
 }
 
 .btn-unlock {
-	background-color: #87d068;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	text-align: center;
+	position: relative;
+	right: 7px;
+	width: 50px;
+	height: 32px;
 }
 
 img {
