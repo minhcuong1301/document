@@ -241,7 +241,7 @@ const File = ({
     if (documentType === 1) {
       return (
         <FolderIconDownload
-          className=" icon-document"
+          className=" style-icon"
           onClick={(e) => {
             e.stopPropagation();
             handleGetChildFolder(record);
@@ -325,156 +325,91 @@ const File = ({
       console.error(error);
     }
   };
-  // const rows = listDocument.map((record, index) => {
-  //   return (
-  //     <tr
-  //       className="cursor-pointer"
-  //       key={index}
-  //       onClick={() => handleDetail(record?.id)}
-  //     >
-  //       <td style={{ width: "2%" }} onClick={(e) => e.stopPropagation()}>
-  //         <Checkbox onChange={(e) => handleCheckboxChange(e, record.id)} />
-  //       </td>
-  //       <td className="icon-document" style={{ width: "2%" }}>
-  //         {getIconForDocumentType(record.document_type, record, extension_file)}
-  //       </td>
+  const rows = listDocument.map((record, index) => {
+    const extension_file = record.name.replace(/\s/g, "").split(".").pop();
 
-  //       <td
-  //         className="name-document"
-  //         onClick={(event) => {
-  //           event.stopPropagation();
-  //           handleClick(event, record.name, record.id);
-  //         }}
-  //       >
-  //         {record.name}
-  //       </td>
-  //       <td className="time-upload-document">
-  //         {moment(record.time_upload * 1000).format(DATETIME_FORMAT)}
-  //       </td>
-  //       <td
-  //         className="user-create-document"
-  //         onClick={(event) => {
-  //           event.stopPropagation();
-  //           handleClick(event, record.name, record.id);
-  //         }}
-  //       >
-  //         {record.user_crearte}
-  //       </td>
-  //       <td
-  //         className="action-document"
-  //         onClick={(event) => {
-  //           event.stopPropagation();
-  //         }}
-  //       >
-  //         <Dropdown
-  //           className="dropdown-action"
-  //           menu={{
-  //             items,
-  //             onClick: (e) => {
-  //               handleMenuClick(
-  //                 e,
-  //                 record.id,
-  //                 record.document_type,
-  //                 record.name
-  //               );
-  //             },
-  //           }}
-  //           trigger={["click"]}
-  //           onOpenChange={() => handleOpenChange(record.document_type)}
-  //         >
-  //           <Button type="primary">Thao tác</Button>
-  //         </Dropdown>
-  //       </td>
-  //     </tr>
-  //   );
-  // });
+    return (
+      <tr
+        className="cursor-pointer"
+        key={index}
+        onClick={() => handleDetail(record?.id)}
+      >
+        <td style={{ width: "2%" }} onClick={(e) => e.stopPropagation()}>
+          <Checkbox onChange={(e) => handleCheckboxChange(e, record.id)} />
+        </td>
+        <td className="icon-document" style={{ width: "2%" }}>
+          {getIconForDocumentType(record.document_type, record, extension_file)}
+        </td>
 
-  const columns = [
-    {
-      title: "Tên",
-      dataIndex: "name",
-      key: "name",
-      align: "center",
-      width: "30%",
-      render: (text, record) => (
-        <>
-          <Space size="large">
-            <Checkbox
-              onChange={(e) => {
-                e.stopPropagation();
-                handleCheckboxChange(e, record.id);
-              }}
-            />
-            {getIconForDocumentType(
-              record.document_type,
-              record,
-              record.name.replace(/\s/g, "").split(".").pop()
-            )}
-            {record.name}
-          </Space>
-        </>
-      ),
-    },
+        <td
+          className="name-document"
+          onClick={(event) => {
+            event.stopPropagation();
+            handleClick(event, record.name, record.id);
+          }}
+        >
+          {record.name}
+        </td>
+        <td className="time-upload-document">
+          {moment(record.time_upload * 1000).format(DATETIME_FORMAT)}
+        </td>
+        <td
+          className="user-create-document"
+          onClick={(event) => {
+            event.stopPropagation();
+            handleClick(event, record.name, record.id);
+          }}
+        >
+          {record.user_crearte}
+        </td>
+        <td
+          className="action-document"
+          onClick={(event) => {
+            event.stopPropagation();
+          }}
+        >
+          <Dropdown
+            className="dropdown-action"
+            menu={{
+              items,
+              onClick: (e) => {
+                handleMenuClick(
+                  e,
+                  record.id,
+                  record.document_type,
+                  record.name
+                );
+              },
+            }}
+            trigger={["click"]}
+            onOpenChange={() => handleOpenChange(record.document_type)}
+          >
+            <Button type="primary">Thao tác</Button>
+          </Dropdown>
+        </td>
+      </tr>
+    );
+  });
 
-    {
-      title: "Ngày tạo",
-      dataIndex: "time_upload",
-      key: "time_upload",
-      align: "center",
-      width: "25%",
-
-      render: (text, record) => {
-        return moment(record.time_upload * 1000).format(DATETIME_FORMAT);
-      },
-    },
-    {
-      title: "Người tạo",
-      dataIndex: "user_crearte",
-      key: "user_crearte",
-      align: "center",
-      width: "25%",
-    },
-    {
-      title: "",
-      dataIndex: "",
-      key: "",
-      align: "center",
-      width: "20%",
-      render: (t, r) => {
-        return (
-          <>
-            <Row>
-              <>
-                {items.map((item) => {
-                  return <Col>{item.label}</Col>;
-                })}
-              </>
-            </Row>
-          </>
-        );
-      },
-    },
-  ];
-
-  // const renderTable = () => {
-  //   if (listDocument && listDocument.length > 0) {
-  //     return (
-  //       <table className="style-table">
-  //         <thead>
-  //           <tr>
-  //             <th></th>
-  //             <th></th>
-  //             <th>Tên</th>
-  //             <th>Ngày tạo</th>
-  //             <th>Người tạo</th>
-  //             <th></th>
-  //           </tr>
-  //         </thead>
-  //         <tbody>{rows}</tbody>
-  //       </table>
-  //     );
-  //   }
-  // };
+  const renderTable = () => {
+    if (listDocument && listDocument.length > 0) {
+      return (
+        <table className="style-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th></th>
+              <th>Tên</th>
+              <th>Ngày tạo</th>
+              <th>Người tạo</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>{rows}</tbody>
+        </table>
+      );
+    }
+  };
 
   return (
     <>
@@ -487,26 +422,10 @@ const File = ({
               </Button>
             </Col>
           )}
-
-          <Table
-            width="100%"
-            className="style-table"
-            dataSource={listDocument}
-            rowKey={(r) => r.id}
-            columns={columns}
-            scroll={{ x: 1024 }}
-            onRow={(r, rowIndex) => {
-              return {
-                onClick: (e) => {
-                  e.stopPropagation();
-
-                  handleDetail(r?.id);
-                }, // click row
-              };
-            }}
-          ></Table>
+          <Col>{renderTable()}</Col>
         </Row>
       </SpinCustom>
+
       <>
         {openDetail && (
           <DetailFile
