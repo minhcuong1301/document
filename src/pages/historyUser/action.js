@@ -7,3 +7,11 @@ export const actionGetListHistory = (params) => {
     params
   })
 }
+
+export const actionDeleteHistory = (data) => {
+  return api({
+    method: "POST",
+    url: '/delete-list-history',
+    data
+  })
+}

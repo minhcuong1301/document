@@ -7,6 +7,8 @@ import {
   UsergroupAddOutlined,
   FolderOutlined,
   IssuesCloseOutlined,
+  DeleteOutlined,
+  HistoryOutlined,
 } from "@ant-design/icons";
 
 import Bin from './Bin'
@@ -16,14 +18,12 @@ import Bin from './Bin'
  */
 
 const pages = [
-
   {
     name: "login",
     path: "/login",
     auth: false,
     element: <LoginPage />,
   },
-
   {
     name: "home",
     path: "/",
@@ -46,7 +46,7 @@ const pages = [
     path: "/history-document",
     auth: true,
     label: "Lịch sử",
-    icon: <FolderOutlined />,
+    icon: <HistoryOutlined />,
     element: <History />,
   },
   {
@@ -54,7 +54,7 @@ const pages = [
     path: "/bin",
     auth: true,
     label: "Thùng rác",
-    icon: <FolderOutlined />,
+    icon: < DeleteOutlined />,
     element: <Bin />,
   },
 

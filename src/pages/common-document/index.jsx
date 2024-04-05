@@ -37,7 +37,7 @@ const CommonDocument = () => {
   const [totalFile, setTotalFile] = useState();
   const [searchParams] = useSearchParams();
   const documentId = searchParams.get("document_id");
-console.log(documentId);
+
   const handleNavigateBack = (e, breadcrumb, index) => {
     const last_folder = [];
     breadcrumbs.map((item, index1) => {
@@ -55,8 +55,8 @@ console.log(documentId);
       setIdDocumentAdd();
       const params = {
         name: name || null,
-        time_upload_start: dayjs(dateStart).unix() || null,
-        time_upload_end: dayjs(dateEnd).startOf("D").unix() || null,
+        time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
+        time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
       };
       const { data, status } = await actionGetListDocument(params);
       if (status === 200) {
@@ -73,9 +73,9 @@ console.log(documentId);
     try {
       const params = {
         name: name || null,
-        time_upload_start: dayjs(dateStart).unix() || null,
+        time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
-   
+
       };
       if (idDocumentAdd) {
         params.document_id = idDocumentAdd;
@@ -99,11 +99,11 @@ console.log(documentId);
       setIdDocumentAdd(value?.id);
       const params = {
         name: name || null,
-        time_upload_start: dayjs(dateStart).unix() || null,
+        time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
-        document_id:  value?.id,
-        file_id:documentId
-       
+        document_id: value?.id,
+        file_id: documentId
+
       };
       const { data, status } = await actionGetListFolderChid(params);
       if (status === 200) {
@@ -155,7 +155,7 @@ console.log(documentId);
 
   useEffect(() => {
     handleGetChildFolder(idLastFolder);
-  }, [idLastFolder,documentId]);
+  }, [idLastFolder, documentId]);
 
   useEffect(() => {
     handleGetRoleUser();
