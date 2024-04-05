@@ -102,7 +102,9 @@ console.log(documentId);
         name: name || null,
         time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
-        document_id:  documentId|| value?.id,
+        document_id:  value?.id,
+        file_id:documentId
+       
       };
       const { data, status } = await actionGetListFolderChid(params);
       if (status === 200) {
@@ -154,7 +156,7 @@ console.log(documentId);
 
   useEffect(() => {
     handleGetChildFolder(idLastFolder);
-  }, [idLastFolder]);
+  }, [idLastFolder,documentId]);
 
   useEffect(() => {
     handleGetRoleUser();
