@@ -124,9 +124,8 @@ const AppHeader = () => {
         onClick={() => handleNavigateProcedure(notification)}
       >
         <div
-          className={`notification-item ${
-            notification.status === 0 ? "unread" : "read"
-          }`}
+          className={`notification-item ${notification.status === 0 ? "unread" : "read"
+            }`}
         >
           <div
             className="notification-content"
@@ -148,7 +147,7 @@ const AppHeader = () => {
       </div>
       <div className="app-header--right">
         <Space size={8} split={<Divider type="vertical" />}>
-          <MailOutlined />
+          {/* <MailOutlined /> */}
           <Dropdown
             placement="bottomRight"
             arrow

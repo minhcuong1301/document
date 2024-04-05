@@ -38,7 +38,7 @@ const CommonDocument = () => {
   const [totalFile, setTotalFile] = useState();
   const [searchParams] = useSearchParams();
   const documentId = searchParams.get("document_id");
-  console.log(documentId);
+
   const handleNavigateBack = (e, breadcrumb, index) => {
     const last_folder = [];
     breadcrumbs.map((item, index1) => {
@@ -56,8 +56,8 @@ const CommonDocument = () => {
       setIdDocumentAdd();
       const params = {
         name: name || null,
-        time_upload_start: dayjs(dateStart).unix() || null,
-        time_upload_end: dayjs(dateEnd).startOf("D").unix() || null,
+        time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
+        time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
       };
       const { data, status } = await actionGetListDocument(params);
       if (status === 200) {
@@ -74,7 +74,7 @@ const CommonDocument = () => {
     try {
       const params = {
         name: name || null,
-        time_upload_start: dayjs(dateStart).unix() || null,
+        time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
       };
       if (idDocumentAdd) {
@@ -99,8 +99,10 @@ const CommonDocument = () => {
       setIdDocumentAdd(value?.id);
       const params = {
         name: name || null,
-        time_upload_start: dayjs(dateStart).unix() || null,
+        time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
+        document_id: value?.id,
+        file_id: documentId,
         document_id: value?.id,
         file_id: documentId,
       };

@@ -31,19 +31,8 @@ import DetailFile from "./detailFile";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { REACT_APP_SERVER_BASE_URL } from "utils/constants/config";
-import { actionGetListRole } from "../action";
-import { FileOutlined } from "@ant-design/icons";
-import UpdateNameFile from "./updateNameFile";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faTrash } from "@fortawesome/free-regular-svg-icons";
-// import { faDownload } from "@fortawesome/free-regular-svg-icons";
-// import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
-// import { faPersonCircleCheck } from "@fortawesome/free-regular-svg-icons";
 
-import { FaRegTrashAlt } from "react-icons/fa";
-import { FiEdit } from "react-icons/fi";
-import { MdOutlinePersonAddAlt } from "react-icons/md";
-import { BsDownload } from "react-icons/bs";
+import UpdateNameFile from "./updateNameFile";
 
 const File = ({
   listDocument,
@@ -75,6 +64,7 @@ const File = ({
     try {
       const body = {
         doc_id: selectedRows,
+        status: 1,
       };
       const { data, status } = await actionDeleteFile(body);
       if (status === 200) {
@@ -337,6 +327,7 @@ const File = ({
         <td style={{ width: "2%" }} onClick={(e) => e.stopPropagation()}>
           <Checkbox onChange={(e) => handleCheckboxChange(e, record.id)} />
         </td>
+
         <td className="icon-document" style={{ width: "2%" }}>
           {getIconForDocumentType(record.document_type, record, extension_file)}
         </td>
@@ -434,6 +425,7 @@ const File = ({
             onCancel={() => setOpenDetail(false)}
           />
         )}
+
         {openDecentralize && (
           <Decentralize
             documentId={documentId}
@@ -441,6 +433,7 @@ const File = ({
             onCancel={() => setOpenDecentralize(false)}
           />
         )}
+
         {modalEditName && (
           <UpdateNameFile
             oldName={oldName}
