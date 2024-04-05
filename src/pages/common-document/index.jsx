@@ -20,7 +20,6 @@ import {
   DatePicker,
   Button,
   Breadcrumb,
-  Space,
 } from "antd";
 import { useSearchParams } from "react-router-dom";
 
@@ -28,7 +27,7 @@ const CommonDocument = () => {
   const [spinning, setSpinning] = useState(false);
   const [listDocument, setListDocument] = useState([]);
   const [name, setName] = useState(null);
-  const [dateStart, setDateStart] = useState();
+  const [dateStart, setDateStart] = useState(null);
   const [dateEnd, setDateEnd] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idDocumentAdd, setIdDocumentAdd] = useState();
@@ -56,7 +55,7 @@ console.log(documentId);
       setIdDocumentAdd();
       const params = {
         name: name || null,
-        time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
+        time_upload_start: dayjs(dateStart).unix() || null,
         time_upload_end: dayjs(dateEnd).startOf("D").unix() || null,
       };
       const { data, status } = await actionGetListDocument(params);
@@ -74,7 +73,7 @@ console.log(documentId);
     try {
       const params = {
         name: name || null,
-        time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
+        time_upload_start: dayjs(dateStart).unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
    
       };
@@ -100,7 +99,7 @@ console.log(documentId);
       setIdDocumentAdd(value?.id);
       const params = {
         name: name || null,
-        time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
+        time_upload_start: dayjs(dateStart).unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
         document_id:  value?.id,
         file_id:documentId
@@ -269,8 +268,19 @@ console.log(documentId);
           </Row>
         </div>
       </SpinCustom>
+      <>
+        {isModalOpen && (
+          <AddDocument
+            idDocumentAdd={idDocumentAdd}
+            onCancel={() => setIsModalOpen(false)}
+            handleGetListDocument={handleGetListDocument}
+            handleGetChildFolder={handleGetChildFolder}
+          />
+        )}
+      </>
 
     </Layout>
   );
 };
+
 export default CommonDocument;

@@ -30,6 +30,10 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
   const [listRole, setlistRole] = useState([]);
   const [roleUserMap, setRoleUserMap] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState(null);
+  const pagination = {
+    pageNum: 1,
+    pageSize: 10,
+  };
 
   const handleGetListEmployee = async () => {
     setSpinning(true);
@@ -158,6 +162,11 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
       title: "STT",
       dataIndex: "id",
       key: "id",
+      render: (v, record, index) => (
+        <Space>
+          {index + 1 + (pagination.pageNum - 1) * pagination.pageSize}
+        </Space>
+      ),
     },
     {
       title: "Tên",
@@ -188,7 +197,9 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
   ];
 
   const Tab1 = () => (
-    <Row gutter={[0, 8]}>
+    <Row gutter={[0, 8]}
+
+    >
       <Col span={24}>
         <Col md={8} sx={24} >
           <Select
@@ -210,8 +221,13 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
           <Table
             dataSource={listEmployee}
             columns={columns}
-            rowKey={(r) => r.id}
-            pagination={false}
+            // pagination={false}
+
+            pagination={{
+              pageSize: pagination.pageSize,
+              current: pagination.current,
+              // onChange: handleChangePage,
+            }}
           />
         </Col>
 
