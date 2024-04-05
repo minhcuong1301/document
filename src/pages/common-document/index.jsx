@@ -20,7 +20,6 @@ import {
   DatePicker,
   Button,
   Breadcrumb,
-  Space,
 } from "antd";
 import { useSearchParams } from "react-router-dom";
 
@@ -28,7 +27,7 @@ const CommonDocument = () => {
   const [spinning, setSpinning] = useState(false);
   const [listDocument, setListDocument] = useState([]);
   const [name, setName] = useState(null);
-  const [dateStart, setDateStart] = useState();
+  const [dateStart, setDateStart] = useState(null);
   const [dateEnd, setDateEnd] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idDocumentAdd, setIdDocumentAdd] = useState();
@@ -55,7 +54,7 @@ const CommonDocument = () => {
       setIdDocumentAdd();
       const params = {
         name: name || null,
-        time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
+        time_upload_start: dayjs(dateStart).unix() || null,
         time_upload_end: dayjs(dateEnd).startOf("D").unix() || null,
       };
       const { data, status } = await actionGetListDocument(params);
@@ -73,7 +72,7 @@ const CommonDocument = () => {
     try {
       const params = {
         name: name || null,
-        time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
+        time_upload_start: dayjs(dateStart).unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
         // document_id: Document_id || idDocumentAdd
       };
@@ -99,7 +98,7 @@ const CommonDocument = () => {
       setIdDocumentAdd(value?.id);
       const params = {
         name: name || null,
-        time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
+        time_upload_start: dayjs(dateStart).unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
         document_id: value?.id,
       };
