@@ -46,6 +46,7 @@ export const actionGetImage = (doc_id, as_attachment) => {
   const token = Cookies.get(AIPT_WEB_TOKEN)
   return `${REACT_APP_SERVER_BASE_URL}/download-file/${doc_id}/${as_attachment}/${token}`
 }
+
 export const actionDownLoadFile = (doc_id, as_attachment) => {
   const token = Cookies.get(AIPT_WEB_TOKEN)
   window.open(`${REACT_APP_SERVER_BASE_URL}/download-file/${doc_id}/${as_attachment}/${token}`)

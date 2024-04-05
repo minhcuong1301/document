@@ -7,3 +7,11 @@ export const actionDeleteForever = (data) => {
     data
   })
 }
+
+export const actionGetListDocumentDelete = (params) => {
+  return api({
+    method: "GET",
+    url: '/seach-document/1',
+    params
+  })
+}
