@@ -295,7 +295,7 @@ const HomePage = () => {
                   >
                     {Object.keys(DEPARTMENTS_CODE).map((key) => (
                       <Select.Option key={key} value={key}>
-                        {DEPARTMENTS_CODE[key]}
+                        {DEPARTMENTS_CODE[key]} ({key})
                       </Select.Option>
                     ))}
                   </Select>
