@@ -351,7 +351,7 @@ const File = ({
             handleClick(event, record.name, record.id);
           }}
         >
-          {record.user_crearte}
+          {record.user_create}
         </td>
         <td
           className="action-document"

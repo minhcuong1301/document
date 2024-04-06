@@ -1,9 +1,9 @@
 import { SpinCustom } from "components"
 import { Button, Checkbox, Col, Input, Layout, Row, Space, Table, message } from "antd"
-
+import moment from "moment";
 import { useEffect, useState } from "react"
 import { actionGetListHistory, actionDeleteHistory } from './action';
-
+import { DATETIME_FORMAT } from 'utils/constants/config';
 const History = () => {
   const [spinning, setSpinning] = useState(false)
   const [listHistory, setListHistory] = useState([])
@@ -63,6 +63,15 @@ const History = () => {
       dataIndex: "user_name",
       key: "user_name",
       align: "left",
+    },
+    {
+      title: "Thời gian",
+      dataIndex: "time_created",
+      key: "time_created",
+      align: "center",
+      render: (v, record) => {
+        return record.time_created ? moment(record?.time_created * 1000).format(DATETIME_FORMAT) : null
+      }
     },
     {
       title: "Hành động",

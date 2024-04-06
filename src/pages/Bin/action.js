@@ -11,7 +11,15 @@ export const actionDeleteForever = (data) => {
 export const actionGetListDocumentDelete = (params) => {
   return api({
     method: "GET",
-    url: '/seach-document/1',
+    url: '/get-list-document-delete',
     params
+  })
+}
+
+export const actionRestoreDocument = (data) => {
+  return api({
+    method: "POST",
+    url: '/change-status-document',
+    data
   })
 }
