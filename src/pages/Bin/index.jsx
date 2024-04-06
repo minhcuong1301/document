@@ -61,7 +61,6 @@ const Bin = () => {
   }
 
   const confirmDelete = async (selectedRows, row) => {
-    console.log("selectedRows 1", listSelect)
     Modal.confirm({
       title: "Bạn có chắc muốn xóa ?",
       onOk: async () => {

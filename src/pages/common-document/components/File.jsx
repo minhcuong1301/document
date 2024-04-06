@@ -59,11 +59,11 @@ const File = ({
   const [items, setItems] = useState([]);
   const [fileType, setFileType] = useState(null);
 
-  const handleDeleteFile = async () => {
+  const handleDeleteFile = async (list_doc) => {
     setSpinning(true);
     try {
       const body = {
-        doc_id: selectedRows,
+        doc_id: list_doc,
         status: 1
       };
       const { data, status } = await actionDeleteFile(body);
@@ -110,12 +110,12 @@ const File = ({
 
   const handleMenuClick = (e, doc_id, document_type, doc_name) => {
     setDocumentId(doc_id);
-    setSelectedRows([doc_id]);
+    // setSelectedRows([doc_id]);
     if (e.key === "1") {
       setDocumentId(doc_id);
       setOpenModalUpdateFile(true);
     } else if (e.key === "2") {
-      confirmDelete();
+      confirmDelete([doc_id]);
     } else if (e.key === "3") {
       hadleDownloadFile(doc_id);
     } else if (e.key === "4") {
@@ -132,7 +132,7 @@ const File = ({
       onOk() {
         handleDeleteFile(selectedRows);
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -327,7 +327,7 @@ const File = ({
         <td style={{ width: "2%" }} onClick={(e) => e.stopPropagation()}>
           <Checkbox onChange={(e) => handleCheckboxChange(e, record.id)} />
         </td>
-        
+
         <td className="icon-document" style={{ width: "2%" }}>
           {getIconForDocumentType(record.document_type, record, extension_file)}
         </td>
@@ -408,7 +408,7 @@ const File = ({
         <Row gutter={[16, 0]} className="style-list-document">
           {selectedRows.length > 0 && (
             <Col>
-              <Button type="primary" onClick={() => confirmDelete()}>
+              <Button type="primary" onClick={() => confirmDelete(selectedRows)}>
                 Xóa
               </Button>
             </Col>
