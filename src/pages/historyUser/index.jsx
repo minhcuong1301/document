@@ -45,15 +45,15 @@ const History = () => {
       ),
     },
     {
-      title: "ID tài liệu",
-      width: 150,
+      title: "ID",
+      width: 50,
       dataIndex: "document_id",
       key: "document_id",
       align: "center",
     },
     {
       title: "Tên tài liệu ",
-      width: 500,
+      width: 700,
       dataIndex: "document_name",
       key: "document_name",
       align: "left",

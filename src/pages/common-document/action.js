@@ -13,7 +13,7 @@ export const actionAddDocument = (data) => {
 export const actionGetListDocument = (params) => {
   return api({
     method: "GET",
-    url: '/seach-document',
+    url: '/seach-document/0',
     params
   })
 }
@@ -21,7 +21,7 @@ export const actionGetListDocument = (params) => {
 export const actionGetListFolderChid = (params) => {
   return api({
     method: "GET",
-    url: '/seach-document',
+    url: '/seach-document/0',
     params
   })
 }
@@ -34,17 +34,10 @@ export const actionUpdateNameFile = (body) => {
   })
 }
 
-export const actionEditFile = (body) => {
-  return api({
-    method: "POST",
-    url: "/update-document",
-    data: body
-  })
-}
 export const actionDeleteFile = (body) => {
   return api({
     method: "POST",
-    url: "/delete-document",
+    url: "/change-status-document",
     data: body
   })
 }
@@ -53,6 +46,7 @@ export const actionGetImage = (doc_id, as_attachment) => {
   const token = Cookies.get(AIPT_WEB_TOKEN)
   return `${REACT_APP_SERVER_BASE_URL}/download-file/${doc_id}/${as_attachment}/${token}`
 }
+
 export const actionDownLoadFile = (doc_id, as_attachment) => {
   const token = Cookies.get(AIPT_WEB_TOKEN)
   window.open(`${REACT_APP_SERVER_BASE_URL}/download-file/${doc_id}/${as_attachment}/${token}`)
@@ -61,7 +55,7 @@ export const actionDownLoadFile = (doc_id, as_attachment) => {
 export const actionSeachFile = (body) => {
   return api({
     method: "GET",
-    url: "/seach-document",
+    url: "/seach-document/0",
     params: body
   })
 }
@@ -83,6 +77,7 @@ export const actionGetlistEmpoyee = (params) => {
   })
 
 }
+
 export const actionGetlistDepartment = (params) => {
   return api({
     method: 'GET',
@@ -118,7 +113,7 @@ export const actionDecentralizeDep = (params, id_doc) => {
   })
 }
 
-export const actionGetListRoleUser = ( id_doc,data) => {
+export const actionGetListRoleUser = (id_doc, data) => {
   return api({
     method: "POST",
     url: `/get-list-role-user/${id_doc}`,
