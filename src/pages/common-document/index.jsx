@@ -38,6 +38,11 @@ const CommonDocument = () => {
   const [totalFile, setTotalFile] = useState();
   const [searchParams] = useSearchParams();
   const documentId = searchParams.get("document_id");
+<<<<<<<<< Temporary merge branch 1
+  console.log(documentId);
+=========
+
+>>>>>>>>> Temporary merge branch 2
   const handleNavigateBack = (e, breadcrumb, index) => {
     const last_folder = [];
     breadcrumbs.map((item, index1) => {
@@ -101,8 +106,12 @@ const CommonDocument = () => {
         time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
         document_id: value?.id,
+<<<<<<<<< Temporary merge branch 1
+        file_id: documentId,
+=========
         file_id: documentId
 
+>>>>>>>>> Temporary merge branch 2
       };
       const { data, status } = await actionGetListFolderChid(params);
       if (status === 200) {

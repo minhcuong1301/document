@@ -64,7 +64,7 @@ const File = ({
     try {
       const body = {
         doc_id: selectedRows,
-        status: 1
+        status: 1,
       };
       const { data, status } = await actionDeleteFile(body);
       if (status === 200) {
@@ -327,7 +327,7 @@ const File = ({
         <td style={{ width: "2%" }} onClick={(e) => e.stopPropagation()}>
           <Checkbox onChange={(e) => handleCheckboxChange(e, record.id)} />
         </td>
-        
+
         <td className="icon-document" style={{ width: "2%" }}>
           {getIconForDocumentType(record.document_type, record, extension_file)}
         </td>
