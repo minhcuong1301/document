@@ -223,6 +223,7 @@ const HomePage = () => {
     // },
     {
       title: "",
+      width: 100,
       dataIndex: "operation",
       key: "operation",
       render: (_, r) => (
@@ -261,6 +262,7 @@ const HomePage = () => {
     },
     {
       title: "",
+      width: 50,
       dataIndex: "edit",
       key: "edit",
       render: (_, r) =>

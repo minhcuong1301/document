@@ -59,12 +59,12 @@ const File = ({
   const [items, setItems] = useState([]);
   const [fileType, setFileType] = useState(null);
 
-  const handleDeleteFile = async () => {
+  const handleDeleteFile = async (list_doc) => {
     setSpinning(true);
     try {
       const body = {
-        doc_id: selectedRows,
-        status: 1,
+        doc_id: list_doc,
+        status: 1
       };
       const { data, status } = await actionDeleteFile(body);
       if (status === 200) {
@@ -110,12 +110,12 @@ const File = ({
 
   const handleMenuClick = (e, doc_id, document_type, doc_name) => {
     setDocumentId(doc_id);
-    setSelectedRows([doc_id]);
+    // setSelectedRows([doc_id]);
     if (e.key === "1") {
       setDocumentId(doc_id);
       setOpenModalUpdateFile(true);
     } else if (e.key === "2") {
-      confirmDelete();
+      confirmDelete([doc_id]);
     } else if (e.key === "3") {
       hadleDownloadFile(doc_id);
     } else if (e.key === "4") {
@@ -132,7 +132,7 @@ const File = ({
       onOk() {
         handleDeleteFile(selectedRows);
       },
-      onCancel() {},
+      onCancel() { },
     });
   };
 
@@ -351,7 +351,7 @@ const File = ({
             handleClick(event, record.name, record.id);
           }}
         >
-          {record.user_crearte}
+          {record.user_create}
         </td>
         <td
           className="action-document"
@@ -408,7 +408,7 @@ const File = ({
         <Row gutter={[16, 0]} className="style-list-document">
           {selectedRows.length > 0 && (
             <Col>
-              <Button type="primary" onClick={() => confirmDelete()}>
+              <Button type="primary" onClick={() => confirmDelete(selectedRows)}>
                 Xóa
               </Button>
             </Col>
