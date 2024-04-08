@@ -240,14 +240,14 @@ const HomePage = () => {
               onConfirm={() => handleLock(r.id)}
             >
               {r.account_stutus === 1 && r.position_code !== "ADMIN" ? (
-                <Tag color="#f41f1f" className="tag-btn">
+                <Tag color="#87d068 " className="tag-btn">
                   <Button type="text" className="btn-lock">
                     <IoLockClosedOutline className="icon-fa icon-fa-lock" />
                   </Button>
                 </Tag>
               ) : (
                 r.position_code !== "ADMIN" && (
-                  <Tag color="#87d068" className="tag-btn">
+                  <Tag color="#f41f1f" className="tag-btn">
                     <Button type="text" className="btn-unlock">
                       <GoUnlock className="icon-fa icon-fa-unlock" />
                     </Button>
