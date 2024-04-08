@@ -29,7 +29,8 @@ const AddUser = ({ onClose, setUser, departments }) => {
   const [callingApi, setCallApi] = useState(false);
   const [files, setFiles] = useState([]);
 
-  const handleAddUser = async (values) => {
+  const handleAddUser = async () => {
+    const values = form.getFieldsValue();
     setCallApi(true);
     try {
       const params = {
@@ -78,22 +79,26 @@ const AddUser = ({ onClose, setUser, departments }) => {
       title="Thêm tài khoản"
       className="form-modal"
       width={500}
-      footer={false}
+      onCancel={onClose}
+      onOk={handleAddUser}
+      okText="Thêm tài khoản"
+      okButtonProps={{ style: { marginRight: "30px" } }}
     >
       <SpinCutom spinning={callingApi}>
         <Form
           layout="vertical"
           className="commom-form"
-          onFinish={handleAddUser}
+          
           form={form}
         >
           <Row gutter={30}>
             <Col span={12}>
               <Form.Item
                 name="name"
+                label="Tên:"
                 rules={[{ required: true, message: "Vui lòng nhập tên" }]}
               >
-                <Input placeholder="Nhập tên " />
+                <Input placeholder="Nhập tên: " />
               </Form.Item>
             </Col>
 
@@ -101,6 +106,7 @@ const AddUser = ({ onClose, setUser, departments }) => {
               {" "}
               <Form.Item
                 name="user_code"
+                label="Mã nhân viên:"
                 rules={[
                   { required: true, message: "Vui lòng nhập mã nhân viên" },
                 ]}
@@ -142,6 +148,7 @@ const AddUser = ({ onClose, setUser, departments }) => {
             <Col span={12}>
               <Form.Item
                 name="phone"
+                label="Số điện thoại:"
                 rules={[
                   {
                     pattern: PHONE_PATTERN,
@@ -157,6 +164,7 @@ const AddUser = ({ onClose, setUser, departments }) => {
               {" "}
               <Form.Item
                 name="position_id"
+                label="Chức vụ:"
                 rules={[{ required: true, message: "Vui lòng chọn chức vụ !" }]}
               >
                 <Select
@@ -175,6 +183,7 @@ const AddUser = ({ onClose, setUser, departments }) => {
             <Col span={12}>
               <Form.Item
                 name="department_id"
+                label="Phòng ban:"
                 rules={[
                   { required: true, message: "Vui lòng chọn phòng ban !" },
                 ]}
@@ -193,6 +202,7 @@ const AddUser = ({ onClose, setUser, departments }) => {
             <Col span={12}>
               <Form.Item
                 name="password"
+                label="Mật khẩu:"
                 rules={[
                   { required: true, message: "Vui lòng nhập mật khẩu !" },
                 ]}
@@ -202,7 +212,7 @@ const AddUser = ({ onClose, setUser, departments }) => {
             </Col>
 
             <Col span={12}>
-              <Form.Item name="telegram_chat_id">
+              <Form.Item name="telegram_chat_id" label="Telegram ID:">
                 <InputNumber placeholder="ID telegram" className="w-full" />
               </Form.Item>
             </Col>
@@ -221,22 +231,6 @@ const AddUser = ({ onClose, setUser, departments }) => {
                   </Col>
                 </Row>
               </Form.Item>
-            </Col>
-
-            <Col span={24}>
-              <Row gutter={[16, 0]}>
-                <Col span={12}>
-                  <Button className="w-full" onClick={onClose}>
-                    Thoát
-                  </Button>
-                </Col>
-
-                <Col span={12}>
-                  <Button htmlType="submit" type="primary" className="w-full">
-                    Thêm tài khoản
-                  </Button>
-                </Col>
-              </Row>
             </Col>
           </Row>
         </Form>

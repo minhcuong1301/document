@@ -164,75 +164,77 @@ const CommonDocument = () => {
     <Layout className="common-layout document-page">
       <SpinCustom spinning={spinning}>
         <div className="common-layout--header">
-          <Space direction="vertical" size="middle">
-            <Row className="filler" gutter={[8, 8]}>
-              <Col span={24}>
-                <Button
-                  className="exit-home"
-                  onClick={() => window.navigatePage("home-navigate")}
-                >
-                  Thoát
-                </Button>
-              </Col>
+          <Row gutter={[{ xs: 8, sm: 8, md: 16, lg: 16 }, 16]}>
+            <Col span={24}>
+          <Row
+            className="filler"
+            gutter={[{ xs: 8, sm: 8, md: 16, lg: 16 }, 16]}
+          >
+            <Button
+              className="exit-home"
+              onClick={() => window.navigatePage("home-navigate")}
+            >
+              Thoát
+            </Button>
 
-              <Col>
-                <Row gutter={[8, 0]}>
-                  <Col className="align--center">
-                    <span>Từ:</span>
-                  </Col>
-                  <Col>
-                    <DatePicker
-                      defaultValue={dateStart}
-                      onChange={(v) => {
-                        setDateStart(v);
-                      }}
-                      allowClear
-                      format={DATE_FORMAT}
-                    />
-                  </Col>
-                </Row>
+            <Col className="align--center" xs={24} sm={24} md={6} lg={4}>
+              <Col gutter={[4, 0]}>
+                <span>Từ:</span>
               </Col>
-
-              <Col>
-                <Row gutter={[8, 0]}>
-                  <Col className="align--center">
-                    <span>Đến:</span>
-                  </Col>
-                  <Col>
-                    <DatePicker
-                      defaultValue={dateEnd}
-                      onChange={(v) => {
-                        setDateEnd(v);
-                      }}
-                      allowClear
-                      format={DATE_FORMAT}
-                    />
-                  </Col>
-                </Row>
-              </Col>
-
-              <Col className="filler--item">
-                <Input.Search
-                  onSearch={(v) => {
-                    setName(v);
+              <Col className="align--center" gutter={[4, 0]}>
+                <DatePicker
+                  defaultValue={dateStart}
+                  onChange={(v) => {
+                    setDateStart(v);
                   }}
-                  placeholder="Nhập tên ..."
                   allowClear
+                  format={DATE_FORMAT}
                 />
               </Col>
-            </Row>
-            <Row>
-              <Col span={12}>
-                <Button
-                  onClick={() => setIsModalOpen(true)}
-                  type="primary"
-                  className="doc-add-btn"
-                >
-                  Thêm tài liệu
-                </Button>
+            </Col>
+
+            <Col className="align--center" xs={24} sm={24} md={6} lg={4}>
+              <Col gutter={[4, 0]}>
+                <span>Đến:</span>
               </Col>
-            </Row>
-          </Space>
+              <Col gutter={[4, 0]}>
+                <DatePicker
+                  defaultValue={dateEnd}
+                  onChange={(v) => {
+                    setDateEnd(v);
+                  }}
+                  allowClear
+                  format={DATE_FORMAT}
+                />
+              </Col>
+            </Col>
+
+            <Col className="filler--item" xs={24} sm={24} md={6} lg={4}>
+              <Input.Search
+                onSearch={(v) => {
+                  setName(v);
+                }}
+                placeholder="Nhập tên ..."
+                allowClear
+              />
+            </Col>
+          </Row>
+          </Col>
+          <Col span={24}>
+
+          <Row>
+            <Button
+              onClick={() => setIsModalOpen(true)}
+              type="primary"
+              className="doc-add-btn"
+            >
+              Thêm tài liệu
+            </Button>
+          </Row>
+          </Col>
+
+          </Row>
+
         </div>
         <div className="common-layout--content">
           <Row gutter={[8, 16]}>

@@ -46,7 +46,6 @@ const EditUser = ({ onClose, setUser, editUser }) => {
         if (values?.phone) {
           data_req.phone = values.phone || null;
         }
-        console.log(data_req);
 
         const { data, status } = await actionUpdateUser(editUser?.id, data_req);
         if (status == 200) {
@@ -70,20 +69,10 @@ const EditUser = ({ onClose, setUser, editUser }) => {
       title="Sửa nhân viên"
       className="common-long-modal"
       width={500}
-      footer={
-        <Row gutter={[16, 0]} justify={"center"}>
-          <Col>
-            <Button onClick={onClose} className="w-full">
-              Thoát
-            </Button>
-          </Col>
-          <Col>
-            <Button className="w-full" onClick={handleEditUser} type="primary">
-              Cập nhật
-            </Button>
-          </Col>
-        </Row>
-      }
+      onCancel={onClose}
+      onOk={handleEditUser}
+      okText="Cập nhật"
+      okButtonProps={{ style: { marginRight: "30px" } }}
     >
       <SpinCutom spinning={callingApi}>
         <Form

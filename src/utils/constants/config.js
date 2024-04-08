@@ -1,8 +1,6 @@
 // Server config
 export const { REACT_APP_SERVER_BASE_URL } = process.env || {};
 
-// export const REACT_APP_SERVER_BASE_URL = "http://117.4.254.94:8006"
-
 // Date time fomart
 export const DATETIME_FORMAT = "HH:mm DD-MM-YYYY";
 export const DATE_FORMAT = "DD-MM-YYYY";
@@ -16,7 +14,7 @@ export const PHONE_PATTERN =
 export const PASSWORD_PATTEN = /^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/;
 
 // Common Config
-export const AIPT_WEB_TOKEN = "AIPT_WEB_DATA_MANAGEMT_TOKEN";
+export const AIPT_WEB_TOKEN = "AIPT_WEB_DATA_MASTER_TOKEN";
 export const SPINNING_SIZE = "large";
 export const BTN_SIZE_TABLE = "small";
 

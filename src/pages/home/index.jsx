@@ -279,105 +279,101 @@ const HomePage = () => {
     <Layout className="common-layout">
       <SpinCustom spinning={spinning}>
         <div className="common-layout--header">
-          <Space direction="vertical" size="middle">
-            <Row className="filler" gutter={[8, 8]}>
-              <Button
-                className="exit-home"
-                onClick={() => window.navigatePage("home-navigate")}
+          <Row
+            className="filler"
+            gutter={[{ xs: 8, sm: 8, md: 16, lg: 16 }, 16]}
+          >
+            <Button
+              className="exit-home"
+              onClick={() => window.navigatePage("home-navigate")}
+            >
+              Thoát
+            </Button>
+            <Col className="filler--item" xs={24} sm={12} md={6} lg={6}>
+              <Select
+                className="w-full"
+                placeholder="Phòng ban"
+                onChange={(e) => setSelectedStatus(e)}
+                allowClear
               >
-                Thoát
+                {Object.keys(DEPARTMENTS_CODE).map((key) => (
+                  <Select.Option key={key} value={key}>
+                    {DEPARTMENTS_CODE[key]} ({key})
+                  </Select.Option>
+                ))}
+              </Select>
+            </Col>
+
+            <Col className="filler--item" xs={24} sm={12} md={6} lg={6}>
+              <Input.Search
+                onSearch={(v) => {
+                  setName(v);
+                }}
+                placeholder="Nhập tên ..."
+                allowClear
+              />
+            </Col>
+            <Col className="filler--item" xs={24} sm={12} md={6} lg={6}>
+              <Input.Search
+                onSearch={(v) => {
+                  setCode(v);
+                }}
+                placeholder="Nhập mã nhân viên ..."
+                allowClear
+              />
+            </Col>
+
+            <Col className="filler--item" xs={24} sm={12} md={6} lg={6}>
+              <Select
+                className="w-full"
+                placeholder=" Chức vụ"
+                onChange={(e) => setPosition(e)}
+                allowClear
+              >
+                {Object.keys(POSITION_CODE).map((key) => (
+                  <Select.Option key={key} value={key}>
+                    {POSITION_CODE[key]}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Col>
+
+            {userLogin.position_code === "ADMIN" && (
+              <Col >
+                <Button
+                  className="w-full"
+                  type="primary"
+                  onClick={() => setOpenAddUserModal(true)}
+                >
+                  Thêm tài khoản
+                </Button>
+              </Col>
+            )}
+
+            {userLogin.position_code === "ADMIN" && (
+              <Col >
+                <Button
+                  onClick={() => {
+                    setOpenUpload(true);
+                  }}
+                  className="w-full"
+                  type="primary"
+                >
+                  Nhập excel
+                </Button>
+              </Col>
+            )}
+
+            <Col >
+              <Button
+                onClick={handleExportData}
+                // icon={<FilePdfOutlined />}
+                type="primary"
+              >
+                Xuất excel
               </Button>
-              <Space size="large">
-                <Col className="filler--item">
-                  <Select
-                    className="w-full"
-                    placeholder="Phòng ban"
-                    onChange={(e) => setSelectedStatus(e)}
-                    allowClear
-                  >
-                    {Object.keys(DEPARTMENTS_CODE).map((key) => (
-                      <Select.Option key={key} value={key}>
-                        {DEPARTMENTS_CODE[key]} ({key})
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Col>
-
-                <Col className="filler--item">
-                  <Input.Search
-                    onSearch={(v) => {
-                      setName(v);
-                    }}
-                    placeholder="Nhập tên ..."
-                    allowClear
-                  />
-                </Col>
-                <Col className="filler--item">
-                  <Input.Search
-                    onSearch={(v) => {
-                      setCode(v);
-                    }}
-                    placeholder="Nhập mã nhân viên ..."
-                    allowClear
-                  />
-                </Col>
-
-                <Col className="filler--item">
-                  <Select
-                    className="w-full"
-                    placeholder=" Chức vụ"
-                    onChange={(e) => setPosition(e)}
-                    allowClear
-                  >
-                    {Object.keys(POSITION_CODE).map((key) => (
-                      <Select.Option key={key} value={key}>
-                        {POSITION_CODE[key]}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Col>
-              </Space>
-            </Row>
-            <Row>
-              <Space size="large">
-                {userLogin.position_code === "ADMIN" && (
-                  <Col>
-                    <Button
-                      className="w-full"
-                      type="primary"
-                      onClick={() => setOpenAddUserModal(true)}
-                    >
-                      Thêm tài khoản
-                    </Button>
-                  </Col>
-                )}
-
-                {userLogin.position_code === "ADMIN" && (
-                  <Col>
-                    <Button
-                      onClick={() => {
-                        setOpenUpload(true);
-                      }}
-                      className="w-full"
-                      type="primary"
-                    >
-                      Nhập excel
-                    </Button>
-                  </Col>
-                )}
-
-                <Col>
-                  <Button
-                    onClick={handleExportData}
-                    // icon={<FilePdfOutlined />}
-                    type="primary"
-                  >
-                    Xuất excel
-                  </Button>
-                </Col>
-              </Space>
-            </Row>
-          </Space>
+            </Col>
+          </Row>
         </div>
 
         <div className="common-layout--content">
