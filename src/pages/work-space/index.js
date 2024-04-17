@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import React from "react";
 import { SpinCustom } from "components";
-import "./index.scss";
+import "../common-document/index.scss";
 import dayjs from "dayjs";
-import AddDocument from "./components/addDocument";
+import AddDocument from "../common-document/components/addDocument";
 import { DATE_FORMAT } from "utils/constants/config";
-import File from "./components/File";
+import File from "../common-document/components/File";
 import {
   actionGetListDocument,
   actionGetListFolderChid,
   actionGetListRole,
-} from "./action";
+} from "../common-document/action";
 
 import {
   Layout,
@@ -24,7 +24,7 @@ import {
 } from "antd";
 import { useSearchParams } from "react-router-dom";
 
-const CommonDocument = () => {
+const WorkSpace = () => {
   const [spinning, setSpinning] = useState(false);
   const [listDocument, setListDocument] = useState([]);
   const [name, setName] = useState(null);
@@ -225,17 +225,17 @@ const CommonDocument = () => {
             <Col span={24}>
 
               <Row gutter={[16,8]}>
+              
+
                 <Col>
                   <Button
                     onClick={() => setIsModalOpen(true)}
                     type="primary"
                     className="doc-add-btn"
                   >
-                    Tạo tài liệu
+                    Tạo workspace
                   </Button>
                 </Col>
-
-               
               </Row>
             </Col>
 
@@ -291,4 +291,4 @@ const CommonDocument = () => {
   );
 };
 
-export default CommonDocument;
+export default WorkSpace;

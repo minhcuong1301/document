@@ -7,8 +7,6 @@ import {
   Image,
   Button,
   Checkbox,
-  Table,
-  Space,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { SpinCustom } from "components";

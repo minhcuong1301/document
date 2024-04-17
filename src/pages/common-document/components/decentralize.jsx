@@ -19,11 +19,9 @@ import { DEPARTMENTS_CODE } from "utils/constants/config";
 //debounce function for searching
 
 const Decentralize = ({ onCancel, documentId, fileType }) => {
+  const department = useSelector((state) => state.departments);
   const [spinning, setSpinning] = useState(false);
   const [listEmployee, setListEmployee] = useState([]);
-  // const [employee, setEmployee] = useState();
-  // const userLogin = useSelector((state) => state.profile);
-  const department = useSelector((state) => state.departments);
   const [tabKey, setTabKey] = useState("tab-1");
   const [selectedRoles, setSelectedRoles] = useState([]);
   const [selectedDep, setSelectedDep] = useState([]);

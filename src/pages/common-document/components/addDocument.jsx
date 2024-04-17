@@ -2,32 +2,48 @@
 import { UploadFile, SpinCustom } from "components";
 import { useState } from "react";
 import { actionAddDocument } from "../action"
+import { useSelector } from "react-redux";
 import {
   Modal, Input, Form,
   Row, Col, Button,
-  message
+  message, Select,
+  InputNumber,
+  DatePicker
 } from "antd";
+import { DATE_FORMAT } from "utils/constants/config";
 
 const AddDocument = ({ idDocumentAdd, onCancel, handleGetListDocument, handleGetChildFolder }) => {
+
   const [form] = Form.useForm();
   const [files, setFiles] = useState([]);
   const [spinning, setSpinning] = useState(false)
+  const [dateStart, setDateStart] = useState(null)
 
-  const hadleAddDocument = async (values) => {
+  const userLogin = useSelector((state) => state.profile);
+
+
+  const handleAddDocument = async (values) => {
     setSpinning(true);
     try {
       const formData = new FormData();
       Object.keys(values).forEach(key => {
         formData.append(key, values[key])
       })
+
       files.forEach((file) => {
         formData.append("files", file);
       });
 
-      formData.append("ascc_id", 2)
+      formData.append("department_id", userLogin?.department_id)
+      formData.append("document_type", 1)
+
+
+
       if (idDocumentAdd) {
         formData.append("document_id", idDocumentAdd)
       }
+
+
       const { data, status } = await actionAddDocument(formData);
       if (status === 200) {
         if (idDocumentAdd) {
@@ -55,14 +71,30 @@ const AddDocument = ({ idDocumentAdd, onCancel, handleGetListDocument, handleGet
       footer={false}
       open={true}
       width={350}
+      title="Thêm tài liệu"
     >
       <SpinCustom spinning={spinning}>
-        <Form form={form} onFinish={hadleAddDocument}>
+        <Form form={form} onFinish={handleAddDocument}>
           <Form.Item name="name_folder"
           >
             <Input placeholder="Tên tài liệu" />
           </Form.Item>
-          
+
+          {/* <Form.Item name="storage_time"
+          >
+            <DatePicker
+              defaultValue={dateStart}
+              onChange={(v) => {
+                setDateStart(v);
+
+              }}
+              allowClear
+              format={DATE_FORMAT}
+            />          
+            </Form.Item> */}
+
+
+
           <Form.Item>
             <UploadFile
               setFiles={setFiles}

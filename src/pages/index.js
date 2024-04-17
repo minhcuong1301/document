@@ -12,6 +12,7 @@ import {
 } from "@ant-design/icons";
 
 import Bin from './Bin'
+import WorkSpace from "./work-space";
 /** pages
  * page hiển thị trên menu thi có thêm 2 thuộc tính icon và label
  * page không hiển thị trên menu bỏ icon và lable
@@ -41,6 +42,16 @@ const pages = [
     icon: <FolderOutlined />,
     element: <CommonDocument />,
   },
+
+  {
+    name: "work-space",
+    path: "/work-space",
+    auth: true,
+    label: "Không gian làm việc ",
+    icon: <FolderOutlined />,
+    element: <WorkSpace />,
+  },
+
   {
     name: "history-document",
     path: "/history-document",
