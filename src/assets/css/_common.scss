@@ -7,7 +7,7 @@
 		background: var(--common-background) !important;
 		margin: 4px 0px 4px;
 		border-radius: 2px;
-		user-select: none;
+		// user-select: none;
 
 		&--header {
 			height: fit-content;
@@ -39,6 +39,16 @@
 			.item-center {
 				justify-content: center;
 				align-items: center;
+			}
+			.ant-card-cover{
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				padding-top: 12px;
+			}
+			.style-workspace{
+				display: flex;
+				gap: 30px;
 			}
 		}
 

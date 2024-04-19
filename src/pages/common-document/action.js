@@ -34,6 +34,13 @@ export const actionUpdateNameFile = (body) => {
   })
 }
 
+export const actionUpdateWorkSpace = (id,data) => {
+  return api({
+    method: "PUT",
+    url: `/update-info/${id}`,
+    data: data
+  })
+}
 export const actionDeleteFile = (body) => {
   return api({
     method: "POST",

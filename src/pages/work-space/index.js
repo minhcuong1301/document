@@ -5,7 +5,8 @@ import "../common-document/index.scss";
 import dayjs from "dayjs";
 import AddDocument from "../common-document/components/addDocument";
 import { DATE_FORMAT } from "utils/constants/config";
-import File from "../common-document/components/File";
+import FileWorkSpace from "../common-document/components/FileWorkSpace";
+
 import {
   actionGetListDocument,
   actionGetListFolderChid,
@@ -31,6 +32,7 @@ const WorkSpace = () => {
   const [dateStart, setDateStart] = useState(null);
   const [dateEnd, setDateEnd] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [checkIsOpenWorkSpace, setCheckIsOpenWorkSpace] = useState(false);
   const [idDocumentAdd, setIdDocumentAdd] = useState();
   const [breadcrumbs, setBreadcrumbs] = useState([]);
   const [idLastFolder, setIdLastFolder] = useState();
@@ -58,6 +60,7 @@ const WorkSpace = () => {
         name: name || null,
         time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
+        document_type:2
       };
       const { data, status } = await actionGetListDocument(params);
       if (status === 200) {
@@ -76,6 +79,7 @@ const WorkSpace = () => {
         name: name || null,
         time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
+        document_type:2
       };
       if (idDocumentAdd) {
         params.document_id = idDocumentAdd;
@@ -103,6 +107,7 @@ const WorkSpace = () => {
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
         document_id: value?.id,
         file_id: documentId,
+        document_type:2
       };
       const { data, status } = await actionGetListFolderChid(params);
       if (status === 200) {
@@ -229,7 +234,9 @@ const WorkSpace = () => {
 
                 <Col>
                   <Button
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={() =>{
+                      setCheckIsOpenWorkSpace(true)
+                      setIsModalOpen(true)} }
                     type="primary"
                     className="doc-add-btn"
                   >
@@ -265,7 +272,7 @@ const WorkSpace = () => {
                 );
               })}
             </Breadcrumb>
-            <File
+            <FileWorkSpace
               listDocument={listDocument}
               handleGetListDocument={handleGetListDocument}
               handleGetChildFolder={handleGetChildFolder}
@@ -273,6 +280,7 @@ const WorkSpace = () => {
               idDocumentAdd={idDocumentAdd}
               setListDocument={setListDocument}
               roleUser={roleUser}
+
             />
           </Row>
         </div>
@@ -281,6 +289,7 @@ const WorkSpace = () => {
         {isModalOpen && (
           <AddDocument
             idDocumentAdd={idDocumentAdd}
+            checkIsOpenWorkSpace={checkIsOpenWorkSpace}
             onCancel={() => setIsModalOpen(false)}
             handleGetListDocument={handleGetListDocument}
             handleGetChildFolder={handleGetChildFolder}

@@ -1,12 +1,13 @@
 import {
   Col,
   Dropdown,
+  Input,
   Row,
   message,
   Modal,
   Image,
   Button,
-  Checkbox,
+  Checkbox, Card
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { SpinCustom } from "components";
@@ -22,7 +23,9 @@ import {
   PdfIcon,
   ExcelIcon,
   DefaultIcon,
+  AiptLogo,
 } from "assets";
+import { EditOutlined, EllipsisOutlined, DeleteOutlined } from '@ant-design/icons';
 import { DATETIME_FORMAT } from "utils/constants/config";
 import Decentralize from "./decentralize";
 import DetailFile from "./detailFile";
@@ -31,8 +34,9 @@ import { useSelector } from "react-redux";
 import { REACT_APP_SERVER_BASE_URL } from "utils/constants/config";
 
 import UpdateNameFile from "./updateNameFile";
-
-const File = ({
+import EditWorkSpace from "./editWorkSpace";
+const { Meta } = Card;
+const FileWorkSpace = ({
   listDocument,
   handleGetListDocument,
   handleGetChildFolder,
@@ -47,6 +51,7 @@ const File = ({
   const [documentId, setDocumentId] = useState();
   const [typeDocument, setTypeDocument] = useState();
   const [openDetail, setOpenDetail] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
   const [pathDoc, setPathDoc] = useState();
   const [openDecentralize, setOpenDecentralize] = useState(false);
   const [oldName, setOldName] = useState();
@@ -58,7 +63,6 @@ const File = ({
 
   const [items, setItems] = useState([]);
   const [fileType, setFileType] = useState(null);
-
 
   const handleDeleteFile = async (list_doc) => {
     setSpinning(true);
@@ -320,94 +324,124 @@ const File = ({
     const extension_file = record.name.replace(/\s/g, "").split(".").pop();
 
     return (
-      <tr
-        className="cursor-pointer"
-        key={index}
-        onClick={() => handleDetail(record?.id)}
-      >
-        <td style={{ width: "2%" }} onClick={(e) => e.stopPropagation()}>
-          <Checkbox onChange={(e) => handleCheckboxChange(e, record.id)} />
-        </td>
+      // <tr
+      //   className="cursor-pointer"
+      //   key={index}
+      //   onClick={() => handleDetail(record?.id)}
+      // >
+      //   <td style={{ width: "2%" }} onClick={(e) => e.stopPropagation()}>
+      //     <Checkbox onChange={(e) => handleCheckboxChange(e, record.id)} />
+      //   </td>
 
-        <td className="icon-document" style={{ width: "2%" }}>
-          {getIconForDocumentType(record.document_type, record, extension_file)}
-        </td>
+      //   <td className="icon-document" style={{ width: "2%" }}>
+      //     {getIconForDocumentType(record.document_type, record, extension_file)}
+      //   </td>
 
-        <td
-          className="name-document"style={{ width: "5%" }} 
-          onClick={(event) => {
-            event.stopPropagation();
-            handleClick(event, record.name, record.id);
-          }}
-        >
-          {record.name}
-        </td>
+      //   <td
+      //     className="name-document"
+      //     onClick={(event) => {
+      //       event.stopPropagation();
+      //       handleClick(event, record.name, record.id);
+      //     }}
+      //   >
+      //     {record.name}
+      //   </td>
 
-        <td className="time-upload-document">
-          {moment(record.time_upload * 1000).format(DATETIME_FORMAT)}
-        </td>
+      //   <td className="time-upload-document">
+      //     {moment(record.time_upload * 1000).format(DATETIME_FORMAT)}
+      //   </td>
 
-        <td
-          className="user-create-document"
-          onClick={(event) => {
-            event.stopPropagation();
-            handleClick(event, record.name, record.id);
-          }}
-        >
-          {record.user_create}
-        </td>
+      //   <td
+      //     className="user-create-document"
+      //     onClick={(event) => {
+      //       event.stopPropagation();
+      //       handleClick(event, record.name, record.id);
+      //     }}
+      //   >
+      //     {record.user_create}
+      //   </td>
 
-          <td style={{ width: "7%" }}  className="user-create-document">
-            {record?.department_name }
-          </td>
+      //   <td style={{ width: "7%" }} className="user-create-document">
+      //     {record?.department_name}
+      //   </td>
 
-        <td
-          className="action-document"
-          onClick={(event) => {
-            event.stopPropagation();
-          }}
-        >
-          <Dropdown
-            className="dropdown-action"
-            menu={{
-              items,
-              onClick: (e) => {
-                handleMenuClick(
-                  e,
-                  record.id,
-                  record.document_type,
-                  record.name
-                );
-              },
+      //   <td
+      //     className="action-document"
+      //     onClick={(event) => {
+      //       event.stopPropagation();
+      //     }}
+      //   >
+      //     <Dropdown
+      //       className="dropdown-action"
+      //       menu={{
+      //         items,
+      //         onClick: (e) => {
+      //           handleMenuClick(
+      //             e,
+      //             record.id,
+      //             record.document_type,
+      //             record.name
+      //           );
+      //         },
+      //       }}
+      //       trigger={["click"]}
+      //       onOpenChange={() => handleOpenChange(record.document_type)}
+      //     >
+      //       <Button type="primary">Thao tác</Button>
+      //     </Dropdown>
+      //   </td>
+      // </tr>
+      <Row >
+        <Col>
+          <Card
+            hoverable
+            style={{
+              width: 240,
+
             }}
-            trigger={["click"]}
-            onOpenChange={() => handleOpenChange(record.document_type)}
+            // cover={<img style={{ width: "40%" }} src={AiptLogo}></img>}
+            actions={[
+              <DeleteOutlined key="delete"
+                onClick={
+                  () => confirmDelete([record?.id])
+                }
+              />,
+              <EditOutlined key="edit" 
+              onClick={
+                () => setOpenEdit(record)
+              } />,
+              <EllipsisOutlined key="ellipsis" />,
+            ]}
           >
-            <Button type="primary">Thao tác</Button>
-          </Dropdown>
-        </td>
-      </tr>
+            <Row gutter={[0, 16]}>
+
+              <Col><strong>Tên:</strong> {record?.name} </Col>
+
+              <Input.TextArea rows={4} value={record?.object_description} disabled />
+
+              <Col>
+                Còn:  <strong>{record?.storage_time}</strong>  ngày
+              </Col>
+
+            </Row>
+          </Card>
+        </Col>
+      </Row>
+
+
+
+
+
     );
   });
 
   const renderTable = () => {
     if (listDocument && listDocument.length > 0) {
       return (
-        <table className="style-table">
-          <thead>
-            <tr>
-              <th></th>
-              <th></th>
-         
-              <th    style={{textAlign:"left"}} >Tên</th>
-              <th>Ngày tạo</th>
-              <th>Người tạo</th>
-              <th>Phòng ban</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>{rows}</tbody>
-        </table>
+
+        <Col className="style-workspace">
+          {rows}
+        </Col>
       );
     }
   };
@@ -456,8 +490,17 @@ const File = ({
             setListDocument={setListDocument}
           />
         )}
+        {
+          openEdit && (
+            <EditWorkSpace
+            openEdit={openEdit}
+            setOpenEdit={setOpenEdit}
+            onCancel={() => setOpenEdit(false)}
+            />
+          )
+        }
       </>
     </>
   );
 };
-export default File;
+export default FileWorkSpace;

@@ -26,6 +26,7 @@ import { useSearchParams } from "react-router-dom";
 
 const CommonDocument = () => {
   const [spinning, setSpinning] = useState(false);
+  const [checkIsOpenDoc, setCheckIsOpenDoc] = useState(false);
   const [listDocument, setListDocument] = useState([]);
   const [name, setName] = useState(null);
   const [dateStart, setDateStart] = useState(null);
@@ -58,6 +59,7 @@ const CommonDocument = () => {
         name: name || null,
         time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
+        document_type:1
       };
       const { data, status } = await actionGetListDocument(params);
       if (status === 200) {
@@ -76,6 +78,7 @@ const CommonDocument = () => {
         name: name || null,
         time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
+        document_type:1
       };
       if (idDocumentAdd) {
         params.document_id = idDocumentAdd;
@@ -103,6 +106,7 @@ const CommonDocument = () => {
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
         document_id: value?.id,
         file_id: documentId,
+        // document_type:1
       };
       const { data, status } = await actionGetListFolderChid(params);
       if (status === 200) {
@@ -224,10 +228,13 @@ const CommonDocument = () => {
             </Col>
             <Col span={24}>
 
-              <Row gutter={[16,8]}>
+              <Row gutter={[16, 8]}>
                 <Col>
                   <Button
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={() => {
+                      setCheckIsOpenDoc(true)
+                      setIsModalOpen(true)
+                    }}
                     type="primary"
                     className="doc-add-btn"
                   >
@@ -235,7 +242,7 @@ const CommonDocument = () => {
                   </Button>
                 </Col>
 
-               
+
               </Row>
             </Col>
 
@@ -273,6 +280,7 @@ const CommonDocument = () => {
               idDocumentAdd={idDocumentAdd}
               setListDocument={setListDocument}
               roleUser={roleUser}
+
             />
           </Row>
         </div>
@@ -281,6 +289,8 @@ const CommonDocument = () => {
         {isModalOpen && (
           <AddDocument
             idDocumentAdd={idDocumentAdd}
+            listDocument={listDocument}
+            checkIsOpenDoc={checkIsOpenDoc}
             onCancel={() => setIsModalOpen(false)}
             handleGetListDocument={handleGetListDocument}
             handleGetChildFolder={handleGetChildFolder}

@@ -11,58 +11,102 @@ import {
   DatePicker
 } from "antd";
 import { DATE_FORMAT } from "utils/constants/config";
+import dayjs from "dayjs";
 
-const AddDocument = ({ idDocumentAdd, onCancel, handleGetListDocument, handleGetChildFolder }) => {
+const AddDocument = ({
+  idDocumentAdd,
+  onCancel,
+  handleGetListDocument,
+  handleGetChildFolder,
+  checkIsOpenWorkSpace,
+  checkIsOpenDoc }) => {
 
   const [form] = Form.useForm();
   const [files, setFiles] = useState([]);
   const [spinning, setSpinning] = useState(false)
-  const [dateStart, setDateStart] = useState(null)
+
+  const [selectedStatus, setSelectedStatus] = useState(null);
 
   const userLogin = useSelector((state) => state.profile);
+  const department = useSelector((state) => state.departments);
 
 
   const handleAddDocument = async (values) => {
     setSpinning(true);
     try {
       const formData = new FormData();
-      Object.keys(values).forEach(key => {
-        formData.append(key, values[key])
-      })
 
-      files.forEach((file) => {
-        formData.append("files", file);
-      });
+      if (checkIsOpenDoc) {
+        Object.keys(values).forEach(key => {
+          formData.append(key, values[key])
+        })
+        files.forEach((file) => {
+          formData.append("files", file);
+        });
 
-      formData.append("department_id", userLogin?.department_id)
-      formData.append("document_type", 1)
+        if (userLogin?.position_code !== "ADMIN") {
+          formData.append("department_id", userLogin?.department_id)
+        }
 
-
-
-      if (idDocumentAdd) {
-        formData.append("document_id", idDocumentAdd)
-      }
-
-
-      const { data, status } = await actionAddDocument(formData);
-      if (status === 200) {
+        formData.append("document_type", 1)
         if (idDocumentAdd) {
-          const idAdd = {
-            id: idDocumentAdd,
+          formData.append("document_id", idDocumentAdd)
+        }
+        const { data, status } = await actionAddDocument(formData);
+        if (status === 200) {
+          if (idDocumentAdd) {
+            const idAdd = {
+              id: idDocumentAdd,
 
+            }
+            await handleGetChildFolder(idAdd)
           }
-          await handleGetChildFolder(idAdd)
+          else {
+            await handleGetListDocument()
+          }
+          message.success(data?.message);
+          onCancel()
         }
-        else {
-          await handleGetListDocument()
-        }
-        message.success(data?.message);
-        onCancel()
       }
+      if (checkIsOpenWorkSpace) {
+
+        const params = {
+          ...values,
+          time_start: dayjs(values?.time_start).unix(),
+          storage_time: values?.storage_time || null
+        }
+        formData.append("document_type", 2)
+
+        Object.keys(params).forEach(key => {
+          formData.append(key, params[key]);
+        })
+
+        const { data, status } = await actionAddDocument(formData);
+        if (status === 200) {
+          if (idDocumentAdd) {
+            const idAdd = {
+              id: idDocumentAdd,
+
+            }
+            await handleGetChildFolder(idAdd)
+          }
+          else {
+            await handleGetListDocument()
+          }
+          message.success(data?.message);
+          onCancel()
+        }
+      }
+
+
+
     } catch (err) {
       console.log(err);
     }
     setSpinning(false);
+  };
+  const handleDisabledDate = (currentDate) => {
+    return currentDate <= dayjs().startOf("day");
   };
 
   return (
@@ -75,32 +119,84 @@ const AddDocument = ({ idDocumentAdd, onCancel, handleGetListDocument, handleGet
     >
       <SpinCustom spinning={spinning}>
         <Form form={form} onFinish={handleAddDocument}>
-          <Form.Item name="name_folder"
-          >
-            <Input placeholder="Tên tài liệu" />
-          </Form.Item>
-
-          {/* <Form.Item name="storage_time"
-          >
-            <DatePicker
-              defaultValue={dateStart}
-              onChange={(v) => {
-                setDateStart(v);
-
-              }}
-              allowClear
-              format={DATE_FORMAT}
-            />          
-            </Form.Item> */}
 
 
+          {checkIsOpenDoc &&
+            <>
+              <Form.Item name="name_folder"
+                label="Tên tài liệu"
+              >
+                <Input placeholder="Tên tài liệu" />
+              </Form.Item>
 
-          <Form.Item>
-            <UploadFile
-              setFiles={setFiles}
-              files={files}
-            />
-          </Form.Item>
+              {userLogin?.position_code === 'ADMIN' &&
+                <Form.Item name="department_id"
+                  label="Phòng ban"
+                  rules={[
+                    { required: true, message: "Vui lòng chọn phòng ban" }
+                  ]}
+                >
+                  <Select
+                    className="w-full"
+                    placeholder="Phòng ban"
+                    onChange={(e) => setSelectedStatus(e)}
+                    allowClear
+                    value={selectedStatus}
+                  >
+                    {department.map((u) => (
+                      <Select.Option key={u?.id} value={u.id}>
+                        {u?.name}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              }
+
+
+              <Form.Item label="Tệp">
+                <UploadFile
+                  setFiles={setFiles}
+                  files={files}
+                />
+              </Form.Item>
+            </>
+          }
+
+          {
+            checkIsOpenWorkSpace && <>
+              <Form.Item name="name_folder"
+                label="Tên tài liệu"
+                rules={[{ required: true, message: "Vui lòng nhập tên" }]}
+              >
+                <Input placeholder="Tên tài liệu" />
+              </Form.Item>
+
+              <Form.Item name="time_start"
+                label="Thời gian bắt đầu"
+              >
+                <DatePicker
+                  format={DATE_FORMAT}
+                  className="w-full"
+                  disabledDate={handleDisabledDate}
+                />
+              </Form.Item>
+
+              <Form.Item name="storage_time"
+                label="Thời gian lưu trữ"
+              >
+                <InputNumber className="w-full" min={0} ></InputNumber>
+              </Form.Item>
+
+              <Form.Item name="object_description"
+                label="Ghi chú"
+              >
+                <Input.TextArea rows={4} />
+              </Form.Item>
+            </>
+
+          }
+
+
 
           <Row gutter={[16, 0]}>
             <Col span={12}>
