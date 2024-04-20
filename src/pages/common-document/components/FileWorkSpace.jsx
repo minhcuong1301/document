@@ -26,6 +26,7 @@ import {
   // DefaultIcon,
   AiptLogo,
   DefaultAvatar,
+  FolderIconDownload,
 } from "assets";
 import { EditOutlined, EllipsisOutlined, DeleteOutlined } from '@ant-design/icons';
 import Decentralize from "./decentralize";
@@ -350,7 +351,7 @@ const FileWorkSpace = ({
                   <Dropdown
                     overlay={
                       <Menu onClick={(e) => {
-
+                        setDocument(record)
                         handleMenuClick(e, record?.id, record?.document_type, record?.name)
                       }
                       }>
@@ -412,7 +413,7 @@ const FileWorkSpace = ({
                   <Dropdown
                     overlay={
                       <Menu onClick={(e) => {
-
+                        setDocument(record)
                         handleMenuClick(e, record?.id, record?.document_type, record?.name)
                       }
                       }>
@@ -479,7 +480,7 @@ const FileWorkSpace = ({
                   <Dropdown
                     overlay={
                       <Menu onClick={(e) => {
-
+                        setDocument(record)
                         handleMenuClick(e, record?.id, record?.document_type, record?.name)
                       }
                       }>
