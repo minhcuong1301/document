@@ -39,6 +39,13 @@ const File = ({
   idDocumentAdd,
   roleUser,
   setListDocument,
+  checkIsOpenWorkSpace,
+  checkIsOpenDoc,
+  isRootFolder,
+  onIsRootChange,
+  onDeptChange,
+  folderClickCount,
+  setFolderClickCount,
 }) => {
   const [spinning, setSpinning] = useState(false);
   const [openModalUpdateFile, setOpenModalUpdateFile] = useState(false);
@@ -56,7 +63,25 @@ const File = ({
 
   const [items, setItems] = useState([]);
   const [fileType, setFileType] = useState(null);
-  const [document, setDocument] = useState();
+  console.log("isroot File", isRootFolder);
+  console.log("handleRootFolderChange");
+  // let folderClickCount = 0;
+  const handleRootFolderChange = () => {
+    if (folderClickCount === 0) {
+      setNewIsRootValue(!isRootFolder);
+      setFolderClickCount((prevCount) => prevCount + 1);
+      console.log("vua click folder trong root");
+    } else {
+      setNewIsRootValue(isRootFolder);
+      console.log("vua click folder trongchild folder");
+    }
+    // Gọi hàm callback được cung cấp bởi component cha
+    onIsRootChange(newIsRootValue);
+  };
+
+  const handleDeptFolderChange = (v) => {
+    onDeptChange(v);
+  };
 
   const handleDeleteFile = async (list_doc) => {
     setSpinning(true);
@@ -144,6 +169,7 @@ const File = ({
   };
 
   const handleWatchVideo = (r) => {
+    // console.log(r);
     const videoPath = `${REACT_APP_SERVER_BASE_URL}/${r.path.replace(
       "server",
       ""
@@ -166,9 +192,8 @@ const File = ({
             return item.code;
           })
           .includes("R4") ||
-          userLogin.position_code === "ADMIN" ||
-          userLogin.position_code === "LEADER" ||
-          userLogin.position_code === "S_LEADER") && {
+          userLogin.position_code === "GIAM_DOC" ||
+          userLogin.position_code === "P_GIAM_DOC") && {
           label: "Xóa",
           key: "2",
         },
@@ -180,9 +205,9 @@ const File = ({
           label: "Sửa tên",
           key: "4",
         },
-        (userLogin.position_code === "ADMIN" ||
-          userLogin.position_code === "LEADER" ||
-          userLogin.position_code === "S_LEADER") && {
+        (userLogin.position_code === "GIAM_DOC" ||
+          userLogin.position_code === "P_GIAM_DOC" ||
+          userLogin.position_code === "ADMIN") && {
           label: "Phân quyền",
           key: "5",
         },
@@ -194,9 +219,8 @@ const File = ({
             return item.code;
           })
           .includes("R4") ||
-          userLogin.position_code === "ADMIN" ||
-          userLogin.position_code === "LEADER" ||
-          userLogin.position_code === "S_LEADER") && {
+          userLogin.position_code === "GIAM_DOC" ||
+          userLogin.position_code === "P_GIAM_DOC") && {
           label: "Xóa",
           key: "2",
         },
@@ -217,9 +241,9 @@ const File = ({
           key: "4",
         },
 
-        (userLogin.position_code === "ADMIN" ||
-          userLogin.position_code === "LEADER" ||
-          userLogin.position_code === "S_LEADER") && {
+        (userLogin.position_code === "GIAM_DOC" ||
+          userLogin.position_code === "P_GIAM_DOC" ||
+          userLogin.position_code === "ADMIN") && {
           label: "Phân quyền",
           key: "5",
         },
@@ -289,6 +313,7 @@ const File = ({
   const handleCheckboxChange = (e, id) => {
     if (e.target.checked) {
       setSelectedRows([...selectedRows, id]);
+      console.log("selectedRows", [...selectedRows, id]);
       e.stopPropagation();
     } else {
       setSelectedRows(selectedRows.filter((rowId) => rowId !== id));
@@ -326,7 +351,6 @@ const File = ({
       console.error(error);
     }
   };
-
   const rows = listDocument.map((record, index) => {
     const extension_file = record.name.replace(/\s/g, "").split(".").pop();
 
@@ -384,7 +408,6 @@ const File = ({
             menu={{
               items,
               onClick: (e) => {
-                setDocument(record);
                 handleMenuClick(
                   e,
                   record.id,
@@ -455,9 +478,8 @@ const File = ({
         {openDecentralize && (
           <Decentralize
             documentId={documentId}
-            document={document}
+            fileType={fileType}
             onCancel={() => setOpenDecentralize(false)}
-            worksapce={false}
           />
         )}
 

@@ -105,7 +105,6 @@ const CommonDocument = () => {
         time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
         document_type: 1,
-        document_id: idDocumentAdd || null,
       };
       if (idDocumentAdd) {
         params.document_id = idDocumentAdd;
@@ -131,7 +130,7 @@ const CommonDocument = () => {
         name: name || null,
         time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
-        document_id: value?.id || null,
+        document_id: value?.id,
         file_id: documentId,
         // document_type:1
       };

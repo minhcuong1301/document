@@ -1,5 +1,4 @@
-
-import { UploadFile, SpinCustom, UploadImage } from "components";
+import { UploadFile, SpinCustom } from "components";
 import { useState } from "react";
 import { actionAddDocument } from "../action";
 import { useSelector } from "react-redux";
@@ -24,14 +23,13 @@ const AddDocument = ({
   handleGetListDocument,
   handleGetChildFolder,
   checkIsOpenWorkSpace,
-  checkSelectedFolderDT,
-  checkSelectedFolderTL,
-  checkIsOpenDoc }) => {
-
+  isRootFolder,
+  checkIsOpenDoc,
+  folderDepartment,
+}) => {
   const [form] = Form.useForm();
   const [files, setFiles] = useState([]);
-  const [filesImg, setFilesImg] = useState([]);
-  const [spinning, setSpinning] = useState(false)
+  const [spinning, setSpinning] = useState(false);
 
   const [selectedStatus, setSelectedStatus] = useState(null);
 
@@ -80,14 +78,13 @@ const AddDocument = ({
           onCancel();
         }
       }
-
       if (checkIsOpenWorkSpace) {
         const params = {
           ...values,
-          time_start: dayjs(values?.time_start).startOf('D').unix(),
-          time_end: dayjs(values?.time_end).endOf('D').unix(),
-        }
-        formData.append("document_type", 2)
+          time_start: dayjs(values?.time_start).unix(),
+          storage_time: values?.storage_time || null,
+        };
+        formData.append("document_type", 2);
 
         Object.keys(params).forEach((key) => {
           formData.append(key, params[key]);
@@ -107,50 +104,6 @@ const AddDocument = ({
           onCancel();
         }
       }
-
-      if (checkSelectedFolderDT) {
-
-        const params = {
-          ...values,
-          time_start: dayjs(values?.time_start).startOf('D').unix(),
-          time_end: dayjs(values?.time_end).endOf('D').unix(),
-        }
-        formData.append("document_type", 3)
-        if (idDocumentAdd) {
-          formData.append("document_id", idDocumentAdd)
-        }
-        files.forEach((file) => {
-          formData.append("files", file);
-        });
-        filesImg.forEach((file) => {
-          formData.append("image", file);
-        });
-
-        Object.keys(params).forEach(key => {
-          if (key !== "image") {
-
-            formData.append(key, params[key]);
-          }
-        })
-
-        const { data, status } = await actionAddDocument(formData);
-        if (status === 200) {
-          if (idDocumentAdd) {
-            const idAdd = {
-              id: idDocumentAdd,
-
-            }
-            await handleGetChildFolder(idAdd)
-          }
-          else {
-            await handleGetListDocument()
-          }
-          message.success(data?.message);
-          onCancel()
-        }
-      }
-
-
     } catch (err) {
       console.log(err);
     }
@@ -243,104 +196,11 @@ const AddDocument = ({
                 <InputNumber className="w-full" min={0}></InputNumber>
               </Form.Item>
 
-              <Form.Item name="object_description"
-                label="Ghi chú"
-              >
+              <Form.Item name="object_description" label="Ghi chú">
                 <Input.TextArea rows={4} />
               </Form.Item>
             </>
-
-          }
-
-          {checkSelectedFolderDT &&
-            <>
-              <Form.Item name="name_folder"
-                label="Tên tài liệu"
-                rules={[{ required: true, message: "Vui lòng nhập tên" }]}
-              >
-                <Input placeholder="Tên tài liệu" />
-              </Form.Item>
-
-              <Form.Item name="object_name"
-                label="Tên đối tượng"
-                rules={[{ required: true, message: "Vui lòng nhập tên" }]}
-              >
-                <Input placeholder="Tên đối tượng" />
-              </Form.Item>
-
-              <Form.Item name="object_identity"
-                label="Số CCCD"
-                rules={[{ required: true, message: "Vui lòng nhập cccd" }]}
-              >
-                <Input placeholder="Số CCCD" />
-              </Form.Item>
-
-              <Form.Item name="object_address"
-                label="Địa chỉ"
-                rules={[{ required: true, message: "Vui lòng nhập địa chỉ" }]}
-              >
-                <Input placeholder="Địa chỉ" />
-              </Form.Item>
-
-
-
-              <Form.Item name="image">
-                <Row>
-                  <Col>Ảnh:</Col>
-
-                  <Col className="w-full">
-                    <UploadImage
-                      maxCount={1}
-                      files={filesImg}
-                      setFiles={setFilesImg}
-                    />
-                  </Col>
-                </Row>
-              </Form.Item>
-
-              <Form.Item label="Tệp">
-                <UploadFile
-                  setFiles={setFiles}
-                  files={files}
-                />
-              </Form.Item>
-
-              <Form.Item name="time_start"
-                label="Ngày bắt đầu"
-                rules={[{ required: true, message: "Vui lòng chọn thời gian" }]}
-
-              >
-                <DatePicker
-                  format={DATE_FORMAT}
-                  className="w-full"
-                  allowClear={false}
-
-                  disabledDate={handleDisabledDate}
-                />
-              </Form.Item>
-
-              <Form.Item name="time_end"
-                label="Ngày kết thúc"
-                rules={[{ required: true, message: "Vui lòng chọn thời gian" }]}
-
-              >
-                <DatePicker
-                  format={DATE_FORMAT}
-                  className="w-full"
-                  allowClear={false}
-
-                  disabledDate={handleDisabledDate}
-                />
-              </Form.Item>
-
-              <Form.Item name="object_description"
-                label="Ghi chú"
-              >
-                <Input.TextArea rows={4} />
-              </Form.Item>
-            </>
-          }
-
+          )}
 
           <Row gutter={[16, 0]}>
             <Col span={12}>
