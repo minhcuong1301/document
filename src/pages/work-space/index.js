@@ -75,6 +75,7 @@ const WorkSpace = () => {
     }
     setSpinning(false);
   };
+  
   const handleGetListDocument = async () => {
     setSpinning(true);
     try {
@@ -325,6 +326,7 @@ const WorkSpace = () => {
               idDocumentAdd={idDocumentAdd}
               setListDocument={setListDocument}
               roleUser={roleUser}
+              setIdDocumentAdd={setIdDocumentAdd}
 
             />
           </Row>

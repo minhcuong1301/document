@@ -7,7 +7,6 @@ import dayjs from 'dayjs';
 
 
 const EditWorkSpace = ({ oldName, openEdit, onCancel, idFile, idDocumentAdd, handleGetListDocument, setListDocument }) => {
-    console.log(openEdit);
     const [form] = Form.useForm();
     const [spining, setSpinning] = useState(false)
     const [nameWorkSpace, setNameWorkSpace] = useState(openEdit?.name)
@@ -29,7 +28,6 @@ const EditWorkSpace = ({ oldName, openEdit, onCancel, idFile, idDocumentAdd, han
                 time_end: dayjs(values?.time_end).endOf('D').unix(),
 
             }
-            // console.log(data_req);
             const params={
                 time_start: dayjs(values?.time_start).startOf('D').unix(),
                 time_end: dayjs(values?.time_end).endOf('D').unix(),
@@ -58,6 +56,7 @@ const EditWorkSpace = ({ oldName, openEdit, onCancel, idFile, idDocumentAdd, han
     const handleDisabledDate = (currentDate) => {
         return currentDate <= dayjs().startOf("day");
     };
+    
     const handleDateChangeStart = (date) => {
         form.setFieldValue("time_start", date);
     };
