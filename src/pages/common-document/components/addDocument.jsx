@@ -1,14 +1,18 @@
-
 import { UploadFile, SpinCustom } from "components";
 import { useState } from "react";
-import { actionAddDocument } from "../action"
+import { actionAddDocument } from "../action";
 import { useSelector } from "react-redux";
 import {
-  Modal, Input, Form,
-  Row, Col, Button,
-  message, Select,
+  Modal,
+  Input,
+  Form,
+  Row,
+  Col,
+  Button,
+  message,
+  Select,
   InputNumber,
-  DatePicker
+  DatePicker,
 } from "antd";
 import { DATE_FORMAT } from "utils/constants/config";
 import dayjs from "dayjs";
@@ -19,88 +23,87 @@ const AddDocument = ({
   handleGetListDocument,
   handleGetChildFolder,
   checkIsOpenWorkSpace,
-  checkIsOpenDoc }) => {
-
+  isRootFolder,
+  checkIsOpenDoc,
+  folderDepartment,
+}) => {
   const [form] = Form.useForm();
   const [files, setFiles] = useState([]);
-  const [spinning, setSpinning] = useState(false)
+  const [spinning, setSpinning] = useState(false);
 
   const [selectedStatus, setSelectedStatus] = useState(null);
 
   const userLogin = useSelector((state) => state.profile);
   const department = useSelector((state) => state.departments);
 
-
+  console.log("folderDept Add", folderDepartment);
+  console.log(
+    "folderDept Ad value type",
+    parseInt(folderDepartment.split("").pop())
+  );
+  console.log("isRootFolder Add", isRootFolder);
   const handleAddDocument = async (values) => {
     setSpinning(true);
+    console.log("values", values);
     try {
       const formData = new FormData();
 
       if (checkIsOpenDoc) {
-        Object.keys(values).forEach(key => {
-          formData.append(key, values[key])
-        })
+        Object.keys(values).forEach((key) => {
+          formData.append(key, values[key]);
+        });
         files.forEach((file) => {
           formData.append("files", file);
         });
 
         if (userLogin?.position_code !== "ADMIN") {
-          formData.append("department_id", userLogin?.department_id)
+          formData.append("department_id", userLogin?.department_id);
         }
 
-        formData.append("document_type", 1)
+        formData.append("document_type", 1);
         if (idDocumentAdd) {
-          formData.append("document_id", idDocumentAdd)
+          formData.append("document_id", idDocumentAdd);
         }
         const { data, status } = await actionAddDocument(formData);
         if (status === 200) {
           if (idDocumentAdd) {
             const idAdd = {
               id: idDocumentAdd,
-
-            }
-            await handleGetChildFolder(idAdd)
-          }
-          else {
-            await handleGetListDocument()
+            };
+            await handleGetChildFolder(idAdd);
+          } else {
+            await handleGetListDocument();
           }
           message.success(data?.message);
-          onCancel()
+          onCancel();
         }
       }
       if (checkIsOpenWorkSpace) {
-
         const params = {
           ...values,
-          time_start: dayjs(values?.time_start).startOf('D').unix(),
-          time_end: dayjs(values?.time_end).endOf('D').unix(),
-          // storage_time: values?.storage_time || null
-        }
-        formData.append("document_type", 2)
+          time_start: dayjs(values?.time_start).unix(),
+          storage_time: values?.storage_time || null,
+        };
+        formData.append("document_type", 2);
 
-        Object.keys(params).forEach(key => {
+        Object.keys(params).forEach((key) => {
           formData.append(key, params[key]);
-        })
+        });
 
         const { data, status } = await actionAddDocument(formData);
         if (status === 200) {
           if (idDocumentAdd) {
             const idAdd = {
               id: idDocumentAdd,
-
-            }
-            await handleGetChildFolder(idAdd)
-          }
-          else {
-            await handleGetListDocument()
+            };
+            await handleGetChildFolder(idAdd);
+          } else {
+            await handleGetListDocument();
           }
           message.success(data?.message);
-          onCancel()
+          onCancel();
         }
       }
-
-
-
     } catch (err) {
       console.log(err);
     }
@@ -120,21 +123,18 @@ const AddDocument = ({
     >
       <SpinCustom spinning={spinning}>
         <Form form={form} onFinish={handleAddDocument}>
-
-
-          {checkIsOpenDoc &&
+          {checkIsOpenDoc && (
             <>
-              <Form.Item name="name_folder"
-                label="Tên tài liệu"
-              >
+              <Form.Item name="name_folder" label="Tên tài liệu">
                 <Input placeholder="Tên tài liệu" />
               </Form.Item>
 
-              {userLogin?.position_code === 'ADMIN' &&
-                <Form.Item name="department_id"
+              {userLogin?.position_code === "ADMIN" && isRootFolder ? (
+                <Form.Item
+                  name="department_id"
                   label="Phòng ban"
                   rules={[
-                    { required: true, message: "Vui lòng chọn phòng ban" }
+                    { required: true, message: "Vui lòng chọn phòng ban" },
                   ]}
                 >
                   <Select
@@ -151,71 +151,62 @@ const AddDocument = ({
                     ))}
                   </Select>
                 </Form.Item>
-              }
-
+              ) : (
+                <Form.Item
+                  label="Phòng ban"
+                  name="department_id"
+                  rules={[
+                    { required: false, message: "Vui lòng chọn phòng ban" },
+                  ]}
+                  initialValue={folderDepartment.split("").pop()}
+                >
+                  <Select
+                    className="w-full"
+                    placeholder={folderDepartment}
+                    disabled
+                  ></Select>
+                </Form.Item>
+              )}
 
               <Form.Item label="Tệp">
-                <UploadFile
-                  setFiles={setFiles}
-                  files={files}
-                />
+                <UploadFile setFiles={setFiles} files={files} />
               </Form.Item>
             </>
-          }
+          )}
 
-          {
-            checkIsOpenWorkSpace && <>
-              <Form.Item name="name_folder"
+          {checkIsOpenWorkSpace && (
+            <>
+              <Form.Item
+                name="name_folder"
                 label="Tên tài liệu"
                 rules={[{ required: true, message: "Vui lòng nhập tên" }]}
               >
                 <Input placeholder="Tên tài liệu" />
               </Form.Item>
 
-              <Form.Item name="time_start"
-                label="Ngày bắt đầu"
-                rules={[{ required: true, message: "Vui lòng chọn thời gian" }]}
-
-              >
+              <Form.Item name="time_start" label="Thời gian bắt đầu">
                 <DatePicker
                   format={DATE_FORMAT}
                   className="w-full"
-                  allowClear={false}
-
                   disabledDate={handleDisabledDate}
                 />
               </Form.Item>
 
-              <Form.Item name="time_end"
-                label="Ngày kết thúc"
-                rules={[{ required: true, message: "Vui lòng chọn thời gian" }]}
-
-              >
-                <DatePicker
-                  format={DATE_FORMAT}
-                  className="w-full"
-                  allowClear={false}
-
-                  disabledDate={handleDisabledDate}
-                />
+              <Form.Item name="storage_time" label="Thời gian lưu trữ">
+                <InputNumber className="w-full" min={0}></InputNumber>
               </Form.Item>
-              
-              <Form.Item name="object_description"
-                label="Ghi chú"
-              >
+
+              <Form.Item name="object_description" label="Ghi chú">
                 <Input.TextArea rows={4} />
               </Form.Item>
             </>
-
-          }
-
-
+          )}
 
           <Row gutter={[16, 0]}>
             <Col span={12}>
-              <Button className="w-full"
-                onClick={onCancel}
-              >Thoát</Button>
+              <Button className="w-full" onClick={onCancel}>
+                Thoát
+              </Button>
             </Col>
 
             <Col span={12}>

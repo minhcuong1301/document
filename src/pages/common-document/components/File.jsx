@@ -40,7 +40,12 @@ const File = ({
   roleUser,
   setListDocument,
   checkIsOpenWorkSpace,
-  checkIsOpenDoc
+  checkIsOpenDoc,
+  isRootFolder,
+  onIsRootChange,
+  onDeptChange,
+  folderClickCount,
+  setFolderClickCount,
 }) => {
   const [spinning, setSpinning] = useState(false);
   const [openModalUpdateFile, setOpenModalUpdateFile] = useState(false);
@@ -53,19 +58,37 @@ const File = ({
   const [idFile, setIdFile] = useState();
   const [modalEditName, setmodalEditName] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
-
   const userLogin = useSelector((state) => state?.profile);
+  const [newIsRootValue, setNewIsRootValue] = useState();
 
   const [items, setItems] = useState([]);
   const [fileType, setFileType] = useState(null);
+  console.log("isroot File", isRootFolder);
+  console.log("handleRootFolderChange");
+  // let folderClickCount = 0;
+  const handleRootFolderChange = () => {
+    if (folderClickCount === 0) {
+      setNewIsRootValue(!isRootFolder);
+      setFolderClickCount((prevCount) => prevCount + 1);
+      console.log("vua click folder trong root");
+    } else {
+      setNewIsRootValue(isRootFolder);
+      console.log("vua click folder trongchild folder");
+    }
+    // Gọi hàm callback được cung cấp bởi component cha
+    onIsRootChange(newIsRootValue);
+  };
 
+  const handleDeptFolderChange = (v) => {
+    onDeptChange(v);
+  };
 
   const handleDeleteFile = async (list_doc) => {
     setSpinning(true);
     try {
       const body = {
         doc_id: list_doc,
-        status: 1
+        status: 1,
       };
       const { data, status } = await actionDeleteFile(body);
       if (status === 200) {
@@ -133,7 +156,7 @@ const File = ({
       onOk() {
         handleDeleteFile(selectedRows);
       },
-      onCancel() { },
+      onCancel() {},
     });
   };
 
@@ -169,9 +192,8 @@ const File = ({
             return item.code;
           })
           .includes("R4") ||
-          userLogin.position_code === "ADMIN"
-        || userLogin.position_code === "LEADER"
-      ||userLogin.position_code === "S_LEADER") && {
+          userLogin.position_code === "GIAM_DOC" ||
+          userLogin.position_code === "P_GIAM_DOC") && {
           label: "Xóa",
           key: "2",
         },
@@ -183,9 +205,9 @@ const File = ({
           label: "Sửa tên",
           key: "4",
         },
-        (userLogin.position_code === "ADMIN"
-        || userLogin.position_code === "LEADER"
-        ||userLogin.position_code === "S_LEADER") && {
+        (userLogin.position_code === "GIAM_DOC" ||
+          userLogin.position_code === "P_GIAM_DOC" ||
+          userLogin.position_code === "ADMIN") && {
           label: "Phân quyền",
           key: "5",
         },
@@ -197,9 +219,8 @@ const File = ({
             return item.code;
           })
           .includes("R4") ||
-          userLogin.position_code === "ADMIN"
-          || userLogin.position_code === "LEADER"
-          ||userLogin.position_code === "S_LEADER") && {
+          userLogin.position_code === "GIAM_DOC" ||
+          userLogin.position_code === "P_GIAM_DOC") && {
           label: "Xóa",
           key: "2",
         },
@@ -220,9 +241,9 @@ const File = ({
           key: "4",
         },
 
-        (userLogin.position_code === "ADMIN"
-        || userLogin.position_code === "LEADER"
-        ||userLogin.position_code === "S_LEADER") && {
+        (userLogin.position_code === "GIAM_DOC" ||
+          userLogin.position_code === "P_GIAM_DOC" ||
+          userLogin.position_code === "ADMIN") && {
           label: "Phân quyền",
           key: "5",
         },
@@ -238,6 +259,12 @@ const File = ({
           onClick={(e) => {
             e.stopPropagation();
             handleGetChildFolder(record);
+            handleRootFolderChange();
+            handleDeptFolderChange(record?.department_name);
+            console.log(
+              "department_name khi click folder",
+              record?.department_name
+            );
           }}
         />
       );
@@ -298,6 +325,12 @@ const File = ({
       const selectedDocument = listDocument.find((doc) => doc.id === id);
       if (selectedDocument.document_type === 1) {
         handleGetChildFolder(selectedDocument);
+        handleRootFolderChange();
+        handleDeptFolderChange(selectedDocument?.department_name);
+        console.log(
+          "department_name khi click row ",
+          selectedDocument?.department_name
+        );
       }
       const arr = selectedDocument.path.split(".");
       if (arr.includes("mp4")) {
@@ -336,7 +369,8 @@ const File = ({
         </td>
 
         <td
-          className="name-document"style={{ width: "5%" }} 
+          className="name-document"
+          style={{ width: "5%" }}
           onClick={(event) => {
             event.stopPropagation();
             handleClick(event, record.name, record.id);
@@ -359,9 +393,9 @@ const File = ({
           {record.user_create}
         </td>
 
-          <td style={{ width: "7%" }}  className="user-create-document">
-            {record?.department_name }
-          </td>
+        <td style={{ width: "7%" }} className="user-create-document">
+          {record?.department_name}
+        </td>
 
         <td
           className="action-document"
@@ -400,8 +434,8 @@ const File = ({
             <tr>
               <th></th>
               <th></th>
-         
-              <th    style={{textAlign:"left"}} >Tên</th>
+
+              <th style={{ textAlign: "left" }}>Tên</th>
               <th>Ngày tạo</th>
               <th>Người tạo</th>
               <th>Phòng ban</th>
@@ -420,7 +454,10 @@ const File = ({
         <Row gutter={[16, 0]} className="style-list-document">
           {selectedRows.length > 0 && (
             <Col>
-              <Button type="primary" onClick={() => confirmDelete(selectedRows)}>
+              <Button
+                type="primary"
+                onClick={() => confirmDelete(selectedRows)}
+              >
                 Xóa
               </Button>
             </Col>
