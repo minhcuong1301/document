@@ -60,6 +60,12 @@ export const actionDownLoadFile = (doc_id, as_attachment) => {
   window.open(`${REACT_APP_SERVER_BASE_URL}/download-file/${doc_id}/${as_attachment}/${token}`)
 }
 
+export const actionGetImageDT = (id) => {
+  const token = Cookies.get(AIPT_WEB_TOKEN)
+  return   `${REACT_APP_SERVER_BASE_URL}/get-image/${id}/${token}`
+  
+}
+
 export const actionSeachFile = (body) => {
   return api({
     method: "GET",
