@@ -13,7 +13,7 @@ import {
   ExcelIcon,
   DefaultIcon,
 } from "assets";
-import { DATETIME_FORMAT } from "utils/constants/config";
+import { SECOND_FORMAT } from "utils/constants/config";
 import { REACT_APP_SERVER_BASE_URL } from 'utils/constants/config'
 import { actionGetImage } from '../common-document/action';
 import { actionGetListDocumentDelete, actionDeleteForever, actionRestoreDocument } from './action';
@@ -196,13 +196,13 @@ const Bin = () => {
       key: "document_id",
       align: "center",
       render: (v, record) => {
-        return getIconForDocumentType(record?.document_type, record, record.name.replace(/\s/g, "").split(".").pop() || "")
+        return getIconForDocumentType(record?.document_type, record, record.document_name.replace(/\s/g, "").split(".").pop() || "")
       }
     },
     {
       title: "Tên tài liệu ",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "document_name",
+      key: "document_name",
       align: "left",
     },
     {
@@ -212,7 +212,7 @@ const Bin = () => {
       width: 150,
       align: "center",
       render: (r, v) => {
-        return v?.time_action ? moment(v?.time_action * 1000).format(DATETIME_FORMAT) : null
+        return v?.time_action ? moment(v?.time_action * 1000).format(SECOND_FORMAT) : null
       }
     },
     {

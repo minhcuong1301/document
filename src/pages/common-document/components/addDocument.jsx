@@ -72,8 +72,9 @@ const AddDocument = ({
 
         const params = {
           ...values,
-          time_start: dayjs(values?.time_start).unix(),
-          storage_time: values?.storage_time || null
+          time_start: dayjs(values?.time_start).startOf('D').unix(),
+          time_end: dayjs(values?.time_end).endOf('D').unix(),
+          // storage_time: values?.storage_time || null
         }
         formData.append("document_type", 2)
 
@@ -172,21 +173,33 @@ const AddDocument = ({
               </Form.Item>
 
               <Form.Item name="time_start"
-                label="Thời gian bắt đầu"
+                label="Ngày bắt đầu"
+                rules={[{ required: true, message: "Vui lòng chọn thời gian" }]}
+
               >
                 <DatePicker
                   format={DATE_FORMAT}
                   className="w-full"
+                  allowClear={false}
+
                   disabledDate={handleDisabledDate}
                 />
               </Form.Item>
 
-              <Form.Item name="storage_time"
-                label="Thời gian lưu trữ"
-              >
-                <InputNumber className="w-full" min={0} ></InputNumber>
-              </Form.Item>
+              <Form.Item name="time_end"
+                label="Ngày kết thúc"
+                rules={[{ required: true, message: "Vui lòng chọn thời gian" }]}
 
+              >
+                <DatePicker
+                  format={DATE_FORMAT}
+                  className="w-full"
+                  allowClear={false}
+
+                  disabledDate={handleDisabledDate}
+                />
+              </Form.Item>
+              
               <Form.Item name="object_description"
                 label="Ghi chú"
               >

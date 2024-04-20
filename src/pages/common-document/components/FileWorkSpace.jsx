@@ -7,7 +7,7 @@ import {
   Modal,
   Image,
   Button,
-  Checkbox, Card
+  Checkbox, Card, Menu
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { SpinCustom } from "components";
@@ -26,7 +26,7 @@ import {
   AiptLogo,
 } from "assets";
 import { EditOutlined, EllipsisOutlined, DeleteOutlined } from '@ant-design/icons';
-import { DATETIME_FORMAT } from "utils/constants/config";
+import { DATETIME_FORMAT, DATE_FORMAT } from "utils/constants/config";
 import Decentralize from "./decentralize";
 import DetailFile from "./detailFile";
 import moment from "moment";
@@ -35,6 +35,7 @@ import { REACT_APP_SERVER_BASE_URL } from "utils/constants/config";
 
 import UpdateNameFile from "./updateNameFile";
 import EditWorkSpace from "./editWorkSpace";
+import dayjs from "dayjs";
 const { Meta } = Card;
 const FileWorkSpace = ({
   listDocument,
@@ -58,6 +59,7 @@ const FileWorkSpace = ({
   const [idFile, setIdFile] = useState();
   const [modalEditName, setmodalEditName] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [ellipsisMenuVisible, setEllipsisMenuVisible] = useState(false);
 
   const userLogin = useSelector((state) => state?.profile);
 
@@ -285,17 +287,9 @@ const FileWorkSpace = ({
     }
   };
 
-  const handleCheckboxChange = (e, id) => {
-    if (e.target.checked) {
-      setSelectedRows([...selectedRows, id]);
-      console.log("selectedRows", [...selectedRows, id]);
-      e.stopPropagation();
-    } else {
-      setSelectedRows(selectedRows.filter((rowId) => rowId !== id));
-    }
-  };
 
   const handleDetail = async (id) => {
+    // console.log(id);
     try {
       const selectedDocument = listDocument.find((doc) => doc.id === id);
       if (selectedDocument.document_type === 1) {
@@ -322,7 +316,8 @@ const FileWorkSpace = ({
   };
   const rows = listDocument.map((record, index) => {
     const extension_file = record.name.replace(/\s/g, "").split(".").pop();
-
+    console.log(listDocument);
+    const daysRemaining = dayjs(record.time_end * 1000).diff(dayjs(record.time_start * 1000), 'day');
     return (
       // <tr
       //   className="cursor-pointer"
@@ -399,19 +394,48 @@ const FileWorkSpace = ({
               width: 240,
 
             }}
-            // cover={<img style={{ width: "40%" }} src={AiptLogo}></img>}
+            cover={<img style={{ width: "40%" }} src={AiptLogo}></img>}
             actions={[
               <DeleteOutlined key="delete"
                 onClick={
-                  () => confirmDelete([record?.id])
+                  (e) => {
+                    e.stopPropagation()
+                      confirmDelete([record?.id])
+                  }
+
+
                 }
               />,
-              <EditOutlined key="edit" 
-              onClick={
-                () => setOpenEdit(record)
-              } />,
-              <EllipsisOutlined key="ellipsis" />,
+              <EditOutlined key="edit"
+                onClick={
+                  (e) => {
+                    e.stopPropagation()
+
+                    setOpenEdit(record)
+                  }
+                } />,
+
+              <Dropdown
+                overlay={
+                  <Menu onClick={(e) => 
+                    {
+
+                      handleMenuClick(e, record?.id, record?.document_type, record?.name)
+                    }
+                  }>
+                    <Menu.Item key="4" >Sửa tên</Menu.Item>
+                    <Menu.Item key="5">Phân quyền</Menu.Item>
+                  </Menu>
+                }
+                trigger={['click']}
+              >
+                <EllipsisOutlined key="ellipsis" onClick={(e) =>  e.stopPropagation()}/>
+              </Dropdown>
             ]}
+            onClick={(event) => {
+              event.stopPropagation();
+              handleClick(event, record.name, record.id);
+            }}
           >
             <Row gutter={[0, 16]}>
 
@@ -420,11 +444,13 @@ const FileWorkSpace = ({
               <Input.TextArea rows={4} value={record?.object_description} disabled />
 
               <Col>
-                Còn:  <strong>{record?.storage_time}</strong>  ngày
+                <strong>Còn:</strong> {daysRemaining} ngày
               </Col>
 
             </Row>
           </Card>
+
+
         </Col>
       </Row>
 
@@ -493,12 +519,14 @@ const FileWorkSpace = ({
         {
           openEdit && (
             <EditWorkSpace
-            openEdit={openEdit}
-            setOpenEdit={setOpenEdit}
-            onCancel={() => setOpenEdit(false)}
+              openEdit={openEdit}
+              setOpenEdit={setOpenEdit}
+              onCancel={() => setOpenEdit(false)}
+              setListDocument={setListDocument}
             />
           )
         }
+
       </>
     </>
   );

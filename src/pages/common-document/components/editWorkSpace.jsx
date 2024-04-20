@@ -21,40 +21,49 @@ const EditWorkSpace = ({ oldName, openEdit, onCancel, idFile, idDocumentAdd, han
         setSpinning(true)
         form.validateFields().then(async (values) => {
 
-      
+
             const data_req = {
-              ...values,
-              object_description: values?.object_description || ' ',
-              time_start: dayjs(values?.time_start).unix(),
-    
+                ...values,
+                object_description: values?.object_description || ' ',
+                time_start: dayjs(values?.time_start).startOf('D').unix(),
+                time_end: dayjs(values?.time_end).endOf('D').unix(),
+
+            }
+            // console.log(data_req);
+            const params={
+                time_start: dayjs(values?.time_start).startOf('D').unix(),
+                time_end: dayjs(values?.time_end).endOf('D').unix(),
+                document_type: 2
             }
             const formData = new FormData()
             Object.keys(data_req).forEach(key => {          
                 formData.append(key, data_req[key]);
               })
-    
-            const { data, status } = await actionUpdateWorkSpace(openEdit?.id,formData )
+
+            const { data, status } = await actionUpdateWorkSpace(openEdit?.id,formData,params )
             if (status === 200) {
               message.success(data?.message)
-    
-            //   setDataTb(data?.list_appliant)
-            //   setTotalRecordTb(data?.total)
+              setListDocument(data?.data)
               onCancel()
             }
-          })
-          .catch(
-            err => console.log(err)
-          )
-          setSpinning(false)
-    
+        })
+            .catch(
+                err => console.log(err)
+            )
+        setSpinning(false)
+
     }
 
 
     const handleDisabledDate = (currentDate) => {
         return currentDate <= dayjs().startOf("day");
     };
-    const handleDateChange = (date) => {
+    const handleDateChangeStart = (date) => {
         form.setFieldValue("time_start", date);
+    };
+
+    const handleDateChangeEnd = (date) => {
+        form.setFieldValue("time_end", date);
     };
 
     return (
@@ -71,7 +80,8 @@ const EditWorkSpace = ({ oldName, openEdit, onCancel, idFile, idDocumentAdd, han
                     onFinish={hanleEditNameFile}
                     initialValues={{
                         ...openEdit,
-                       
+                        time_start: dayjs(openEdit?.time_start * 1000),
+                        time_end: dayjs(openEdit?.time_end * 1000),
                     }}
                 >
                     {/* <Form.Item name='name'>
@@ -100,7 +110,7 @@ const EditWorkSpace = ({ oldName, openEdit, onCancel, idFile, idDocumentAdd, han
 
                     <Form.Item name='object_description'>
                         <Input.TextArea rows={4} placeholder='Ghi chú'
-                          onChange={(event) => setObjectDescription(event.target.value)}
+                            onChange={(event) => setObjectDescription(event.target.value)}
                         />
                     </Form.Item>
 
@@ -120,26 +130,30 @@ const EditWorkSpace = ({ oldName, openEdit, onCancel, idFile, idDocumentAdd, han
                     </Form.Item> */}
 
                     <Form.Item name="time_start"
-                        label="Thời gian bắt đầu"
+                        label="Ngày bắt đầu"
                     >
-                        <Row gutter={[4, 0]}>
-                            <Col className="w-full">
-                                <DatePicker
-                                    format={DATE_FORMAT}
-                                    className="w-full"
-                                    defaultValue={dayjs(openEdit?.time_start * 1000)}
-                                    disabledDate={handleDisabledDate}
-                                    onChange={(date) => handleDateChange(date)}
-                                />
-                            </Col></Row>
+                        <DatePicker
+                            format={DATE_FORMAT}
+                            allowClear={false}
+                            className="w-full"
+                            disabledDate={handleDisabledDate}
+                            onChange={(date) => handleDateChangeStart(date)}
+                        />
 
                     </Form.Item>
 
-                    <Form.Item name="storage_time"
-                        label="Thời gian lưu trữ"
+                    <Form.Item name="time_end"
+                        label="Ngày kết thúc "
                     >
-                        <InputNumber className="w-full" min={0} ></InputNumber>
+                        <DatePicker
+                            format={DATE_FORMAT}
+                            className="w-full"
+                            allowClear={false}
+                            disabledDate={handleDisabledDate}
+                            onChange={(date) => handleDateChangeEnd(date)}
+                        />
                     </Form.Item>
+
 
 
                     <Row gutter={[16, 0]}>
@@ -151,7 +165,7 @@ const EditWorkSpace = ({ oldName, openEdit, onCancel, idFile, idDocumentAdd, han
 
                         <Col span={12}>
                             <Button className="w-full" type="primary" htmlType="submit">
-                                Đổi tên
+                                Cập nhật
                             </Button>
                         </Col>
                     </Row>

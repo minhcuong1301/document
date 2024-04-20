@@ -34,11 +34,12 @@ export const actionUpdateNameFile = (body) => {
   })
 }
 
-export const actionUpdateWorkSpace = (id,data) => {
+export const actionUpdateWorkSpace = (id,data,params) => {
   return api({
     method: "PUT",
     url: `/update-info/${id}`,
-    data: data
+    data: data,
+    params:params
   })
 }
 export const actionDeleteFile = (body) => {

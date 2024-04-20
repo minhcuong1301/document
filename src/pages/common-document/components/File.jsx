@@ -169,8 +169,9 @@ const File = ({
             return item.code;
           })
           .includes("R4") ||
-          userLogin.position_code === "GIAM_DOC" ||
-          userLogin.position_code === "P_GIAM_DOC") && {
+          userLogin.position_code === "ADMIN"
+        || userLogin.position_code === "LEADER"
+      ||userLogin.position_code === "S_LEADER") && {
           label: "Xóa",
           key: "2",
         },
@@ -182,9 +183,9 @@ const File = ({
           label: "Sửa tên",
           key: "4",
         },
-        (userLogin.position_code === "GIAM_DOC" ||
-          userLogin.position_code === "P_GIAM_DOC" ||
-          userLogin.position_code === "ADMIN") && {
+        (userLogin.position_code === "ADMIN"
+        || userLogin.position_code === "LEADER"
+        ||userLogin.position_code === "S_LEADER") && {
           label: "Phân quyền",
           key: "5",
         },
@@ -196,8 +197,9 @@ const File = ({
             return item.code;
           })
           .includes("R4") ||
-          userLogin.position_code === "GIAM_DOC" ||
-          userLogin.position_code === "P_GIAM_DOC") && {
+          userLogin.position_code === "ADMIN"
+          || userLogin.position_code === "LEADER"
+          ||userLogin.position_code === "S_LEADER") && {
           label: "Xóa",
           key: "2",
         },
@@ -218,9 +220,9 @@ const File = ({
           key: "4",
         },
 
-        (userLogin.position_code === "GIAM_DOC" ||
-          userLogin.position_code === "P_GIAM_DOC" ||
-          userLogin.position_code === "ADMIN") && {
+        (userLogin.position_code === "ADMIN"
+        || userLogin.position_code === "LEADER"
+        ||userLogin.position_code === "S_LEADER") && {
           label: "Phân quyền",
           key: "5",
         },

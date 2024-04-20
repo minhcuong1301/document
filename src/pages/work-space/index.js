@@ -21,7 +21,6 @@ import {
   DatePicker,
   Button,
   Breadcrumb,
-  Space,
 } from "antd";
 import { useSearchParams } from "react-router-dom";
 
@@ -40,6 +39,7 @@ const WorkSpace = () => {
   const [totalFile, setTotalFile] = useState();
   const [searchParams] = useSearchParams();
   const documentId = searchParams.get("document_id");
+
 
   const handleNavigateBack = (e, breadcrumb, index) => {
     const last_folder = [];
@@ -60,8 +60,10 @@ const WorkSpace = () => {
         name: name || null,
         time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
-        document_type:2
       };
+     
+      params.document_type= params.document_id ? null : 2
+      
       const { data, status } = await actionGetListDocument(params);
       if (status === 200) {
         setListDocument(data?.data);
@@ -71,7 +73,6 @@ const WorkSpace = () => {
     }
     setSpinning(false);
   };
-
   const handleGetListDocument = async () => {
     setSpinning(true);
     try {
@@ -79,11 +80,11 @@ const WorkSpace = () => {
         name: name || null,
         time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
-        document_type:2
+        document_id : idDocumentAdd||null
       };
-      if (idDocumentAdd) {
-        params.document_id = idDocumentAdd;
-      }
+
+        params.document_type= params.document_id ? null : 2
+      
       setIdDocumentAdd();
       const { data, status } = await actionGetListDocument(params);
       if (status === 200) {
@@ -105,10 +106,13 @@ const WorkSpace = () => {
         name: name || null,
         time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
-        document_id: value?.id,
+        document_id: value?.id||null,
         file_id: documentId,
-        document_type:2
+       
       };
+ 
+        params.document_type= params.document_id ? null : 2
+
       const { data, status } = await actionGetListFolderChid(params);
       if (status === 200) {
         setListDocument(data?.data);
