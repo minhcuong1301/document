@@ -11,8 +11,8 @@ import ChangePassword from "./components/changePassword";
 import pages from "pages";
 import socketIO from "utils/service/socketIO";
 import { REACT_APP_SERVER_BASE_URL } from "utils/constants/config";
-import { useNavigate } from "react-router-dom";
-import { BellOutlined, MailOutlined } from "@ant-design/icons";
+// import { useNavigate } from "react-router-dom";
+import { BellOutlined } from "@ant-design/icons";
 
 import {
   actionChangeNotificationStatus,
@@ -89,7 +89,7 @@ const AppHeader = () => {
 
   // let tabKey = "";
   // const handleCheckProcedureType = (notification) => {
-  //   console.log("noti detail:", notification);
+
   //   if (
   //     notification.content.includes("hoàn thành") ||
   //     notification.content.includes("từ chối")

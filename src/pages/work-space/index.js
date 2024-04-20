@@ -32,6 +32,8 @@ const WorkSpace = () => {
   const [dateEnd, setDateEnd] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [checkIsOpenWorkSpace, setCheckIsOpenWorkSpace] = useState(false);
+  const [checkSelectedFolderTL, setCheckSelectedFolderTL] = useState(false);
+  const [checkSelectedFolderDT, setCheckSelectedFolderDT] = useState(false);
   const [idDocumentAdd, setIdDocumentAdd] = useState();
   const [breadcrumbs, setBreadcrumbs] = useState([]);
   const [idLastFolder, setIdLastFolder] = useState();
@@ -40,7 +42,7 @@ const WorkSpace = () => {
   const [searchParams] = useSearchParams();
   const documentId = searchParams.get("document_id");
 
-
+  // console.log(listDocument);
   const handleNavigateBack = (e, breadcrumb, index) => {
     const last_folder = [];
     breadcrumbs.map((item, index1) => {
@@ -61,9 +63,9 @@ const WorkSpace = () => {
         time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
       };
-     
-      params.document_type= params.document_id ? null : 2
-      
+
+      params.document_type = params.document_id ? null : 2
+
       const { data, status } = await actionGetListDocument(params);
       if (status === 200) {
         setListDocument(data?.data);
@@ -73,6 +75,7 @@ const WorkSpace = () => {
     }
     setSpinning(false);
   };
+  
   const handleGetListDocument = async () => {
     setSpinning(true);
     try {
@@ -80,11 +83,11 @@ const WorkSpace = () => {
         name: name || null,
         time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
-        document_id : idDocumentAdd||null
+        document_id: idDocumentAdd || null
       };
 
-        params.document_type= params.document_id ? null : 2
-      
+      params.document_type = params.document_id ? null : 2
+
       setIdDocumentAdd();
       const { data, status } = await actionGetListDocument(params);
       if (status === 200) {
@@ -106,12 +109,12 @@ const WorkSpace = () => {
         name: name || null,
         time_upload_start: dayjs(dateStart).startOf("D").unix() || null,
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
-        document_id: value?.id||null,
+        document_id: value?.id || null,
         file_id: documentId,
-       
+
       };
- 
-        params.document_type= params.document_id ? null : 2
+
+      params.document_type = params.document_id ? null : 2
 
       const { data, status } = await actionGetListFolderChid(params);
       if (status === 200) {
@@ -233,20 +236,59 @@ const WorkSpace = () => {
             </Col>
             <Col span={24}>
 
-              <Row gutter={[16,8]}>
-              
+              <Row gutter={[16, 8]}>
 
-                <Col>
-                  <Button
-                    onClick={() =>{
-                      setCheckIsOpenWorkSpace(true)
-                      setIsModalOpen(true)} }
-                    type="primary"
-                    className="doc-add-btn"
-                  >
-                    Tạo workspace
-                  </Button>
-                </Col>
+                {
+                 !idDocumentAdd  &&
+                  <Col>
+                    <Button
+                      onClick={() => {
+                        setCheckIsOpenWorkSpace(true)
+                        setIsModalOpen(true)
+                      }}
+                      type="primary"
+                      className="doc-add-btn"
+                    >
+                      Tạo workspace
+                    </Button>
+                  </Col>
+                }
+                {
+                listDocument?.find(e => e.type != 2) &&
+                  <Row gutter={[16, 8]}>
+
+                    <Col>
+                      <Button
+                        onClick={() => {
+                          setCheckSelectedFolderTL(true)
+                          setIsModalOpen(true)
+                        }}
+                        type="primary"
+                        className="doc-add-btn"
+                      >
+                        Tạo folder tài liệu
+                      </Button>
+                    </Col>
+
+                    <Col>
+                      <Button
+                        onClick={() => {
+                          setCheckSelectedFolderDT(true)
+                          setIsModalOpen(true)
+                        }}
+                        type="primary"
+                        className="doc-add-btn"
+                      >
+                        Tạo folder đối tượng
+                      </Button>
+                    </Col>
+                  </Row>
+
+
+
+                }
+
+
               </Row>
             </Col>
 
@@ -284,6 +326,7 @@ const WorkSpace = () => {
               idDocumentAdd={idDocumentAdd}
               setListDocument={setListDocument}
               roleUser={roleUser}
+              setIdDocumentAdd={setIdDocumentAdd}
 
             />
           </Row>
@@ -297,6 +340,8 @@ const WorkSpace = () => {
             onCancel={() => setIsModalOpen(false)}
             handleGetListDocument={handleGetListDocument}
             handleGetChildFolder={handleGetChildFolder}
+            checkSelectedFolderDT={checkSelectedFolderDT}
+            checkSelectedFolderTL={checkSelectedFolderTL}
           />
         )}
       </>

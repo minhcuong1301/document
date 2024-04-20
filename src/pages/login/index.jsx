@@ -11,7 +11,6 @@ const LoginPage = () => {
   const [spinning, setSpinning] = useState(false)
 
   const handelLogin = async (values) => {
-    // console.log(values);
     setSpinning(true)
     try {
       const { data, status } = await actionLogin(values)
