@@ -63,8 +63,7 @@ const File = ({
 
   const [items, setItems] = useState([]);
   const [fileType, setFileType] = useState(null);
-  console.log("isroot File", isRootFolder);
-  console.log("handleRootFolderChange");
+
   // let folderClickCount = 0;
   const handleRootFolderChange = () => {
     if (folderClickCount === 0) {
