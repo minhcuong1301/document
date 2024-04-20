@@ -16,9 +16,8 @@ import {
 import { useSelector } from "react-redux";
 
 import { DEPARTMENTS_CODE } from "utils/constants/config";
-//debounce function for searching
 
-const Decentralize = ({ onCancel, documentId, fileType }) => {
+const Decentralize = ({ onCancel, documentId, document, worksapce }) => {
   const department = useSelector((state) => state.departments);
   const [spinning, setSpinning] = useState(false);
   const [listEmployee, setListEmployee] = useState([]);
@@ -28,6 +27,7 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
   const [listRole, setlistRole] = useState([]);
   const [roleUserMap, setRoleUserMap] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState(null);
+
   const pagination = {
     pageNum: 1,
     pageSize: 10,
@@ -42,7 +42,8 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
       };
       const { data, status } = await actionGetlistEmpoyee(params);
       if (status === 200) {
-        setListEmployee(data.filter((item) => item.position_code !== "ADMIN"));
+
+        setListEmployee(data.filter((item) => ((document.type === 2 && worksapce) || !worksapce) ? item.position_code !== "ADMIN" : (item.position_code !== "ADMIN" && item.role.length > 0)));
         const respone = await actionGetListRoleUser(documentId, { list_user: data.map(e => e.id) });
         const init_role = []
         JSON.parse(respone.data.list_role).map(item => {
@@ -68,7 +69,6 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
         } else {
           roleUserMap[i].role = [...roleUserMap[i].role, role.id] || []
         }
-        console.log(roleUserMap[i])
       }
     }
     setRoleUserMap(roleUserMap)
@@ -293,7 +293,6 @@ const Decentralize = ({ onCancel, documentId, fileType }) => {
 
   const handleSelectedTabKey = (e) => {
     setTabKey(e);
-    // window.history.pushState(null, null, `?tabKey=${e}`);
   };
 
   return (

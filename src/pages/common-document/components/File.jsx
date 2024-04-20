@@ -39,8 +39,6 @@ const File = ({
   idDocumentAdd,
   roleUser,
   setListDocument,
-  checkIsOpenWorkSpace,
-  checkIsOpenDoc
 }) => {
   const [spinning, setSpinning] = useState(false);
   const [openModalUpdateFile, setOpenModalUpdateFile] = useState(false);
@@ -58,7 +56,7 @@ const File = ({
 
   const [items, setItems] = useState([]);
   const [fileType, setFileType] = useState(null);
-
+  const [document, setDocument] = useState()
 
   const handleDeleteFile = async (list_doc) => {
     setSpinning(true);
@@ -124,6 +122,7 @@ const File = ({
     } else if (e.key === "5") {
       setOpenDecentralize(true);
       setFileType(document_type);
+
     }
   };
 
@@ -146,7 +145,6 @@ const File = ({
   };
 
   const handleWatchVideo = (r) => {
-    // console.log(r);
     const videoPath = `${REACT_APP_SERVER_BASE_URL}/${r.path.replace(
       "server",
       ""
@@ -170,8 +168,8 @@ const File = ({
           })
           .includes("R4") ||
           userLogin.position_code === "ADMIN"
-        || userLogin.position_code === "LEADER"
-      ||userLogin.position_code === "S_LEADER") && {
+          || userLogin.position_code === "LEADER"
+          || userLogin.position_code === "S_LEADER") && {
           label: "Xóa",
           key: "2",
         },
@@ -184,8 +182,8 @@ const File = ({
           key: "4",
         },
         (userLogin.position_code === "ADMIN"
-        || userLogin.position_code === "LEADER"
-        ||userLogin.position_code === "S_LEADER") && {
+          || userLogin.position_code === "LEADER"
+          || userLogin.position_code === "S_LEADER") && {
           label: "Phân quyền",
           key: "5",
         },
@@ -199,7 +197,7 @@ const File = ({
           .includes("R4") ||
           userLogin.position_code === "ADMIN"
           || userLogin.position_code === "LEADER"
-          ||userLogin.position_code === "S_LEADER") && {
+          || userLogin.position_code === "S_LEADER") && {
           label: "Xóa",
           key: "2",
         },
@@ -221,8 +219,8 @@ const File = ({
         },
 
         (userLogin.position_code === "ADMIN"
-        || userLogin.position_code === "LEADER"
-        ||userLogin.position_code === "S_LEADER") && {
+          || userLogin.position_code === "LEADER"
+          || userLogin.position_code === "S_LEADER") && {
           label: "Phân quyền",
           key: "5",
         },
@@ -286,7 +284,6 @@ const File = ({
   const handleCheckboxChange = (e, id) => {
     if (e.target.checked) {
       setSelectedRows([...selectedRows, id]);
-      console.log("selectedRows", [...selectedRows, id]);
       e.stopPropagation();
     } else {
       setSelectedRows(selectedRows.filter((rowId) => rowId !== id));
@@ -318,6 +315,7 @@ const File = ({
       console.error(error);
     }
   };
+
   const rows = listDocument.map((record, index) => {
     const extension_file = record.name.replace(/\s/g, "").split(".").pop();
 
@@ -336,7 +334,7 @@ const File = ({
         </td>
 
         <td
-          className="name-document"style={{ width: "5%" }} 
+          className="name-document" style={{ width: "5%" }}
           onClick={(event) => {
             event.stopPropagation();
             handleClick(event, record.name, record.id);
@@ -359,9 +357,9 @@ const File = ({
           {record.user_create}
         </td>
 
-          <td style={{ width: "7%" }}  className="user-create-document">
-            {record?.department_name }
-          </td>
+        <td style={{ width: "7%" }} className="user-create-document">
+          {record?.department_name}
+        </td>
 
         <td
           className="action-document"
@@ -374,12 +372,8 @@ const File = ({
             menu={{
               items,
               onClick: (e) => {
-                handleMenuClick(
-                  e,
-                  record.id,
-                  record.document_type,
-                  record.name
-                );
+                setDocument(record)
+                handleMenuClick(e, record.id, record.document_type, record.name);
               },
             }}
             trigger={["click"]}
@@ -400,8 +394,8 @@ const File = ({
             <tr>
               <th></th>
               <th></th>
-         
-              <th    style={{textAlign:"left"}} >Tên</th>
+
+              <th style={{ textAlign: "left" }} >Tên</th>
               <th>Ngày tạo</th>
               <th>Người tạo</th>
               <th>Phòng ban</th>
@@ -441,8 +435,9 @@ const File = ({
         {openDecentralize && (
           <Decentralize
             documentId={documentId}
-            fileType={fileType}
+            document={document}
             onCancel={() => setOpenDecentralize(false)}
+            worksapce={false}
           />
         )}
 

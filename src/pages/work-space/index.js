@@ -73,6 +73,7 @@ const WorkSpace = () => {
     }
     setSpinning(false);
   };
+  
   const handleGetListDocument = async () => {
     setSpinning(true);
     try {
@@ -82,7 +83,6 @@ const WorkSpace = () => {
         time_upload_end: dayjs(dateEnd).endOf("D").unix() || null,
         document_id : idDocumentAdd||null
       };
-
         params.document_type= params.document_id ? null : 2
       
       setIdDocumentAdd();
@@ -284,6 +284,7 @@ const WorkSpace = () => {
               idDocumentAdd={idDocumentAdd}
               setListDocument={setListDocument}
               roleUser={roleUser}
+              setIdDocumentAdd={setIdDocumentAdd}
 
             />
           </Row>
