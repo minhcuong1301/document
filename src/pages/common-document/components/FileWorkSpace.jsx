@@ -381,7 +381,7 @@ const FileWorkSpace = ({
           </Row>
         }
 
-        {record?.type == 2 &&
+        {record?.type === 2 &&
           <Row >
             <Col>
               <Card
@@ -390,7 +390,6 @@ const FileWorkSpace = ({
                   width: 240,
 
                 }}
-                cover={<img style={{ width: "40%" }} src={AiptLogo}></img>}
                 actions={[
                   <DeleteOutlined key="delete"
                     onClick={
@@ -503,7 +502,7 @@ const FileWorkSpace = ({
                   <Col span={24}><strong>Họ và tên:</strong> {record?.object_name} </Col>
                   <Col span={8}>
                     {/* <Image src={ `${REACT_APP_SERVER_BASE_URL}/${record?.path.replace("server","")}`||DefaultAvatar}></Image> */}
-                    <Image src={ record?.image ? `${actionGetImageDT(record?.id)}` : DefaultAvatar}></Image>
+                    <Image src={record?.image ? `${actionGetImageDT(record?.id)}` : DefaultAvatar}></Image>
                   </Col>
                   <Col>
 

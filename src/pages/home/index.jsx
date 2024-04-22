@@ -5,19 +5,10 @@ import { useSelector } from "react-redux";
 import AddUserModal from "./components/addUserModal";
 import { DEPARTMENTS_CODE, POSITION_CODE } from "utils/constants/config";
 import InfoUserModal from "./components/info-user";
-
-// import ExportPDF from "./exportPDF";
 import { IoLockClosedOutline } from "react-icons/io5";
 import { GoUnlock } from "react-icons/go";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faLock } from "@fortawesome/free-regular-svg-icons";
-// import { faLockOpen } from "@fortawesome/free-regular-svg-icons";
-// import { faEdit } from "@fortawesome/free-regular-svg-icons";
-// import { faUserPen } from "@fortawesome/free-regular-svg-icons";
 import { FiEdit } from "react-icons/fi";
-
 import * as XLSX from "xlsx";
-
 import {
   Button,
   Layout,
@@ -42,7 +33,6 @@ const HomePage = () => {
   const dispatch = useDispatch();
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [name, setName] = useState(null);
-  // const [phone, setPhone] = useState(null);
   const [position, setPosition] = useState(null);
   const [code, setCode] = useState(null);
   const [spinning, setSpinning] = useState(false);
