@@ -26,6 +26,8 @@ const AddDocument = ({
   isRootFolder,
   checkIsOpenDoc,
   folderDepartment,
+  checkSelectedFolderDT,
+  checkSelectedFolderTL
 }) => {
   const [form] = Form.useForm();
   const [files, setFiles] = useState([]);
@@ -36,15 +38,9 @@ const AddDocument = ({
   const userLogin = useSelector((state) => state.profile);
   const department = useSelector((state) => state.departments);
 
-  console.log("folderDept Add", folderDepartment);
-  console.log(
-    "folderDept Ad value type",
-    parseInt(folderDepartment.split("").pop())
-  );
-  console.log("isRootFolder Add", isRootFolder);
+
   const handleAddDocument = async (values) => {
     setSpinning(true);
-    console.log("values", values);
     try {
       const formData = new FormData();
 

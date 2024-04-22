@@ -28,7 +28,7 @@ import {
   DefaultAvatar,
   FolderIconDownload,
 } from "assets";
-import { EditOutlined, EllipsisOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, EllipsisOutlined, DeleteOutlined, SendOutlined } from '@ant-design/icons';
 import Decentralize from "./decentralize";
 import DetailFile from "./detailFile";
 // import { useSelector } from "react-redux";
@@ -117,6 +117,8 @@ const FileWorkSpace = ({
   };
 
   const handleMenuClick = (e, doc_id, document_type, doc_name) => {
+    console.log(e);
+    // console.log(e, doc_id, document_type, doc_name);
     setDocumentId(doc_id);
     // setSelectedRows([doc_id]);
     if (e.key === "1") {
@@ -347,22 +349,27 @@ const FileWorkSpace = ({
                         setOpenEdit(record)
                       }
                     } />,
-
-                  <Dropdown
-                    overlay={
-                      <Menu onClick={(e) => {
-                        setDocument(record)
-                        handleMenuClick(e, record?.id, record?.document_type, record?.name)
-                      }
-                      }>
-                        <Menu.Item key="4" >Sửa tên</Menu.Item>
-                        <Menu.Item key="5">Phân quyền</Menu.Item>
-                      </Menu>
-                    }
-                    trigger={['click']}
-                  >
-                    <EllipsisOutlined key="ellipsis" onClick={(e) => e.stopPropagation()} />
-                  </Dropdown>
+                  <SendOutlined key="share"
+                    onClick={(e) => {
+                       e.stopPropagation()
+                      setDocument(record)
+                      handleMenuClick({key:"5"}, record?.id, record?.document_type, record?.name)
+                    }} />
+                  // <Dropdown
+                  //   overlay={
+                  //     <Menu onClick={(e) => {
+                  //       setDocument(record)
+                  //       handleMenuClick(e, record?.id, record?.document_type, record?.name)
+                  //     }
+                  //     }>
+                  //       <Menu.Item key="4" >Sửa tên</Menu.Item>
+                  //       <Menu.Item key="5">Phân quyền</Menu.Item>
+                  //     </Menu>
+                  //   }
+                  //   trigger={['click']}
+                  // >
+                  //   <EllipsisOutlined key="ellipsis" onClick={(e) => e.stopPropagation()} />
+                  // </Dropdown>
                 ]}
                 onClick={(event) => {
                   event.stopPropagation();
@@ -408,22 +415,27 @@ const FileWorkSpace = ({
                         setOpenEdit(record)
                       }
                     } />,
-
-                  <Dropdown
-                    overlay={
-                      <Menu onClick={(e) => {
-                        setDocument(record)
-                        handleMenuClick(e, record?.id, record?.document_type, record?.name)
-                      }
-                      }>
-                        <Menu.Item key="4" >Sửa tên</Menu.Item>
-                        <Menu.Item key="5">Phân quyền</Menu.Item>
-                      </Menu>
-                    }
-                    trigger={['click']}
-                  >
-                    <EllipsisOutlined key="ellipsis" onClick={(e) => e.stopPropagation()} />
-                  </Dropdown>
+                  <SendOutlined key="share"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setDocument(record)
+                      handleMenuClick({key:"5"}, record?.id, record?.document_type, record?.name)
+                    }} />
+                  // <Dropdown
+                  //   overlay={
+                  //     <Menu onClick={(e) => {
+                  //       setDocument(record)
+                  //       handleMenuClick(e, record?.id, record?.document_type, record?.name)
+                  //     }
+                  //     }>
+                  //       <Menu.Item key="4" >Sửa tên</Menu.Item>
+                  //       <Menu.Item key="5">Phân quyền</Menu.Item>
+                  //     </Menu>
+                  //   }
+                  //   trigger={['click']}
+                  // >
+                  //   <EllipsisOutlined key="ellipsis" onClick={(e) => e.stopPropagation()} />
+                  // </Dropdown>
                 ]}
                 onClick={(event) => {
                   event.stopPropagation();
@@ -475,42 +487,53 @@ const FileWorkSpace = ({
                         setOpenEdit(record)
                       }
                     } />,
+                  <SendOutlined key="share"
+                    onClick={(e) => {
+                      e.stopPropagation()
 
-                  <Dropdown
-                    overlay={
-                      <Menu onClick={(e) => {
-                        setDocument(record)
-                        handleMenuClick(e, record?.id, record?.document_type, record?.name)
-                      }
-                      }>
-                        <Menu.Item key="4" >Sửa tên</Menu.Item>
-                        <Menu.Item key="5">Phân quyền</Menu.Item>
-                      </Menu>
-                    }
-                    trigger={['click']}
-                  >
-                    <EllipsisOutlined key="ellipsis" onClick={(e) => e.stopPropagation()} />
-                  </Dropdown>
+                      setDocument(record)
+                      handleMenuClick({key:"5"}, record?.id, record?.document_type, record?.name)
+                    }} />
+                  // <Dropdown
+                  //   overlay={
+                  //     <Menu onClick={(e) => {
+                  //       setDocument(record)
+                  //       handleMenuClick(e, record?.id, record?.document_type, record?.name)
+                  //     }
+                  //     }>
+                  //       <Menu.Item key="4" >Sửa tên</Menu.Item>
+                  //       <Menu.Item key="5">Phân quyền</Menu.Item>
+                  //     </Menu>
+                  //   }
+                  //   trigger={['click']}
+                  // >
+                  //   <EllipsisOutlined key="ellipsis" onClick={(e) => e.stopPropagation()} />
+                  // </Dropdown>
                 ]}
                 onClick={(event) => {
                   event.stopPropagation();
                   handleClick(event, record.name, record.id);
                 }}
               >
-                <Row gutter={[16, 16]}>
-                  <Col span={24}><strong>Tên tài liệu:</strong> {record?.name} </Col>
-                  <Col span={24}><strong>Họ và tên:</strong> {record?.object_name} </Col>
-                  <Col span={8}>
-                    {/* <Image src={ `${REACT_APP_SERVER_BASE_URL}/${record?.path.replace("server","")}`||DefaultAvatar}></Image> */}
-                    <Image src={record?.image ? `${actionGetImageDT(record?.id)}` : DefaultAvatar}></Image>
-                  </Col>
-                  <Col>
+                <Row gutter={[16, 16]} style={{ alignItems: "center" }}>
+                  <Col span={24} ><strong>{record?.name}</strong>  </Col>
 
-                    <Row gutter={[12, 12]}>
-                      <Col span={24}>Số CCCD:{record?.object_identity}</Col>
-                      <Col span={24}>Địa chỉ:{record?.object_address}</Col>
+                  <Col>
+                    <Row gutter={[16, 8]}>
+                      <Col span={8} style={{ display: "flex", alignItems: "center" }}>
+                        <Image src={record?.image ? `${actionGetImageDT(record?.id)}` : DefaultAvatar}></Image>
+                      </Col>
+                      <Col span={12}>
+
+                        <Row gutter={[12, 12]}>
+                          <Col span={24}><strong>Họ và tên:</strong> {record?.object_name} </Col>
+                          <Col span={24}><strong>Số CCCD:</strong>  {record?.object_identity}</Col>
+                          <Col span={24}><strong>Địa chỉ:</strong>  {record?.object_address}</Col>
+                        </Row>
+                      </Col>
                     </Row>
                   </Col>
+
 
                   {/* <Input.TextArea rows={4} value={record?.object_description} disabled />
 
@@ -594,6 +617,7 @@ const FileWorkSpace = ({
               setOpenEdit={setOpenEdit}
               onCancel={() => setOpenEdit(false)}
               setListDocument={setListDocument}
+              
             />
           )
         }

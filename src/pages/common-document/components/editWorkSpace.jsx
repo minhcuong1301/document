@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 
 
 const EditWorkSpace = ({ oldName, openEdit, onCancel, idFile, idDocumentAdd, handleGetListDocument, setListDocument }) => {
+    console.log(openEdit);
     const [form] = Form.useForm();
     const [spining, setSpinning] = useState(false)
     const [nameWorkSpace, setNameWorkSpace] = useState(openEdit?.name)
@@ -28,21 +29,21 @@ const EditWorkSpace = ({ oldName, openEdit, onCancel, idFile, idDocumentAdd, han
                 time_end: dayjs(values?.time_end).endOf('D').unix(),
 
             }
-            const params={
+            const params = {
                 time_start: dayjs(values?.time_start).startOf('D').unix(),
                 time_end: dayjs(values?.time_end).endOf('D').unix(),
                 document_type: 2
             }
             const formData = new FormData()
-            Object.keys(data_req).forEach(key => {          
+            Object.keys(data_req).forEach(key => {
                 formData.append(key, data_req[key]);
-              })
+            })
 
-            const { data, status } = await actionUpdateWorkSpace(openEdit?.id,formData,params )
+            const { data, status } = await actionUpdateWorkSpace(openEdit?.id, formData, params)
             if (status === 200) {
-              message.success(data?.message)
-              setListDocument(data?.data)
-              onCancel()
+                message.success(data?.message)
+                setListDocument(data?.data)
+                onCancel()
             }
         })
             .catch(
@@ -56,7 +57,7 @@ const EditWorkSpace = ({ oldName, openEdit, onCancel, idFile, idDocumentAdd, han
     const handleDisabledDate = (currentDate) => {
         return currentDate <= dayjs().startOf("day");
     };
-    
+
     const handleDateChangeStart = (date) => {
         form.setFieldValue("time_start", date);
     };
@@ -83,76 +84,109 @@ const EditWorkSpace = ({ oldName, openEdit, onCancel, idFile, idDocumentAdd, han
                         time_end: dayjs(openEdit?.time_end * 1000),
                     }}
                 >
-                    {/* <Form.Item name='name'>
-                        <Input placeholder='Tên workspace'
-                            onChange={(event) => setNameWorkSpace(event.target.value)}
-                        />
-                    </Form.Item> */}
 
-                    {/* <Form.Item name='object_name'>
-                        <Input placeholder='Tên đối tượng'
-                            onChange={(event) => setObjectName(event.target.value)}
-                        />
-                    </Form.Item> */}
+                    {openEdit?.type == 2 &&
+                        <>
+                            <Form.Item name='object_description'>
+                                <Input.TextArea rows={4} placeholder='Ghi chú'
+                                    onChange={(event) => setObjectDescription(event.target.value)}
+                                />
+                            </Form.Item>
 
-                    {/* <Form.Item name='object_address'>
-                        <Input placeholder='Địa chỉ'
-                          onChange={(event) => setObjectAddress(event.target.value)}
-                        />
-                    </Form.Item> */}
+                            <Form.Item name="time_start"
+                                label="Ngày bắt đầu"
+                            >
+                                <DatePicker
+                                    format={DATE_FORMAT}
+                                    allowClear={false}
+                                    className="w-full"
+                                    disabledDate={handleDisabledDate}
+                                    onChange={(date) => handleDateChangeStart(date)}
+                                />
 
-                    {/* <Form.Item name='object_identity'>
-                        <Input placeholder='Số CCCD'
-                          onChange={(event) => setCCCD(event.target.value)}
-                        />
-                    </Form.Item> */}
+                            </Form.Item>
 
-                    <Form.Item name='object_description'>
-                        <Input.TextArea rows={4} placeholder='Ghi chú'
-                            onChange={(event) => setObjectDescription(event.target.value)}
-                        />
-                    </Form.Item>
+                            <Form.Item name="time_end"
+                                label="Ngày kết thúc "
+                            >
+                                <DatePicker
+                                    format={DATE_FORMAT}
+                                    className="w-full"
+                                    allowClear={false}
+                                    disabledDate={handleDisabledDate}
+                                    onChange={(date) => handleDateChangeEnd(date)}
+                                />
+                            </Form.Item>
+                        </>
+                    }
 
-                    {/* <Form.Item name="image">
-                        <Row>
-                            <Col>Ảnh:</Col>
+                    {
+                        openEdit?.type == 3 &&
+                        <>
+                           
 
-                            <Col className="w-full">
+                            <Form.Item name='object_name' label="Tên đối tượng"
+                            >
+                                <Input placeholder='Tên đối tượng'
+                                    onChange={(event) => setObjectName(event.target.value)}
+                                />
+                            </Form.Item>
+
+                            <Form.Item name='object_address'label="Địa chỉ">
+                                <Input placeholder='Địa chỉ'
+                                    onChange={(event) => setObjectAddress(event.target.value)}
+                                />
+                            </Form.Item>
+
+                            <Form.Item name='object_identity'label="Số CCCD">
+                                <Input placeholder='Số CCCD'
+                                    onChange={(event) => setCCCD(event.target.value)}
+                                />
+                            </Form.Item>
+
+                            <Form.Item name='object_description'label="Ghi chú">
+                                <Input.TextArea rows={4} placeholder='Ghi chú'
+                                    onChange={(event) => setObjectDescription(event.target.value)}
+                                />
+                            </Form.Item>
+
+                            <Form.Item name="image" label="Ảnh:">
                                 <UploadImage
                                     maxCount={1}
                                     files={files}
                                     setFiles={setFiles}
                                     defaultFile={openEdit?.image}
                                 />
-                            </Col>
-                        </Row>
-                    </Form.Item> */}
+                            </Form.Item>
 
-                    <Form.Item name="time_start"
-                        label="Ngày bắt đầu"
-                    >
-                        <DatePicker
-                            format={DATE_FORMAT}
-                            allowClear={false}
-                            className="w-full"
-                            disabledDate={handleDisabledDate}
-                            onChange={(date) => handleDateChangeStart(date)}
-                        />
+                            <Form.Item name="time_start"
+                                label="Ngày bắt đầu"
+                            >
+                                <DatePicker
+                                    format={DATE_FORMAT}
+                                    allowClear={false}
+                                    className="w-full"
+                                    disabledDate={handleDisabledDate}
+                                    onChange={(date) => handleDateChangeStart(date)}
+                                />
 
-                    </Form.Item>
+                            </Form.Item>
 
-                    <Form.Item name="time_end"
-                        label="Ngày kết thúc "
-                    >
-                        <DatePicker
-                            format={DATE_FORMAT}
-                            className="w-full"
-                            allowClear={false}
-                            disabledDate={handleDisabledDate}
-                            onChange={(date) => handleDateChangeEnd(date)}
-                        />
-                    </Form.Item>
+                            <Form.Item name="time_end"
+                                label="Ngày kết thúc "
+                            >
+                                <DatePicker
+                                    format={DATE_FORMAT}
+                                    className="w-full"
+                                    allowClear={false}
+                                    disabledDate={handleDisabledDate}
+                                    onChange={(date) => handleDateChangeEnd(date)}
+                                />
+                            </Form.Item>
 
+
+                        </>
+                    }
 
 
                     <Row gutter={[16, 0]}>
