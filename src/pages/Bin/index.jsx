@@ -1,5 +1,5 @@
 import { SpinCustom } from "components";
-import { Button, Checkbox, Col, DatePicker, Input, Layout, Row, Space, Image, Table, Modal, message } from "antd";
+import { Button, Checkbox, Col, DatePicker, Input, Layout, Row, Space, Image, Table, Modal, message, Select } from "antd";
 import { useEffect, useState } from "react";
 import moment from "moment";
 import dayjs from "dayjs";
@@ -24,15 +24,10 @@ const Bin = () => {
   const [dateStart, setDateStart] = useState(null)
   const [dateEnd, setDateEnd] = useState(null)
   const [name, setName] = useState()
-  const [openButtonDelete, setOpenButtonDelete] = useState()
+  const [workspace, setWorkspace] = useState(1)
 
   const [listSelect, setListSelect] = useState([])
   const [listFile, setListFile] = useState([])
-
-  // const pagination = {
-  //   pageNum: 1,
-  //   pageSize: 10,
-  // };
 
   const handleCheckboxChange = (e, id) => {
     if (e.target.checked) {
@@ -48,7 +43,8 @@ const Bin = () => {
       const params = {
         name,
         time_del_start: dayjs(dateStart).startOf('D').unix() || null,
-        time_del_end: dayjs(dateEnd).endOf('D').unix() || null
+        time_del_end: dayjs(dateEnd).endOf('D').unix() || null,
+        document_type: workspace
       }
       const { data, status } = await actionGetListDocumentDelete(params);
       if (status === 200) {
@@ -156,7 +152,13 @@ const Bin = () => {
   const handleRestoreDocument = async (listSelect) => {
     setSpinning(true)
     try {
-      const { data, status } = await actionRestoreDocument({ doc_id: listSelect, status: 0 });
+      const params = {
+        name,
+        time_del_start: dayjs(dateStart).startOf('D').unix() || null,
+        time_del_end: dayjs(dateEnd).endOf('D').unix() || null,
+        document_type: workspace
+      }
+      const { data, status } = await actionRestoreDocument({ doc_id: listSelect, status: 0 }, params);
       if (status === 200) {
         message.success(data?.message)
         setListFile(data?.data_delete)
@@ -168,6 +170,10 @@ const Bin = () => {
     setSpinning(false)
   }
 
+  const handleChange = (value) => {
+    setWorkspace(value)
+  };
+
   const columns = [
     {
       width: 5,
@@ -177,19 +183,6 @@ const Bin = () => {
         <Checkbox onChange={(e) => handleCheckboxChange(e, record.document_id)} />
       )
     },
-    // {
-    //   fixed: "left",
-    //   width: 60,
-    //   title: "STT",
-    //   dataIndex: "id",
-    //   key: "id",
-    //   align:"center",
-    //   render: (v, record, index) => (
-    //     <Space>
-    //       {index + 1 + (pagination.pageNum - 1) * pagination.pageSize}
-    //     </Space>
-    //   ),
-    // },
     {
       width: 100,
       dataIndex: "document_id",
@@ -209,7 +202,7 @@ const Bin = () => {
       title: "Thời gian ",
       dataIndex: "time_action",
       key: "time_action",
-      width: 150,
+      width: 250,
       align: "center",
       render: (r, v) => {
         return v?.time_action ? moment(v?.time_action * 1000).format(SECOND_FORMAT) : null
@@ -269,7 +262,7 @@ const Bin = () => {
 
   useEffect(() => {
     handleGetListDocumentDelete()
-  }, [name, dateStart, dateEnd])
+  }, [name, dateStart, dateEnd, workspace])
 
   return (
     <Layout className="common-layout document-page">
@@ -330,17 +323,36 @@ const Bin = () => {
         <div className="common-layout--content">
           <Row className="filler" gutter={[8, 8]}>
             <Col>
+              <Select
+                defaultValue={1}
+                style={{
+                  width: 200,
+                }}
+                onChange={handleChange}
+                options={[
+                  {
+                    value: 1,
+                    label: 'Tài liệu',
+                  },
+                  {
+                    value: 2,
+                    label: 'Không gian làm việc',
+                  }
+                ]}
+              />
+            </Col>
+            <Col>
               <Button
                 className="w-full"
                 type="primary"
                 onClick={() => {
                   setOpenSelect(!openSelect)
                   openSelect && setListSelect([])
-                  !openSelect ? setOpenButtonDelete(true) : setOpenButtonDelete(false)
                 }}>
                 {!openSelect ? 'Chọn' : 'Bỏ chọn'}
               </Button>
             </Col>
+
 
             {(listSelect.length > 0 && openSelect) && (<Col>
               <Button
@@ -361,20 +373,17 @@ const Bin = () => {
                 Xóa
               </Button>
             </Col>)}
+
           </Row>
           <Table
             width="100%"
             dataSource={listFile}
             rowKey={(r) => r.id}
             columns={columns}
-
           />
         </div>
       </SpinCustom>
-
-
-
-    </Layout >
+    </Layout>
   )
 }
 

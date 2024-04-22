@@ -16,10 +16,11 @@ export const actionGetListDocumentDelete = (params) => {
   })
 }
 
-export const actionRestoreDocument = (data) => {
+export const actionRestoreDocument = (data, params) => {
   return api({
     method: "POST",
     url: '/change-status-document',
-    data
+    data,
+    params
   })
 }
