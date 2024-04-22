@@ -18,6 +18,8 @@ import { useSelector } from "react-redux";
 import { DEPARTMENTS_CODE } from "utils/constants/config";
 
 const Decentralize = ({ onCancel, documentId, document, worksapce }) => {
+  const userLogin = useSelector((state) => state?.profile);
+
   const department = useSelector((state) => state.departments);
   const [spinning, setSpinning] = useState(false);
   const [listEmployee, setListEmployee] = useState([]);
@@ -46,12 +48,20 @@ const Decentralize = ({ onCancel, documentId, document, worksapce }) => {
         setListEmployee(data.filter((item) => ((document.type === 2 && worksapce) || !worksapce) ? item.position_code !== "ADMIN" : (item.position_code !== "ADMIN" && item.role.length > 0)));
         const respone = await actionGetListRoleUser(documentId, { list_user: data.map(e => e.id) });
         const init_role = []
+
         JSON.parse(respone.data.list_role).map(item => {
           const obj = {
             user_id: item.user_id,
             role: item.role.map(r => r.id)
           }
-          init_role.push(obj)
+
+          if (userLogin.position_code === 'ADMIN' && item.user_id !== userLogin.id && item.user_id.code !== 'ADMIN') {
+            init_role.push(obj)
+          } else if (userLogin.position_code === 'LEADER' && item.user_id !== userLogin.id && item.user_id.code !== 'ADMIN') {
+            init_role.push(obj)
+          } else if (userLogin.position_code === 'S_LEADER' && item.user_id !== userLogin.id && item.user_id.code !== 'ADMIN' && item.user_id.code !== 'LEADER') {
+            init_role.push(obj)
+          }
         })
         setRoleUserMap(init_role);
       }
@@ -104,12 +114,12 @@ const Decentralize = ({ onCancel, documentId, document, worksapce }) => {
         const list_role = [];
         for (const employee of roleUserMap) {
           const params = {
-            id_emp: employee.user_id,
+            id_emp: employee.user_id.id,
             emp_role: employee.role,
           };
           list_role.push(params);
         }
-
+        console.log("list_role", list_role)
         const { data, status } = await actionDecentralize({ list_role: list_role }, documentId);
         if (status === 200) {
           const list_n_role = []
@@ -152,7 +162,8 @@ const Decentralize = ({ onCancel, documentId, document, worksapce }) => {
   }, []);
 
   const handleChecked = (list, employee, role_id) => {
-    return list.find((item) => item.user_id === employee.id)?.role.includes(role_id)
+    console.log('list', list);
+    return list.find((item) => item.user_id.id === employee.id)?.role.includes(role_id)
   }
 
   const columns = [
