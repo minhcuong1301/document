@@ -19,10 +19,12 @@ const AddDocument = ({
   handleGetListDocument,
   handleGetChildFolder,
   checkIsOpenWorkSpace,
+  isRootFolder,
+  checkIsOpenDoc,
+  folderDepartment,
   checkSelectedFolderDT,
-  checkSelectedFolderTL,
-  checkIsOpenDoc }) => {
-
+  checkSelectedFolderTL
+}) => {
   const [form] = Form.useForm();
   const [files, setFiles] = useState([]);
   const [filesImg, setFilesImg] = useState([]);
